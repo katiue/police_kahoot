@@ -1,0 +1,98 @@
+'use client'
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
+import { Backdrop } from '@/components/game/Backdrop'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { getSocket } from '@/lib/socket-client'
+import { parseQuiz } from '@/lib/quiz'
+import { Upload, FileJson, Rocket } from 'lucide-react'
+
+export default function HostCreatePage() {
+  const router = useRouter()
+  const [raw, setRaw] = useState('')
+  const [busy, setBusy] = useState(false)
+
+  function loadFile(file: File) {
+    const reader = new FileReader()
+    reader.onload = () => setRaw(String(reader.result ?? ''))
+    reader.readAsText(file)
+  }
+
+  async function useSample() {
+    try {
+      const res = await fetch('/quizzes/sample.json')
+      setRaw(await res.text())
+      toast.success('Đã nạp quiz mẫu')
+    } catch {
+      toast.error('Không tải được quiz mẫu')
+    }
+  }
+
+  function create() {
+    let quiz
+    try {
+      quiz = parseQuiz(JSON.parse(raw))
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'JSON không hợp lệ')
+      return
+    }
+    setBusy(true)
+    const socket = getSocket()
+    socket.emit('host:create', { quiz }, (res) => {
+      setBusy(false)
+      if (res.ok && res.pin) {
+        router.push(`/host/${res.pin}`)
+      } else {
+        toast.error(res.error ?? 'Tạo phòng thất bại')
+      }
+    })
+  }
+
+  return (
+    <Backdrop>
+      <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col justify-center gap-6 px-6 py-12">
+        <h1 className="text-display text-4xl font-bold">
+          Tạo <span className="text-accent neon-text-cyan">phòng</span>
+        </h1>
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <FileJson className="size-5 text-accent" /> Nạp Quiz (JSON)
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-4">
+            <div className="flex flex-wrap gap-3">
+              <label>
+                <input
+                  type="file"
+                  accept="application/json,.json"
+                  className="hidden"
+                  onChange={(e) => e.target.files?.[0] && loadFile(e.target.files[0])}
+                />
+                <span className="inline-flex h-10 cursor-pointer items-center gap-2 rounded-lg border border-border bg-card/40 px-4 text-sm font-semibold hover:border-accent/50">
+                  <Upload className="size-4" /> Chọn file
+                </span>
+              </label>
+              <Button variant="outline" onClick={useSample}>Dùng quiz mẫu</Button>
+            </div>
+            <textarea
+              value={raw}
+              onChange={(e) => setRaw(e.target.value)}
+              placeholder='{ "title": "...", "questions": [ ... ] }'
+              spellCheck={false}
+              className="h-56 w-full resize-none rounded-lg border border-border bg-input/60 p-3 font-mono text-xs text-foreground outline-none focus:border-accent/60"
+            />
+            <Button size="lg" onClick={create} disabled={busy || !raw.trim()} className="gap-2">
+              <Rocket className="size-5" /> {busy ? 'Đang tạo...' : 'Tạo phòng'}
+            </Button>
+          </CardContent>
+        </Card>
+        <p className="text-center text-xs text-muted-foreground">
+          Format: mỗi câu hỏi cần ≥2 đáp án và 1 đáp án <code className="text-accent">&quot;correct&quot;: true</code>.
+        </p>
+      </main>
+    </Backdrop>
+  )
+}

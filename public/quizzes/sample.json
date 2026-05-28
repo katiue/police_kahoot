@@ -1,0 +1,65 @@
+{
+  "title": "Chống Lừa Đảo - Police Quiz 2026",
+  "questions": [
+    {
+      "id": "q1",
+      "text": "Khi nhận cuộc gọi tự xưng là công an yêu cầu chuyển tiền, bạn nên làm gì?",
+      "timeLimitSec": 20,
+      "points": 1000,
+      "answers": [
+        { "id": 1, "text": "Cúp máy, gọi tổng đài 113 xác minh", "correct": true },
+        { "id": 2, "text": "Chuyển tiền ngay cho an toàn", "correct": false },
+        { "id": 3, "text": "Cung cấp mã OTP", "correct": false },
+        { "id": 4, "text": "Cài app theo hướng dẫn", "correct": false }
+      ]
+    },
+    {
+      "id": "q2",
+      "text": "OTP ngân hàng dùng để làm gì?",
+      "timeLimitSec": 15,
+      "points": 1000,
+      "answers": [
+        { "id": 1, "text": "Xác thực giao dịch của chính bạn", "correct": true },
+        { "id": 2, "text": "Chia sẻ cho nhân viên hỗ trợ", "correct": false },
+        { "id": 3, "text": "Gửi cho người trúng thưởng", "correct": false },
+        { "id": 4, "text": "Đăng lên mạng xã hội", "correct": false }
+      ]
+    },
+    {
+      "id": "q3",
+      "text": "Dấu hiệu nào CẢNH BÁO một website giả mạo ngân hàng?",
+      "timeLimitSec": 20,
+      "points": 1000,
+      "answers": [
+        { "id": 1, "text": "Tên miền lạ, sai chính tả, không có HTTPS", "correct": true },
+        { "id": 2, "text": "Có logo ngân hàng", "correct": false },
+        { "id": 3, "text": "Giao diện đẹp", "correct": false },
+        { "id": 4, "text": "Có ô đăng nhập", "correct": false }
+      ]
+    },
+    {
+      "id": "q4",
+      "text": "Link lạ trong tin nhắn 'trúng thưởng' nên xử lý thế nào?",
+      "timeLimitSec": 15,
+      "points": 1000,
+      "answers": [
+        { "id": 1, "text": "Không bấm, xóa tin nhắn", "correct": true },
+        { "id": 2, "text": "Bấm xem thử", "correct": false },
+        { "id": 3, "text": "Nhập thông tin nhận thưởng", "correct": false },
+        { "id": 4, "text": "Gửi cho bạn bè cùng nhận", "correct": false }
+      ]
+    },
+    {
+      "id": "q5",
+      "text": "Mật khẩu mạnh nên có đặc điểm gì?",
+      "timeLimitSec": 20,
+      "points": 1000,
+      "answers": [
+        { "id": 1, "text": "Dài, gồm chữ hoa, thường, số, ký tự đặc biệt", "correct": true },
+        { "id": 2, "text": "Là ngày sinh của mình", "correct": false },
+        { "id": 3, "text": "123456 cho dễ nhớ", "correct": false },
+        { "id": 4, "text": "Dùng chung cho mọi tài khoản", "correct": false }
+      ]
+    }
+  ]
+}
