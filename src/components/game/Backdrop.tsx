@@ -1,12 +1,11 @@
 import { cn } from '@/lib/utils'
 
-/** Full-screen cybersec backdrop: navy + circuit grid + corner glows. */
+/** Full-screen cybersec backdrop: clean, subtle agency-grade cyber-shell. */
 export function Backdrop({ className, children }: { className?: string; children: React.ReactNode }) {
   return (
-    <div className={cn('relative min-h-screen w-full overflow-hidden bg-background text-foreground', className)}>
-      <div className="bg-glow pointer-events-none absolute inset-0" />
-      <div className="grid-bg pointer-events-none absolute inset-0 opacity-70" />
-      <div className="relative z-10 flex min-h-screen flex-col">{children}</div>
+    <div className={cn('cyber-shell no-glow flex min-h-screen w-full flex-col text-foreground', className)}>
+      {children}
     </div>
   )
 }
+

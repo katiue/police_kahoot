@@ -2,36 +2,59 @@
 import { use, useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Backdrop } from '@/components/game/Backdrop'
 import { Button } from '@/components/ui/button'
 import { Timer } from '@/components/game/Timer'
 import { AnswerGrid } from '@/components/game/AnswerGrid'
+import { SpectatorView } from '@/components/game/SpectatorView'
+import { PlayerAvatar } from '@/components/game/PlayerAvatar'
+import { PoliceEmblem } from '@/components/game/PoliceEmblem'
+import { ChongLuaDaoMark } from '@/components/game/ChongLuaDao'
 import { getSocket } from '@/lib/socket-client'
-import { cn } from '@/lib/utils'
-import type { GameStatus, PublicQuestion, QuestionResult, LeaderboardRow } from '@/types/events'
-import { CheckCircle2, XCircle, Hourglass } from 'lucide-react'
+import type { GameStatus, PublicQuestion, QuestionResult, PlayerView } from '@/types/events'
+import { CheckCircle2, XCircle, Hourglass, Trophy, Frown, ShieldCheck } from 'lucide-react'
 
 export default function PlayRoomPage({ params }: { params: Promise<{ pin: string }> }) {
   const { pin } = use(params)
   const router = useRouter()
+  const [isMounted, setIsMounted] = useState(false)
 
   const [status, setStatus] = useState<GameStatus>('lobby')
   const [nickname, setNickname] = useState('')
   const [question, setQuestion] = useState<PublicQuestion | null>(null)
   const [selected, setSelected] = useState<number | null>(null)
   const [result, setResult] = useState<QuestionResult | null>(null)
-  const [leaderboard, setLeaderboard] = useState<LeaderboardRow[]>([])
+  const [survivors, setSurvivors] = useState<PlayerView[]>([])
+  const [eliminated, setEliminated] = useState<PlayerView[]>([])
+  const [allPlayers, setAllPlayers] = useState<PlayerView[]>([])
+  /** Whether THIS player has been eliminated */
+  const [isEliminated, setIsEliminated] = useState(false)
   const playerIdRef = useRef<string>('')
 
+  // Selected avatar overrides state
+  const [customIconIndex, setCustomIconIndex] = useState<number | undefined>(undefined)
+  const [customColorIndex, setCustomColorIndex] = useState<number | undefined>(undefined)
+
   useEffect(() => {
+    setIsMounted(true)
     const saved = sessionStorage.getItem(`pk:${pin}`)
     if (!saved) {
       router.replace(`/play?pin=${pin}`)
       return
     }
-    const { playerId, nickname: nick } = JSON.parse(saved) as { playerId: string; nickname: string }
+    const { playerId, nickname: nick, avatarIconIndex, avatarColorIndex } = JSON.parse(saved) as { 
+      playerId: string; 
+      nickname: string;
+      avatarIconIndex?: number;
+      avatarColorIndex?: number;
+    }
     playerIdRef.current = playerId
     setNickname(nick)
+    
+    if (avatarIconIndex !== undefined) setCustomIconIndex(avatarIconIndex)
+    if (avatarColorIndex !== undefined) setCustomColorIndex(avatarColorIndex)
+
 
     const socket = getSocket()
     const rejoin = () =>
@@ -55,11 +78,20 @@ export default function PlayRoomPage({ params }: { params: Promise<{ pin: string
     })
     socket.on('question:result', (r) => {
       setResult(r)
-      setLeaderboard(r.leaderboard)
+      // If eliminated this round via result payload
+      if (r.you?.eliminated) setIsEliminated(true)
       setStatus('result')
     })
+    socket.on('player:eliminated', () => {
+      setIsEliminated(true)
+    })
+    socket.on('lobby:update', (p) => {
+      setAllPlayers(p.players)
+    })
     socket.on('game:over', (o) => {
-      setLeaderboard(o.leaderboard)
+      setSurvivors(o.survivors)
+      setEliminated(o.eliminated)
+      setAllPlayers([...o.survivors, ...o.eliminated])
       setStatus('ended')
     })
 
@@ -67,12 +99,14 @@ export default function PlayRoomPage({ params }: { params: Promise<{ pin: string
       socket.off('connect', rejoin)
       socket.off('game:question')
       socket.off('question:result')
+      socket.off('player:eliminated')
+      socket.off('lobby:update')
       socket.off('game:over')
     }
   }, [pin, router])
 
   function pick(answerId: number) {
-    if (!question || selected !== null) return
+    if (!question || selected !== null || isEliminated) return
     setSelected(answerId)
     getSocket().emit(
       'player:answer',
@@ -86,89 +120,291 @@ export default function PlayRoomPage({ params }: { params: Promise<{ pin: string
     )
   }
 
-  const myRow = leaderboard.find((r) => r.playerId === playerIdRef.current)
+  const isSurvivor = survivors.some((p) => p.id === playerIdRef.current)
+  // Derive survivor list for spectator view (players not eliminated)
+  const spectatorSurvivors = allPlayers.filter((p) => !p.eliminated)
+  const spectatorEliminatedCount = allPlayers.filter((p) => p.eliminated).length
 
   return (
     <Backdrop>
-      <header className="relative z-10 flex items-center justify-between border-b border-[var(--header-border)] bg-[var(--navy-panel)] px-5 py-3 backdrop-blur">
-        <span className="font-semibold">{nickname}</span>
-        {myRow && (
-          <span className="text-sm">
-            Điểm <span className="font-bold text-accent">{myRow.score}</span>
-          </span>
-        )}
+      {/* ── Header ─────────────────────────────────────── */}
+      <header className="relative z-10 border-b border-[rgba(0,191,255,0.15)] bg-transparent backdrop-blur-sm">
+        {/* Logo strip centered */}
+        <div className="flex items-center justify-center gap-3 px-5 py-2">
+          <PoliceEmblem
+            className="h-7 w-7 shrink-0"
+            style={{ filter: 'drop-shadow(0 0 6px rgba(200,150,12,0.5))' }}
+          />
+          <span className="text-[9px] font-bold uppercase tracking-[0.16em] text-[var(--foreground)]">Cục An Ninh Mạng</span>
+          <div className="h-4 w-px bg-[rgba(0,212,255,0.2)]" />
+          <ChongLuaDaoMark className="h-3.5 w-3.5" style={{ opacity: 0.7 }} />
+          <span className="text-[8px] font-semibold" style={{ color: '#22b36c', opacity: 0.75 }}>Chống Lừa Đảo</span>
+        </div>
+        {/* Player status row */}
+        <div className="flex items-center justify-between border-t border-[rgba(0,212,255,0.1)] px-5 py-1.5">
+          <div className="flex items-center gap-2">
+            <PlayerAvatar nickname={nickname} size="xs" pulse={!isEliminated} eliminated={isEliminated} iconIndex={customIconIndex} colorIndex={customColorIndex} />
+            <span className="font-semibold text-xs">{nickname}</span>
+          </div>
+          {isEliminated && status !== 'ended' && (
+            <span className="flex items-center gap-1 rounded-full border border-red-500/30 bg-red-500/10 px-2 py-0.5 text-[10px] font-bold text-red-400">
+              Khán giả
+            </span>
+          )}
+          {!isEliminated && (
+            <span className="flex items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-400">
+              <ShieldCheck className="size-2.5" />
+              Đang chơi
+            </span>
+          )}
+        </div>
       </header>
 
       <main className="mx-auto flex w-full max-w-lg flex-1 flex-col justify-center gap-6 px-5 py-8">
-        {status === 'lobby' && (
-          <div className="flex flex-col items-center gap-4 text-center">
-            <Hourglass className="size-12 animate-pulse text-accent" />
-            <p className="text-xl font-semibold">Đã vào phòng!</p>
-            <p className="text-muted-foreground">Chờ host bắt đầu…</p>
-            <span className="pin-display text-3xl font-bold text-accent">{pin}</span>
-          </div>
-        )}
-
-        {status === 'question' && question && (
-          <div className="flex flex-col gap-5">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-mono text-muted-foreground">
-                Câu {question.index + 1}/{question.total}
+        {!isMounted ? (
+          <div className="flex flex-col items-center gap-6 text-center">
+            <div className="hud-frame-quad relative flex flex-col items-center gap-3 rounded-2xl px-10 py-8">
+              <span className="hud-corner-tr" aria-hidden />
+              <span className="hud-corner-bl" aria-hidden />
+              <Hourglass className="size-8 text-[var(--cyan-accent)] animate-pulse" />
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--muted-foreground)]">
+                Game PIN
+              </p>
+              <span className="pin-display text-4xl font-bold text-[var(--cyan-accent)] neon-text-cyan">
+                {pin}
               </span>
-              <Timer endsAt={question.endsAt} timeLimitSec={question.timeLimitSec} />
+              <p className="text-sm text-[var(--muted-foreground)]">Đã vào phòng — chờ host bắt đầu…</p>
             </div>
-            <h2 className="text-center text-xl font-bold">{question.text}</h2>
-            {selected === null ? (
-              <AnswerGrid answers={question.answers} mode="play" selected={selected} onPick={pick} />
-            ) : (
-              <div className="flex flex-col items-center gap-3 py-6 text-center">
-                <CheckCircle2 className="size-12 text-accent" />
-                <p className="text-lg font-semibold">Đã chọn!</p>
-                <p className="text-muted-foreground">Chờ người khác trả lời…</p>
-              </div>
-            )}
+            <PlayerAvatar nickname={nickname} size="xl" pulse iconIndex={customIconIndex} colorIndex={customColorIndex} />
+            <p className="text-base font-semibold">{nickname}</p>
           </div>
-        )}
+        ) : (
+          <AnimatePresence mode="wait">
 
-        {status === 'result' && result && (
-          <div className="flex flex-col items-center gap-4 text-center">
-            {result.you?.correct ? (
-              <>
-                <CheckCircle2 className="size-16 text-correct" />
-                <p className="text-2xl font-bold text-correct">Chính xác!</p>
-                <p className="text-xl font-bold text-accent">+{result.you.gained}</p>
-              </>
-            ) : (
-              <>
-                <XCircle className="size-16 text-strike" />
-                <p className="text-2xl font-bold text-strike">
-                  {result.you?.answered ? 'Sai rồi' : 'Hết giờ'}
+          {/* ── Lobby ────────────────────────────────────── */}
+          {status === 'lobby' && (
+            <motion.div
+              key="lobby"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.45, ease: [0.32, 0.72, 0, 1] }}
+              className="flex flex-col items-center gap-6 text-center"
+            >
+              {/* HUD frame around PIN */}
+              <div className="hud-frame-quad relative flex flex-col items-center gap-3 rounded-2xl px-10 py-8">
+                <span className="hud-corner-tr" aria-hidden />
+                <span className="hud-corner-bl" aria-hidden />
+                <Hourglass className="size-8 text-[var(--cyan-accent)] animate-pulse" />
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--muted-foreground)]">
+                  Game PIN
                 </p>
-              </>
-            )}
-            {myRow && (
-              <div className={cn('mt-2 rounded-lg border px-5 py-3', 'border-accent/40 bg-accent/10')}>
-                <p className="text-sm text-muted-foreground">Hạng của bạn</p>
-                <p className="text-3xl font-bold text-accent">#{myRow.rank}</p>
-                <p className="text-sm">{myRow.score} điểm</p>
+                <span className="pin-display text-4xl font-bold text-[var(--cyan-accent)] neon-text-cyan">
+                  {pin}
+                </span>
+                <p className="text-sm text-[var(--muted-foreground)]">Đã vào phòng — chờ host bắt đầu…</p>
               </div>
-            )}
-            <p className="text-sm text-muted-foreground">Chờ host sang câu tiếp…</p>
-          </div>
-        )}
 
-        {status === 'ended' && (
-          <div className="flex flex-col items-center gap-4 text-center">
-            <p className="text-display text-3xl font-bold neon-text-white">Kết thúc!</p>
-            {myRow && (
-              <div className="rounded-xl border border-accent/50 bg-accent/10 px-8 py-6 glow-cyan">
-                <p className="text-5xl">{['🥇', '🥈', '🥉'][myRow.rank - 1] ?? '🎯'}</p>
-                <p className="mt-2 text-2xl font-bold">Hạng #{myRow.rank}</p>
-                <p className="text-lg text-accent">{myRow.score} điểm</p>
+              <PlayerAvatar nickname={nickname} size="xl" pulse iconIndex={customIconIndex} colorIndex={customColorIndex} />
+              <p className="text-base font-semibold">{nickname}</p>
+            </motion.div>
+          )}
+
+          {/* ── Question ─────────────────────────────────── */}
+          {status === 'question' && question && (
+            <motion.div
+              key={`q-${question.index}`}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -16 }}
+              transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
+              className="flex flex-col gap-5"
+            >
+              {/* Question counter + timer — no progress dots (open-ended game) */}
+              <div className="flex items-center justify-between gap-3">
+                <span className="rounded-full border border-[rgba(0,212,255,0.2)] bg-[rgba(0,212,255,0.06)] px-3 py-1 text-xs font-mono font-semibold text-[var(--muted-foreground)]">
+                  Câu {question.index + 1}
+                </span>
+                <Timer endsAt={question.endsAt} timeLimitSec={question.timeLimitSec} />
               </div>
-            )}
-            <Button onClick={() => router.push('/')}>Về trang chủ</Button>
-          </div>
+
+              {/* Question text */}
+              <motion.h2
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1, duration: 0.35, ease: [0.32, 0.72, 0, 1] }}
+                className="text-center text-xl font-bold leading-snug"
+              >
+                {question.text}
+              </motion.h2>
+
+              {/* Spectator or Answer area */}
+              {isEliminated ? (
+                <SpectatorView
+                  survivors={spectatorSurvivors}
+                  eliminatedCount={spectatorEliminatedCount}
+                  question={question}
+                  allPlayers={allPlayers}
+                />
+              ) : selected === null ? (
+                <motion.div
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.18, duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
+                >
+                  <AnswerGrid answers={question.answers} mode="play" selected={selected} onPick={pick} />
+                </motion.div>
+              ) : (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.92 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.35, ease: [0.32, 0.72, 0, 1] }}
+                  className="flex flex-col items-center gap-4 py-8 text-center"
+                >
+                  <div className="relative">
+                    <CheckCircle2 className="size-16 text-[var(--cyan-accent)] animate-correct-flash" />
+                    <div className="absolute inset-0 rounded-full bg-[var(--cyan-accent)]/10 animate-ping" style={{ animationDuration: '1.2s' }} />
+                  </div>
+                  <p className="text-xl font-bold text-[var(--cyan-accent)] neon-text-cyan">Đã chọn!</p>
+                  <p className="text-sm text-[var(--muted-foreground)]">Chờ người khác trả lời…</p>
+                </motion.div>
+              )}
+            </motion.div>
+          )}
+
+          {/* ── Result ───────────────────────────────────── */}
+          {status === 'result' && result && (
+            <motion.div
+              key={`result-${result.questionIndex}`}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
+              className="flex flex-col items-center gap-5 text-center"
+            >
+              {result.you?.eliminated ? (
+                /* Eliminated THIS round */
+                <>
+                  <motion.div
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ type: 'spring', stiffness: 350, damping: 22 }}
+                    className="cyber-media-card cyber-media-card-danger px-8 py-6 rounded-2xl flex flex-col items-center gap-3 w-full"
+                  >
+                    <XCircle className="size-16 text-rose-500" />
+                    <p className="text-2xl font-bold uppercase tracking-wider text-rose-400">HỆ THỐNG NGẮT KẾT NỐI</p>
+                    <p className="text-xs text-rose-300/80 uppercase tracking-widest font-bold">Đặc vụ đã bị loại</p>
+                  </motion.div>
+                  <p className="text-sm text-[var(--muted-foreground)] mt-2">
+                    {result.you.answered ? 'Bạn đã trả lời sai.' : 'Hết giờ — bạn chưa trả lời.'}
+                  </p>
+                  <p className="text-xs text-[var(--muted-foreground)] opacity-70 mt-1">
+                    Bạn sẽ tiếp tục theo dõi với tư cách khán giả.
+                  </p>
+
+                  {/* Show remaining players */}
+                  {spectatorSurvivors.length > 0 && (
+                    <div className="w-full mt-3">
+                      <SpectatorView
+                        survivors={spectatorSurvivors}
+                        eliminatedCount={spectatorEliminatedCount}
+                        question={null}
+                        allPlayers={allPlayers}
+                      />
+                    </div>
+                  )}
+                </>
+              ) : isEliminated ? (
+                /* Already eliminated in a previous round */
+                <>
+                  <SpectatorView
+                    survivors={spectatorSurvivors}
+                    eliminatedCount={spectatorEliminatedCount}
+                    question={null}
+                    allPlayers={allPlayers}
+                  />
+                  <p className="text-xs text-[var(--muted-foreground)] mt-2">Chờ host sang câu tiếp…</p>
+                </>
+              ) : (
+                /* Correct! */
+                <>
+                  <motion.div
+                    initial={{ scale: 0.5, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+                  >
+                    <CheckCircle2
+                      className="size-20 text-emerald-400"
+                      style={{ filter: 'drop-shadow(0 0 20px rgba(0,230,118,0.7))' }}
+                    />
+                  </motion.div>
+                  <p className="text-3xl font-bold text-emerald-400 tracking-tight">Chính xác!</p>
+                  <p className="text-sm text-[var(--muted-foreground)]">Bạn tiếp tục vào vòng sau.</p>
+                  <p className="text-xs text-[var(--muted-foreground)] opacity-60">Chờ host sang câu tiếp…</p>
+                </>
+              )}
+            </motion.div>
+          )}
+
+          {/* ── Ended ────────────────────────────────────── */}
+          {status === 'ended' && (
+            <motion.div
+              key="ended"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
+              className="flex flex-col items-center gap-6 text-center"
+            >
+              <p className="text-display text-4xl font-bold neon-text-white">Kết thúc!</p>
+
+              {isSurvivor ? (
+                <motion.div
+                  initial={{ scale: 0.85, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ delay: 0.15, type: 'spring', stiffness: 300, damping: 22 }}
+                  className="hud-frame-quad relative w-full rounded-2xl px-8 py-7"
+                  style={{ background: 'rgba(0,212,255,0.06)' }}
+                >
+                  <span className="hud-corner-tr" aria-hidden />
+                  <span className="hud-corner-bl" aria-hidden />
+                  <Trophy
+                    className="mx-auto mb-3 size-14 text-[var(--cyan-accent)]"
+                    style={{ filter: 'drop-shadow(0 0 20px rgba(0,212,255,0.8))' }}
+                  />
+                  <p className="text-2xl font-bold text-[var(--cyan-accent)] neon-text-cyan">
+                    Bạn đã chiến thắng!
+                  </p>
+                  <p className="mt-2 text-sm text-[var(--muted-foreground)]">
+                    Bạn là người sống sót cuối cùng 🎉
+                  </p>
+                </motion.div>
+              ) : (
+                <motion.div
+                  initial={{ scale: 0.85, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ delay: 0.15, type: 'spring', stiffness: 300, damping: 22 }}
+                  className="w-full rounded-2xl border border-red-500/25 bg-red-500/8 px-8 py-6"
+                >
+                  <Frown className="mx-auto mb-3 size-12 text-red-400" />
+                  <p className="text-2xl font-bold text-red-400">Bạn đã bị loại</p>
+                  {survivors.length > 0 && (
+                    <div className="mt-4 flex flex-wrap justify-center gap-2">
+                      {survivors.map((p) => (
+                        <div key={p.id} className="flex items-center gap-1.5 rounded-full border border-[var(--cyan-accent)]/30 bg-[var(--cyan-accent)]/10 px-3 py-1">
+                          <PlayerAvatar nickname={p.nickname} size="xs" />
+                          <span className="text-xs font-bold text-[var(--cyan-accent)]">{p.nickname}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </motion.div>
+              )}
+
+              <Button onClick={() => router.push('/')}>Về trang chủ</Button>
+            </motion.div>
+          )}
+
+        </AnimatePresence>
         )}
       </main>
     </Backdrop>

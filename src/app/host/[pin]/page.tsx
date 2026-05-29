@@ -1,35 +1,42 @@
 'use client'
 import { use, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Backdrop } from '@/components/game/Backdrop'
 import { Button } from '@/components/ui/button'
 import { Timer } from '@/components/game/Timer'
 import { AnswerGrid } from '@/components/game/AnswerGrid'
-import { Leaderboard } from '@/components/game/Leaderboard'
 import { QrPanel } from '@/components/game/QrPanel'
+import { PlayerStatus } from '@/components/game/Leaderboard'
+import { PlayerAvatar } from '@/components/game/PlayerAvatar'
+import { PoliceEmblem } from '@/components/game/PoliceEmblem'
+import { ChongLuaDaoMark } from '@/components/game/ChongLuaDao'
 import { getSocket } from '@/lib/socket-client'
 import type {
   GameStatus,
   PlayerView,
   PublicQuestion,
   QuestionResult,
-  LeaderboardRow,
 } from '@/types/events'
-import { Play, SkipForward, Square, Users } from 'lucide-react'
+import { Play, SkipForward, Square, Users, ShieldOff, Trophy } from 'lucide-react'
 
 export default function HostRoomPage({ params }: { params: Promise<{ pin: string }> }) {
   const { pin } = use(params)
   const router = useRouter()
+  const [isMounted, setIsMounted] = useState(false)
 
   const [status, setStatus] = useState<GameStatus>('lobby')
   const [players, setPlayers] = useState<PlayerView[]>([])
   const [question, setQuestion] = useState<PublicQuestion | null>(null)
   const [result, setResult] = useState<QuestionResult | null>(null)
-  const [leaderboard, setLeaderboard] = useState<LeaderboardRow[]>([])
+  const [survivors, setSurvivors] = useState<PlayerView[]>([])
+  const [eliminated, setEliminated] = useState<PlayerView[]>([])
   const [joinUrl, setJoinUrl] = useState('')
   const [notFound, setNotFound] = useState(false)
+  const [minPlayersToEnd, setMinPlayersToEnd] = useState(1)
 
   useEffect(() => {
+    setIsMounted(true)
     setJoinUrl(`${window.location.origin}/play?pin=${pin}`)
     const socket = getSocket()
 
@@ -42,11 +49,12 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
         if (res.state) {
           setStatus(res.state.status)
           setPlayers(res.state.players)
+          setMinPlayersToEnd(res.state.minPlayersToEnd)
         }
       })
 
     join()
-    socket.on('connect', join) // re-join on reconnect
+    socket.on('connect', join)
 
     socket.on('lobby:update', (p) => {
       setPlayers(p.players)
@@ -59,11 +67,11 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
     })
     socket.on('question:result', (r) => {
       setResult(r)
-      setLeaderboard(r.leaderboard)
       setStatus('result')
     })
     socket.on('game:over', (o) => {
-      setLeaderboard(o.leaderboard)
+      setSurvivors(o.survivors)
+      setEliminated(o.eliminated)
       setStatus('ended')
     })
 
@@ -76,13 +84,18 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
     }
   }, [pin])
 
+  // Derive active/eliminated from current player list
+  const activePlayers = players.filter((p) => !p.eliminated)
+  const eliminatedPlayers = players.filter((p) => p.eliminated)
   const isLast = question ? question.index >= question.total - 1 : false
 
   if (notFound) {
     return (
       <Backdrop>
         <main className="flex flex-1 flex-col items-center justify-center gap-4">
-          <p className="text-xl">Phòng <span className="pin-display text-accent">{pin}</span> không tồn tại.</p>
+          <p className="text-xl">
+            Phòng <span className="pin-display text-[var(--accent)]">{pin}</span> không tồn tại.
+          </p>
           <Button onClick={() => router.push('/host')}>Tạo phòng mới</Button>
         </main>
       </Backdrop>
@@ -91,101 +104,398 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
 
   return (
     <Backdrop>
-      <header className="relative z-10 flex items-center justify-between border-b border-[var(--header-border)] bg-[var(--navy-panel)] px-6 py-3 backdrop-blur">
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Users className="size-4" /> {players.length} người chơi
-        </div>
-        <div className="text-sm">
-          PIN <span className="pin-display text-lg font-bold text-accent">{pin}</span>
-        </div>
-      </header>
+      {/* ── Header ─────────────────────────────────────── */}
+      {status !== 'lobby' && (
+        <header className="relative z-10 border-b border-[rgba(0,191,255,0.15)] bg-transparent backdrop-blur-sm">
+          {/* Stats row */}
+          <div className="flex items-center justify-between px-6 py-2">
+            <div className="flex items-center gap-4 text-sm">
+              <span className="flex items-center gap-1.5 text-emerald-400 font-semibold">
+                <Users className="size-3.5" />
+                {activePlayers.length} còn lại
+              </span>
+              {eliminatedPlayers.length > 0 && (
+                <span className="flex items-center gap-1.5 text-red-400 text-xs">
+                  <ShieldOff className="size-3.5" />
+                  {eliminatedPlayers.length} bị loại
+                </span>
+              )}
+            </div>
+            <div className="flex flex-col items-center">
+              <span className="text-[9px] uppercase tracking-widest text-[var(--muted-foreground)]">PIN</span>
+              <span className="pin-display text-lg font-bold text-[var(--accent)] neon-text-cyan">{pin}</span>
+            </div>
+            <div className="text-[10px] text-[var(--muted-foreground)]">
+              Kết thúc khi ≤{minPlayersToEnd}
+            </div>
+          </div>
+        </header>
+      )}
 
       <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-6 px-6 py-8">
-        {status === 'lobby' && (
+        {!isMounted ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-8">
-            <div className="flex flex-col items-center gap-2">
-              <p className="text-sm uppercase tracking-widest text-muted-foreground">Vào chơi tại</p>
-              <p className="text-display text-2xl font-bold">{joinUrl.replace(/^https?:\/\//, '')}</p>
-              <div className="mt-2 flex flex-col items-center">
-                <span className="text-xs uppercase tracking-widest text-muted-foreground">Game PIN</span>
-                <span className="pin-display text-7xl font-bold text-accent neon-text-cyan">{pin}</span>
+            {/* Brand Grid in Lobby Center (the 2 logos together!) */}
+            <div className="grid grid-cols-3 grid-rows-2 gap-x-4 gap-y-0.5 w-max mx-auto items-center mb-4">
+              {/* Police Logo taking 2x2 on the left (col-span-2 row-span-2) */}
+              <div className="col-span-2 row-span-2 flex items-center gap-3.5 pr-5 border-r border-[rgba(0,212,255,0.15)]">
+                <PoliceEmblem
+                  className="h-16 w-16 shrink-0"
+                  style={{ filter: 'drop-shadow(0 0 10px rgba(200,150,12,0.55))' }}
+                />
+                <div className="flex flex-col justify-center leading-tight">
+                  <span className="text-sm font-bold uppercase tracking-[0.18em] text-[var(--foreground)]">CỤC AN NINH MẠNG</span>
+                  <span className="text-[9.5px] uppercase tracking-[0.12em] text-[var(--muted-foreground)] opacity-85">BỘ CÔNG AN</span>
+                </div>
+              </div>
+
+              {/* "phối hợp" taking 1 square top right (col-start-3 row-start-1) */}
+              <div className="col-start-3 row-start-1 flex justify-start items-end pl-2">
+                <span className="text-[8px] uppercase tracking-[0.2em] text-[var(--muted-foreground)] opacity-70">phối hợp</span>
+              </div>
+
+              {/* "Chống Lừa Đảo" taking 1 square bottom right (col-start-3 row-start-2) */}
+              <div className="col-start-3 row-start-2 flex items-center gap-2 pl-2">
+                <ChongLuaDaoMark className="h-6 w-6 opacity-90" />
+                <span className="text-[10px] font-bold tracking-widest text-[#22b36c]">CHỐNG LỪA ĐẢO</span>
               </div>
             </div>
-            {joinUrl && <QrPanel joinUrl={joinUrl} />}
-            <a
-              href={`/lobby?pin=${pin}`}
-              target="_blank"
-              rel="noreferrer"
-              className="text-xs uppercase tracking-widest text-muted-foreground underline-offset-4 hover:text-accent hover:underline"
-            >
-              Mở màn hình chờ (projector) →
-            </a>
-            <div className="flex w-full max-w-xl flex-wrap justify-center gap-2">
-              {players.length === 0 && (
-                <p className="text-muted-foreground">Đang chờ người chơi tham gia...</p>
-              )}
-              {players.map((p) => (
-                <span
-                  key={p.id}
-                  className="rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-sm font-semibold"
-                >
-                  {p.nickname}
-                </span>
-              ))}
-            </div>
-            <Button
-              size="xl"
-              onClick={() => getSocket().emit('host:start', { pin })}
-              disabled={players.length === 0}
-              className="gap-2"
-            >
-              <Play className="size-6" /> Bắt đầu
-            </Button>
-          </div>
-        )}
 
-        {status === 'question' && question && (
-          <div className="flex flex-1 flex-col gap-6">
-            <div className="flex items-center justify-between">
-              <span className="q-counter text-sm font-mono text-muted-foreground">
-                Câu {question.index + 1} / {question.total}
-              </span>
-              <Timer endsAt={question.endsAt} timeLimitSec={question.timeLimitSec} />
+            <div className="flex flex-col items-center gap-2">
+              <p className="text-xs uppercase tracking-widest text-[var(--muted-foreground)]">Vào chơi tại</p>
+              <p className="text-display text-2xl font-bold text-center">
+                {joinUrl.replace(/^https?:\/\//, '') || 'localhost:3000/play'}
+              </p>
+              <div className="mt-2 flex flex-col items-center">
+                <span className="text-xs uppercase tracking-widest text-[var(--muted-foreground)]">Game PIN</span>
+                <span className="pin-display text-7xl font-bold text-[var(--accent)] neon-text-cyan">{pin}</span>
+              </div>
             </div>
-            <h2 className="text-display text-center text-3xl font-bold sm:text-4xl">{question.text}</h2>
-            <AnswerGrid answers={question.answers} mode="play" disabled />
-            <p className="text-center text-sm text-muted-foreground">Người chơi đang trả lời trên thiết bị của họ…</p>
+            <p className="text-sm text-[var(--muted-foreground)]">Đang kết nối server bảo mật…</p>
           </div>
-        )}
+        ) : (
+          <AnimatePresence mode="wait">
 
-        {status === 'result' && result && question && (
-          <div className="flex flex-1 flex-col gap-6">
-            <h2 className="text-display text-center text-2xl font-bold">{question.text}</h2>
-            <AnswerGrid
-              answers={question.answers}
-              mode="reveal"
-              correctId={result.correctAnswerId}
-              counts={result.counts}
-            />
-            <h3 className="mt-2 text-center text-lg font-bold text-accent">Bảng xếp hạng</h3>
-            <Leaderboard rows={leaderboard} />
-            <div className="flex justify-center">
-              <Button size="xl" onClick={() => getSocket().emit('host:next', { pin })} className="gap-2">
-                {isLast ? <Square className="size-5" /> : <SkipForward className="size-5" />}
-                {isLast ? 'Kết thúc' : 'Câu tiếp theo'}
+          {/* ── Lobby ──────────────────────────────────── */}
+          {status === 'lobby' && (
+            <motion.div
+              key="lobby"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
+              className="flex flex-1 flex-col items-center justify-center gap-8"
+            >
+              {/* Brand Grid in Lobby Center (the 2 logos together!) */}
+              <div className="grid grid-cols-3 grid-rows-2 gap-x-4 gap-y-0.5 w-max mx-auto items-center mb-4">
+                {/* Police Logo taking 2x2 on the left (col-span-2 row-span-2) */}
+                <div className="col-span-2 row-span-2 flex items-center gap-3.5 pr-5 border-r border-[rgba(0,212,255,0.15)]">
+                  <PoliceEmblem
+                    className="h-16 w-16 shrink-0"
+                    style={{ filter: 'drop-shadow(0 0 10px rgba(200,150,12,0.55))' }}
+                  />
+                  <div className="flex flex-col justify-center leading-tight">
+                    <span className="text-sm font-bold uppercase tracking-[0.18em] text-[var(--foreground)]">CỤC AN NINH MẠNG</span>
+                    <span className="text-[9.5px] uppercase tracking-[0.12em] text-[var(--muted-foreground)] opacity-85">BỘ CÔNG AN</span>
+                  </div>
+                </div>
+
+                {/* "phối hợp" taking 1 square top right (col-start-3 row-start-1) */}
+                <div className="col-start-3 row-start-1 flex justify-start items-end pl-2">
+                  <span className="text-[8px] uppercase tracking-[0.2em] text-[var(--muted-foreground)] opacity-70">phối hợp</span>
+                </div>
+
+                {/* "Chống Lừa Đảo" taking 1 square bottom right (col-start-3 row-start-2) */}
+                <div className="col-start-3 row-start-2 flex items-center gap-2 pl-2">
+                  <ChongLuaDaoMark className="h-6 w-6 opacity-90" />
+                  <span className="text-[10px] font-bold tracking-widest text-[#22b36c]">CHỐNG LỪA ĐẢO</span>
+                </div>
+              </div>
+
+              <div className="flex flex-col items-center gap-2">
+                <p className="text-xs uppercase tracking-widest text-[var(--muted-foreground)]">Vào chơi tại</p>
+                <p className="text-display text-2xl font-bold">
+                  {joinUrl.replace(/^https?:\/\//, '')}
+                </p>
+                <div className="mt-2 flex flex-col items-center">
+                  <span className="text-xs uppercase tracking-widest text-[var(--muted-foreground)]">Game PIN</span>
+                  <span className="pin-display text-7xl font-bold text-[var(--accent)] neon-text-cyan">{pin}</span>
+                </div>
+              </div>
+
+              {joinUrl && <QrPanel joinUrl={joinUrl} />}
+
+              <a
+                href={`/lobby?pin=${pin}`}
+                target="_blank"
+                rel="noreferrer"
+                className="text-xs uppercase tracking-widest text-[var(--muted-foreground)] underline-offset-4 hover:text-[var(--accent)] hover:underline transition-colors"
+              >
+                Mở màn hình chờ (projector) →
+              </a>
+
+              {/* Player grid */}
+              <div className="w-full max-w-2xl">
+                {players.length === 0 ? (
+                  <p className="text-center text-[var(--muted-foreground)]">Đang chờ người chơi tham gia...</p>
+                ) : (
+                  <div className="grid grid-cols-4 gap-2 sm:grid-cols-6 md:grid-cols-8">
+                    <AnimatePresence>
+                      {players.map((p, i) => (
+                        <motion.div
+                          key={p.id}
+                          initial={{ opacity: 0, scale: 0.7 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ type: 'spring', stiffness: 400, damping: 28, delay: i * 0.02 }}
+                          className="flex flex-col items-center gap-1.5 rounded-xl border border-[rgba(0,212,255,0.15)] bg-[rgba(6,24,48,0.8)] px-2 py-3"
+                        >
+                          <PlayerAvatar nickname={p.nickname} size="sm" pulse />
+                          <span className="w-full truncate text-center text-[10px] font-semibold">{p.nickname}</span>
+                        </motion.div>
+                      ))}
+                    </AnimatePresence>
+                  </div>
+                )}
+              </div>
+
+              <Button
+                size="xl"
+                onClick={() => getSocket().emit('host:start', { pin })}
+                disabled={players.length === 0}
+                className="gap-2"
+              >
+                <Play className="size-6" /> Bắt đầu
               </Button>
-            </div>
-          </div>
-        )}
+            </motion.div>
+          )}
 
-        {status === 'ended' && (
-          <div className="flex flex-1 flex-col items-center justify-center gap-6">
-            <h2 className="text-display text-4xl font-bold neon-text-white">🏆 Kết quả cuối</h2>
-            <div className="w-full max-w-xl">
-              <Leaderboard rows={leaderboard} max={10} />
-            </div>
-            <Button size="lg" onClick={() => router.push('/host')}>Tạo phòng mới</Button>
-          </div>
+          {/* ── Question ───────────────────────────────── */}
+          {status === 'question' && question && (
+            <motion.div
+              key={`q-${question.index}`}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
+              className="flex flex-1 flex-col gap-6"
+            >
+              {/* Question header — no progress dots (open-ended game) */}
+              <div className="flex items-center justify-between gap-4">
+                <span className="q-counter rounded-full border border-[rgba(0,212,255,0.2)] bg-[rgba(0,212,255,0.06)] px-3 py-1 text-xs font-mono font-semibold text-[var(--muted-foreground)]">
+                  Câu {question.index + 1}
+                </span>
+                <Timer endsAt={question.endsAt} timeLimitSec={question.timeLimitSec} />
+              </div>
+
+              <h2 className="text-display text-center text-3xl font-bold sm:text-4xl">{question.text}</h2>
+              <AnswerGrid answers={question.answers} mode="play" disabled />
+
+              {/* Live player status */}
+              <div className="flex justify-center gap-6 text-sm">
+                <span className="text-emerald-400 font-semibold">
+                  {activePlayers.length} người đang trả lời
+                </span>
+                {eliminatedPlayers.length > 0 && (
+                  <span className="text-red-400">
+                    {eliminatedPlayers.length} đang xem
+                  </span>
+                )}
+              </div>
+
+              {/* Compact player grid */}
+              <PlayerStatus players={players} />
+            </motion.div>
+          )}
+
+          {/* ── Result ─────────────────────────────────── */}
+          {status === 'result' && result && question && (
+            <motion.div
+              key={`result-${result.questionIndex}`}
+              initial={{ opacity: 0, scale: 0.97 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.45, ease: [0.32, 0.72, 0, 1] }}
+              className="flex flex-1 flex-col gap-6"
+            >
+              <h2 className="text-display text-center text-2xl font-bold">{question.text}</h2>
+
+              <AnswerGrid
+                answers={question.answers}
+                mode="reveal"
+                correctId={result.correctAnswerId}
+                counts={result.counts}
+              />
+
+              {/* Two-column: eliminated | survivors */}
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                {/* Eliminated this round */}
+                {result.eliminatedIds.length > 0 && (
+                  <motion.div
+                    initial={{ opacity: 0, x: -16 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.15, duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
+                    className="rounded-xl border border-red-500/30 bg-red-500/8 px-5 py-4"
+                  >
+                    <p className="mb-3 text-sm font-bold text-red-400 flex items-center gap-1.5">
+                      <ShieldOff className="size-4" />
+                      Bị loại vòng này ({result.eliminatedIds.length})
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {result.eliminatedIds.map((id) => {
+                        const p = players.find((pl) => pl.id === id)
+                        return p ? (
+                          <motion.div
+                            key={id}
+                            initial={{ scale: 0.8, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            transition={{ type: 'spring', stiffness: 350, damping: 25 }}
+                            className="flex items-center gap-1.5 rounded-full bg-red-500/15 px-3 py-1"
+                          >
+                            <PlayerAvatar nickname={p.nickname} size="xs" eliminated />
+                            <span className="text-sm text-red-300">{p.nickname}</span>
+                          </motion.div>
+                        ) : null
+                      })}
+                    </div>
+                  </motion.div>
+                )}
+
+                {/* Active survivors */}
+                <motion.div
+                  initial={{ opacity: 0, x: 16 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.2, duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
+                  className="rounded-xl border border-emerald-500/30 bg-emerald-500/8 px-5 py-4"
+                >
+                  <p className="mb-3 text-sm font-bold text-emerald-400 flex items-center gap-1.5">
+                    <span className="size-1.5 rounded-full bg-emerald-400 animate-pulse inline-block" />
+                    Còn lại ({activePlayers.length})
+                  </p>
+                  <div className="grid grid-cols-4 gap-2 sm:grid-cols-5">
+                    {activePlayers.map((p, i) => (
+                      <motion.div
+                        key={p.id}
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ delay: i * 0.03, type: 'spring', stiffness: 380, damping: 28 }}
+                        className="flex flex-col items-center gap-1 rounded-lg border border-emerald-500/20 bg-emerald-500/5 px-1.5 py-2"
+                      >
+                        <PlayerAvatar nickname={p.nickname} size="xs" pulse />
+                        <span className="w-full truncate text-center text-[10px] font-semibold text-emerald-300">
+                          {p.nickname}
+                        </span>
+                      </motion.div>
+                    ))}
+                    {activePlayers.length === 0 && (
+                      <span className="col-span-full text-sm text-[var(--muted-foreground)]">
+                        Tất cả đã bị loại!
+                      </span>
+                    )}
+                  </div>
+                </motion.div>
+              </div>
+
+              <div className="flex justify-center">
+                <Button
+                  size="xl"
+                  onClick={() => getSocket().emit('host:next', { pin })}
+                  className="gap-2"
+                >
+                  {isLast ? <Square className="size-5" /> : <SkipForward className="size-5" />}
+                  {isLast ? 'Kết thúc' : 'Câu tiếp theo'}
+                </Button>
+              </div>
+            </motion.div>
+          )}
+
+          {/* ── Ended ──────────────────────────────────── */}
+          {status === 'ended' && (
+            <motion.div
+              key="ended"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
+              className="flex flex-1 flex-col items-center justify-center gap-8"
+            >
+              <Trophy
+                className="size-16 text-[var(--cyan-accent)]"
+                style={{ filter: 'drop-shadow(0 0 24px rgba(0,212,255,0.9))' }}
+              />
+              <h2 className="text-display text-4xl font-bold neon-text-white">Kết quả cuối</h2>
+
+              <div className="flex w-full max-w-3xl flex-col gap-4">
+                {/* Winners */}
+                {survivors.length > 0 && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1, duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
+                    className="hud-frame-quad relative rounded-2xl px-6 py-6"
+                    style={{ background: 'rgba(0,212,255,0.05)' }}
+                  >
+                    <span className="hud-corner-tr" aria-hidden />
+                    <span className="hud-corner-bl" aria-hidden />
+                    <p className="mb-4 text-lg font-bold text-[var(--accent)] flex items-center gap-2">
+                      <Trophy className="size-5" />
+                      Người chiến thắng ({survivors.length})
+                    </p>
+                    <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-6">
+                      {survivors.map((p, i) => (
+                        <motion.div
+                          key={p.id}
+                          initial={{ scale: 0.7, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          transition={{ delay: 0.15 + i * 0.06, type: 'spring', stiffness: 350, damping: 24 }}
+                          className="flex flex-col items-center gap-2 rounded-xl border border-[var(--accent)]/25 bg-[var(--accent)]/8 px-2 py-3"
+                        >
+                          <PlayerAvatar nickname={p.nickname} size="md" pulse />
+                          <span className="w-full truncate text-center text-xs font-bold text-[var(--accent)]">
+                            {p.nickname}
+                          </span>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+
+                {survivors.length === 0 && (
+                  <div className="rounded-xl border border-orange-500/40 bg-orange-500/8 px-6 py-5 text-center">
+                    <p className="text-lg font-bold text-orange-400">Không có người chiến thắng</p>
+                    <p className="text-sm text-[var(--muted-foreground)]">Tất cả đã bị loại!</p>
+                  </div>
+                )}
+
+                {/* Eliminated list (compact) */}
+                {eliminated.length > 0 && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.35 }}
+                    className="rounded-xl border border-red-500/15 bg-red-500/5 px-6 py-5"
+                  >
+                    <p className="mb-3 text-sm font-bold text-red-400">
+                      Đã bị loại ({eliminated.length})
+                    </p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {eliminated.map((p) => (
+                        <div
+                          key={p.id}
+                          className="flex items-center gap-1.5 rounded-full border border-red-500/20 bg-red-500/8 px-2.5 py-1"
+                        >
+                          <PlayerAvatar nickname={p.nickname} size="xs" eliminated />
+                          <span className="text-xs font-medium text-red-300/70">{p.nickname}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </div>
+
+              <Button size="lg" onClick={() => router.push('/host')}>Tạo phòng mới</Button>
+            </motion.div>
+          )}
+
+        </AnimatePresence>
         )}
       </main>
     </Backdrop>

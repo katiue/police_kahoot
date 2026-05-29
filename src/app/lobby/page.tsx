@@ -15,12 +15,50 @@ const MARQUEE_ITEMS = [
   'CYBER AWARENESS',
 ]
 
+function FadeIn({
+  children,
+  className,
+  delay = 0,
+  y = 0,
+  scale = 1,
+  transition,
+  isMounted,
+}: {
+  children: React.ReactNode
+  className?: string
+  delay?: number
+  y?: number
+  scale?: number
+  transition?: any
+  isMounted: boolean
+}) {
+  if (!isMounted) {
+    return (
+      <div className={className} style={{ opacity: 1, transform: 'none' }}>
+        {children}
+      </div>
+    )
+  }
+  return (
+    <motion.div
+      initial={{ opacity: 0, y, scale }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={transition || { delay, duration: 0.5, ease: [0.32, 0.72, 0, 1] }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  )
+}
+
 function LobbyView() {
   const search = useSearchParams()
   const pin = (search.get('pin') || '').replace(/\D/g, '').slice(0, 6)
   const [joinUrl, setJoinUrl] = useState('')
+  const [isMounted, setIsMounted] = useState(false)
 
   useEffect(() => {
+    setIsMounted(true)
     if (pin) setJoinUrl(`${window.location.origin}/play?pin=${pin}`)
   }, [pin])
 
@@ -31,7 +69,7 @@ function LobbyView() {
       <div className="grid-bg pointer-events-none absolute inset-0 z-0 opacity-80" />
 
       {/* top bar */}
-      <header className="relative z-10 border-b border-[var(--header-border)] bg-[var(--navy-panel)] backdrop-blur">
+      <header className="relative z-10 border-b border-[rgba(0,191,255,0.15)] bg-transparent backdrop-blur-sm">
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-8 py-4">
           <div className="flex items-center gap-3">
             <ShieldCheck className="size-7 text-accent" />
@@ -56,7 +94,7 @@ function LobbyView() {
       {/* hero */}
       <section className="relative z-10 flex flex-1 flex-col overflow-hidden">
         {/* floating particles */}
-        {Array.from({ length: 22 }).map((_, i) => (
+        {isMounted && Array.from({ length: 22 }).map((_, i) => (
           <motion.div
             key={i}
             className={`pointer-events-none absolute rounded-full ${i % 4 === 0 ? 'bg-accent' : 'bg-primary'}`}
@@ -73,9 +111,9 @@ function LobbyView() {
         ))}
 
         <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-8 text-center">
-          <motion.div
-            initial={{ scale: 0.85, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
+          <FadeIn
+            isMounted={isMounted}
+            scale={0.85}
             transition={{ type: 'spring', stiffness: 220, delay: 0.1 }}
             className="flex flex-col items-center"
           >
@@ -98,27 +136,27 @@ function LobbyView() {
               <br className="hidden md:block" />
               <span className="font-semibold text-foreground">Quét QR · nhập PIN · trả lời nhanh ăn điểm cao.</span>
             </p>
-          </motion.div>
+          </FadeIn>
 
           {/* PIN block (only with ?pin) */}
           {pin && (
-            <motion.div
+            <FadeIn
+              isMounted={isMounted}
+              y={20}
+              delay={0.5}
               className="mt-10 flex flex-col items-center gap-1"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
             >
               <span className="text-xs uppercase tracking-[0.3em] text-muted-foreground">Game PIN</span>
               <span className="pin-display text-7xl font-bold text-accent neon-text-cyan">{pin}</span>
-            </motion.div>
+            </FadeIn>
           )}
 
           {/* standby badge */}
-          <motion.div
+          <FadeIn
+            isMounted={isMounted}
+            y={20}
+            delay={0.6}
             className="mt-10 flex flex-col items-center gap-4"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
           >
             <div className="animate-pulse-glow inline-flex items-center gap-2.5 rounded-sm border border-accent/40 bg-accent/5 px-5 py-2">
               <motion.span
@@ -129,24 +167,24 @@ function LobbyView() {
               <span className="text-[11px] font-semibold uppercase tracking-[0.3em] text-accent">Standing By</span>
             </div>
             <p className="text-sm tracking-wide text-muted-foreground">Chờ host bắt đầu trận đấu…</p>
-          </motion.div>
+          </FadeIn>
         </div>
 
         {/* QR bottom-right */}
         {joinUrl && (
-          <motion.div
+          <FadeIn
+            isMounted={isMounted}
+            y={20}
+            delay={1}
             className="absolute bottom-20 right-6 z-20 w-fit"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1 }}
           >
             <QrPanel joinUrl={joinUrl} size={130} />
-          </motion.div>
+          </FadeIn>
         )}
       </section>
 
       {/* footer marquee */}
-      <footer className="relative z-10 border-t border-[var(--header-border)] bg-[var(--navy-panel)] backdrop-blur">
+      <footer className="relative z-10 border-t border-[rgba(0,191,255,0.15)] bg-transparent backdrop-blur-sm">
         <div className="relative overflow-hidden py-3">
           <div className="animate-marquee flex w-max gap-8 text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground">
             {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map((item, i) => (

@@ -14,10 +14,10 @@ export function registerSocketHandlers(io: IO): RoomManager {
 
   io.on('connection', (socket: Sock) => {
     // ── Host: create room ──
-    socket.on('host:create', ({ quiz }, ack) => {
+    socket.on('host:create', ({ quiz, minPlayersToEnd }, ack) => {
       try {
         const parsed = parseQuiz(quiz)
-        const pin = manager.createRoom(parsed)
+        const pin = manager.createRoom(parsed, minPlayersToEnd ?? 1)
         ack({ ok: true, pin })
       } catch (e) {
         ack({ ok: false, error: e instanceof Error ? e.message : 'Invalid quiz' })
@@ -36,6 +36,7 @@ export function registerSocketHandlers(io: IO): RoomManager {
         players: manager.playerViews(room),
         questionIndex: room.questionIndex,
         totalQuestions: room.quiz.questions.length,
+        minPlayersToEnd: room.minPlayersToEnd,
       }
       ack({ ok: true, state: snapshot })
     })
@@ -62,7 +63,6 @@ export function registerSocketHandlers(io: IO): RoomManager {
             answers: q.answers.map((a) => ({ id: a.id, text: a.text })),
             timeLimitSec: q.timeLimitSec,
             endsAt: room.questionEndsAt,
-            points: q.points,
           })
         }
       }
@@ -70,7 +70,6 @@ export function registerSocketHandlers(io: IO): RoomManager {
 
     // ── Player: submit answer ──
     socket.on('player:answer', ({ pin, questionIndex, answerId }, ack) => {
-      // find player by socket within room
       const pid = manager.findPlayerIdBySocket(pin, socket.id)
       if (!pid) return ack({ ok: false, error: 'Not in room' })
       const res = manager.submitAnswer(pin, pid, questionIndex, answerId)

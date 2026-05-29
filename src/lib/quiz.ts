@@ -4,21 +4,25 @@ import type { Quiz, QuizQuestion } from '@/types/events'
  * Validate + normalize a parsed JSON object into a Quiz.
  * Throws Error(message) on the first problem so the host sees why a file failed.
  *
- * Accepted shape (lenient):
+ * Accepted shape:
  * {
  *   "title": "string",
  *   "questions": [
  *     {
- *       "id": "q1",                 // optional, auto-generated if missing
+ *       "id": "q1",              // optional, auto-generated if missing
  *       "text": "string",
- *       "timeLimitSec": 20,         // optional, default 20
- *       "points": 1000,             // optional, default 1000
+ *       "correctAnswerId": 1,    // id of the correct answer
  *       "answers": [
- *         { "id": 1, "text": "...", "correct": true }
+ *         { "id": 1, "text": "..." },
+ *         { "id": 2, "text": "..." }
  *       ]
  *     }
  *   ]
  * }
+ *
+ * Notes:
+ * - No "points" or "timeLimitSec" in JSON — server uses defaults (20s per question).
+ * - No per-answer "correct" flag — use correctAnswerId instead.
  */
 export function parseQuiz(raw: unknown): Quiz {
   if (typeof raw !== 'object' || raw === null) {
@@ -50,23 +54,25 @@ export function parseQuiz(raw: unknown): Quiz {
       return {
         id: typeof ao.id === 'number' ? ao.id : ai + 1,
         text: atext,
-        correct: ao.correct === true,
       }
     })
 
-    if (!answers.some((a) => a.correct)) {
-      throw new Error(`Question #${qi + 1} has no correct answer (set "correct": true on one)`)
+    // Validate correctAnswerId
+    const correctAnswerId = qo.correctAnswerId
+    if (typeof correctAnswerId !== 'number') {
+      throw new Error(`Question #${qi + 1} missing "correctAnswerId" (must be a number matching one answer id)`)
     }
-
-    const timeLimitSec =
-      typeof qo.timeLimitSec === 'number' && qo.timeLimitSec > 0 ? Math.round(qo.timeLimitSec) : 20
-    const points = typeof qo.points === 'number' && qo.points > 0 ? Math.round(qo.points) : 1000
+    if (!answers.some((a) => a.id === correctAnswerId)) {
+      throw new Error(
+        `Question #${qi + 1} "correctAnswerId" (${correctAnswerId}) does not match any answer id`
+      )
+    }
 
     return {
       id: typeof qo.id === 'string' ? qo.id : `q${qi + 1}`,
       text,
-      timeLimitSec,
-      points,
+      timeLimitSec: 20, // internal default — not read from JSON
+      correctAnswerId,
       answers,
     }
   })

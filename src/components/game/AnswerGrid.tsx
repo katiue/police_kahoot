@@ -1,7 +1,7 @@
 'use client'
 import { cn } from '@/lib/utils'
 import { Triangle, Diamond, Circle, Square } from 'lucide-react'
-import type { PublicAnswer } from '@/types/events'
+import type { QuizAnswer } from '@/types/events'
 
 const TILE = [
   { bg: 'var(--opt-red)', Icon: Triangle },
@@ -15,7 +15,7 @@ const TILE = [
 ]
 
 /**
- * 2-column answer tiles (Kahoot-style shapes + colors).
+ * 2-column answer tiles.
  * Modes:
  *  - play:   clickable, highlights `selected`, locks after answer
  *  - reveal: shows correct/wrong + counts (host & post-answer player)
@@ -29,7 +29,7 @@ export function AnswerGrid({
   disabled,
   onPick,
 }: {
-  answers: PublicAnswer[]
+  answers: QuizAnswer[]
   mode: 'play' | 'reveal'
   selected?: number | null
   correctId?: number

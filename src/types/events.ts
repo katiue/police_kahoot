@@ -5,17 +5,22 @@
 
 export type GameStatus = 'lobby' | 'question' | 'result' | 'ended'
 
-/** Quiz as loaded from JSON (correct answers known only server-side). */
+/**
+ * Quiz as loaded from JSON.
+ * - correctAnswerId: the id of the correct answer (replaces per-answer `correct` flag)
+ * - timeLimitSec / points are NOT in the JSON — server uses internal defaults
+ */
 export interface QuizAnswer {
   id: number
   text: string
-  correct: boolean
 }
 export interface QuizQuestion {
   id: string
   text: string
+  /** Internal default: 20s — not exposed in quiz JSON */
   timeLimitSec: number
-  points: number
+  /** Which answer id is correct */
+  correctAnswerId: number
   answers: QuizAnswer[]
 }
 export interface Quiz {
@@ -23,37 +28,22 @@ export interface Quiz {
   questions: QuizQuestion[]
 }
 
-/** Answer option sent to clients — NO `correct` flag (anti-cheat). */
-export interface PublicAnswer {
-  id: number
-  text: string
-}
-
-/** Sanitized question pushed to players during play. */
+/** Sanitized question pushed to players during play — no correct answer revealed. */
 export interface PublicQuestion {
   index: number
   total: number
   text: string
-  answers: PublicAnswer[]
+  answers: QuizAnswer[]
   timeLimitSec: number
   /** Absolute server time (epoch ms) when the question closes. */
   endsAt: number
-  points: number
 }
 
 export interface PlayerView {
   id: string
   nickname: string
-  score: number
   connected: boolean
-}
-
-export interface LeaderboardRow {
-  playerId: string
-  nickname: string
-  score: number
-  lastGain: number
-  rank: number
+  eliminated: boolean
 }
 
 export interface QuestionResult {
@@ -61,15 +51,16 @@ export interface QuestionResult {
   correctAnswerId: number
   /** answerId -> count of players who picked it */
   counts: Record<number, number>
-  leaderboard: LeaderboardRow[]
+  /** Ids of players eliminated this round */
+  eliminatedIds: string[]
   /** Per-recipient personal result (filled before emit to each socket). */
-  you?: { answered: boolean; correct: boolean; gained: number }
+  you?: { answered: boolean; correct: boolean; eliminated: boolean }
 }
 
 // ── Client → Server events ──────────────────────────────────────
 export interface ClientToServerEvents {
   'host:create': (
-    payload: { quiz: Quiz },
+    payload: { quiz: Quiz; minPlayersToEnd?: number },
     ack: (res: { ok: boolean; pin?: string; error?: string }) => void
   ) => void
   'host:join': (
@@ -95,9 +86,9 @@ export interface ServerToClientEvents {
   'lobby:update': (payload: { players: PlayerView[]; status: GameStatus }) => void
   'game:question': (payload: PublicQuestion) => void
   'question:result': (payload: QuestionResult) => void
-  'leaderboard:update': (payload: { leaderboard: LeaderboardRow[] }) => void
-  'game:over': (payload: { leaderboard: LeaderboardRow[] }) => void
+  'game:over': (payload: { survivors: PlayerView[]; eliminated: PlayerView[] }) => void
   'answer:ack': (payload: { questionIndex: number; received: boolean }) => void
+  'player:eliminated': (payload: { reason: 'wrong' | 'timeout' }) => void
   'error:msg': (payload: { message: string }) => void
 }
 
@@ -109,4 +100,5 @@ export interface HostSnapshot {
   players: PlayerView[]
   questionIndex: number
   totalQuestions: number
+  minPlayersToEnd: number
 }

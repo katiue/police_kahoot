@@ -5,27 +5,25 @@ import type {
   Quiz,
   GameStatus,
   PlayerView,
-  LeaderboardRow,
   PublicQuestion,
   QuestionResult,
 } from '@/types/events'
-import { computeScore } from '@/lib/scoring'
 
 type IO = Server<ClientToServerEvents, ServerToClientEvents>
+
+/** Internal default question time limit (seconds). Not exposed in quiz JSON. */
+const DEFAULT_TIME_LIMIT_SEC = 20
 
 interface Player {
   id: string
   nickname: string
   socketId: string | null
-  score: number
-  lastGain: number
   connected: boolean
+  eliminated: boolean
 }
 
 interface Response {
   answerId: number
-  /** server-measured response time in ms */
-  responseMs: number
   correct: boolean
 }
 
@@ -42,6 +40,11 @@ interface Room {
   timer: NodeJS.Timeout | null
   hostSocketId: string | null
   createdAt: number
+  /**
+   * Game ends when active (non-eliminated) players count is <= this value.
+   * Default 1 = last player standing wins.
+   */
+  minPlayersToEnd: number
 }
 
 function genPin(existing: Set<string>): string {
@@ -61,7 +64,7 @@ export class RoomManager {
   constructor(private io: IO) {}
 
   // ── lifecycle ────────────────────────────────────────────────
-  createRoom(quiz: Quiz): string {
+  createRoom(quiz: Quiz, minPlayersToEnd = 1): string {
     const pin = genPin(new Set(this.rooms.keys()))
     this.rooms.set(pin, {
       pin,
@@ -75,6 +78,7 @@ export class RoomManager {
       timer: null,
       hostSocketId: null,
       createdAt: Date.now(),
+      minPlayersToEnd: Math.max(1, Math.round(minPlayersToEnd)),
     })
     return pin
   }
@@ -135,9 +139,8 @@ export class RoomManager {
       id,
       nickname: clean,
       socketId,
-      score: 0,
-      lastGain: 0,
       connected: true,
+      eliminated: false,
     })
     this.broadcastLobby(room)
     return { ok: true, playerId: id }
@@ -168,6 +171,13 @@ export class RoomManager {
     const room = this.rooms.get(pin)
     if (!room) return
     if (room.status !== 'result') return
+
+    // Check if threshold already met before moving on
+    if (this.shouldEndGame(room)) {
+      this.endGame(room)
+      return
+    }
+
     const next = room.questionIndex + 1
     if (next >= room.quiz.questions.length) {
       this.endGame(room)
@@ -181,7 +191,8 @@ export class RoomManager {
     if (!room) return
     this.clearTimer(room)
     room.status = 'ended'
-    this.io.to(room.pin).emit('game:over', { leaderboard: this.leaderboard(room) })
+    const { survivors, eliminated } = this.getPlayerSummary(room)
+    this.io.to(room.pin).emit('game:over', { survivors, eliminated })
   }
 
   submitAnswer(
@@ -194,8 +205,11 @@ export class RoomManager {
     if (!room) return { ok: false, error: 'Room not found' }
     if (room.status !== 'question') return { ok: false, error: 'No active question' }
     if (questionIndex !== room.questionIndex) return { ok: false, error: 'Stale question' }
+
     const player = room.players.get(playerId)
     if (!player) return { ok: false, error: 'Unknown player' }
+    // Eliminated players (spectators) cannot answer
+    if (player.eliminated) return { ok: false, error: 'You have been eliminated' }
     if (room.responses.has(playerId)) return { ok: false, error: 'Already answered' }
 
     const now = Date.now()
@@ -205,21 +219,14 @@ export class RoomManager {
     const chosen = q.answers.find((a) => a.id === answerId)
     if (!chosen) return { ok: false, error: 'Invalid answer' }
 
-    const responseMs = now - room.questionStartedAt
-    const correct = chosen.correct
-    const gained = computeScore({
-      correct,
-      basePoints: q.points,
-      responseMs,
-      timeLimitMs: q.timeLimitSec * 1000,
-    })
-    player.score += gained
-    player.lastGain = gained
-    room.responses.set(playerId, { answerId, responseMs, correct })
+    const correct = chosen.id === q.correctAnswerId
+    room.responses.set(playerId, { answerId, correct })
 
-    // close early if every connected player has answered
-    const connectedCount = [...room.players.values()].filter((p) => p.connected).length
-    if (room.responses.size >= connectedCount && connectedCount > 0) {
+    // close early if every active (non-eliminated) connected player has answered
+    const activeConnected = [...room.players.values()].filter(
+      (p) => !p.eliminated && p.connected
+    )
+    if (room.responses.size >= activeConnected.length && activeConnected.length > 0) {
       this.closeQuestion(room)
     }
     return { ok: true }
@@ -231,25 +238,24 @@ export class RoomManager {
     room.questionIndex = index
     room.status = 'question'
     room.responses = new Map()
-    for (const p of room.players.values()) p.lastGain = 0
 
     const q = room.quiz.questions[index]
+    const timeLimitSec = q.timeLimitSec ?? DEFAULT_TIME_LIMIT_SEC
     const now = Date.now()
     room.questionStartedAt = now
-    room.questionEndsAt = now + q.timeLimitSec * 1000
+    room.questionEndsAt = now + timeLimitSec * 1000
 
     const payload: PublicQuestion = {
       index,
       total: room.quiz.questions.length,
       text: q.text,
       answers: q.answers.map((a) => ({ id: a.id, text: a.text })),
-      timeLimitSec: q.timeLimitSec,
+      timeLimitSec,
       endsAt: room.questionEndsAt,
-      points: q.points,
     }
     this.io.to(room.pin).emit('game:question', payload)
 
-    room.timer = setTimeout(() => this.closeQuestion(room), q.timeLimitSec * 1000 + 200)
+    room.timer = setTimeout(() => this.closeQuestion(room), timeLimitSec * 1000 + 200)
   }
 
   private closeQuestion(room: Room): void {
@@ -258,20 +264,35 @@ export class RoomManager {
     room.status = 'result'
 
     const q = room.quiz.questions[room.questionIndex]
-    const correctAnswer = q.answers.find((a) => a.correct)!
     const counts: Record<number, number> = {}
     for (const a of q.answers) counts[a.id] = 0
     for (const r of room.responses.values()) counts[r.answerId] = (counts[r.answerId] ?? 0) + 1
 
-    const leaderboard = this.leaderboard(room)
-    const base: QuestionResult = {
-      questionIndex: room.questionIndex,
-      correctAnswerId: correctAnswer.id,
-      counts,
-      leaderboard,
+    // Eliminate players who answered wrong OR didn't answer (timed out)
+    const eliminatedThisRound: string[] = []
+    for (const p of room.players.values()) {
+      if (p.eliminated) continue // already out
+      const r = room.responses.get(p.id)
+      const correct = r?.correct === true
+      if (!correct) {
+        p.eliminated = true
+        eliminatedThisRound.push(p.id)
+        // Notify the eliminated player directly
+        if (p.socketId) {
+          const reason = r ? 'wrong' : 'timeout'
+          this.io.to(p.socketId).emit('player:eliminated', { reason })
+        }
+      }
     }
 
-    // host (and any non-player socket in room) gets the base result
+    const base: QuestionResult = {
+      questionIndex: room.questionIndex,
+      correctAnswerId: q.correctAnswerId,
+      counts,
+      eliminatedIds: eliminatedThisRound,
+    }
+
+    // host gets base result
     if (room.hostSocketId) {
       this.io.to(room.hostSocketId).emit('question:result', base)
     }
@@ -279,11 +300,31 @@ export class RoomManager {
     for (const p of room.players.values()) {
       if (!p.socketId) continue
       const r = room.responses.get(p.id)
+      const wasEliminated = eliminatedThisRound.includes(p.id)
       this.io.to(p.socketId).emit('question:result', {
         ...base,
-        you: { answered: !!r, correct: !!r?.correct, gained: p.lastGain },
+        you: {
+          answered: !!r,
+          correct: r?.correct === true,
+          eliminated: wasEliminated,
+        },
       })
     }
+
+    // Broadcast updated player list (with new eliminated flags)
+    this.broadcastLobby(room)
+
+    // Check if game should auto-end
+    if (this.shouldEndGame(room)) {
+      // Small delay so clients can render the result screen first
+      setTimeout(() => this.endGame(room), 3000)
+    }
+  }
+
+  /** Returns true if the active player count means game should end. */
+  private shouldEndGame(room: Room): boolean {
+    const active = [...room.players.values()].filter((p) => !p.eliminated).length
+    return active <= room.minPlayersToEnd
   }
 
   private clearTimer(room: Room): void {
@@ -293,25 +334,28 @@ export class RoomManager {
     }
   }
 
-  leaderboard(room: Room): LeaderboardRow[] {
-    return [...room.players.values()]
-      .sort((a, b) => b.score - a.score)
-      .map((p, i) => ({
-        playerId: p.id,
-        nickname: p.nickname,
-        score: p.score,
-        lastGain: p.lastGain,
-        rank: i + 1,
-      }))
+  getPlayerSummary(room: Room): { survivors: PlayerView[]; eliminated: PlayerView[] } {
+    const survivors: PlayerView[] = []
+    const eliminated: PlayerView[] = []
+    for (const p of room.players.values()) {
+      const view = this.toPlayerView(p)
+      if (p.eliminated) eliminated.push(view)
+      else survivors.push(view)
+    }
+    return { survivors, eliminated }
+  }
+
+  private toPlayerView(p: Player): PlayerView {
+    return {
+      id: p.id,
+      nickname: p.nickname,
+      connected: p.connected,
+      eliminated: p.eliminated,
+    }
   }
 
   playerViews(room: Room): PlayerView[] {
-    return [...room.players.values()].map((p) => ({
-      id: p.id,
-      nickname: p.nickname,
-      score: p.score,
-      connected: p.connected,
-    }))
+    return [...room.players.values()].map((p) => this.toPlayerView(p))
   }
 
   private broadcastLobby(room: Room): void {

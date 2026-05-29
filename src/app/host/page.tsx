@@ -7,12 +7,13 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { getSocket } from '@/lib/socket-client'
 import { parseQuiz } from '@/lib/quiz'
-import { Upload, FileJson, Rocket } from 'lucide-react'
+import { Upload, FileJson, Rocket, Users } from 'lucide-react'
 
 export default function HostCreatePage() {
   const router = useRouter()
   const [raw, setRaw] = useState('')
   const [busy, setBusy] = useState(false)
+  const [minPlayersToEnd, setMinPlayersToEnd] = useState(1)
 
   function loadFile(file: File) {
     const reader = new FileReader()
@@ -40,7 +41,7 @@ export default function HostCreatePage() {
     }
     setBusy(true)
     const socket = getSocket()
-    socket.emit('host:create', { quiz }, (res) => {
+    socket.emit('host:create', { quiz, minPlayersToEnd }, (res) => {
       setBusy(false)
       if (res.ok && res.pin) {
         router.push(`/host/${res.pin}`)
@@ -56,6 +57,36 @@ export default function HostCreatePage() {
         <h1 className="text-display text-4xl font-bold">
           Tạo <span className="text-accent neon-text-cyan">phòng</span>
         </h1>
+
+        {/* Min players to end setting */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Users className="size-5 text-accent" /> Cài đặt trận đấu
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-3">
+            <label className="flex flex-col gap-1.5">
+              <span className="text-sm font-semibold">
+                Kết thúc khi còn lại&nbsp;
+                <span className="text-accent">{minPlayersToEnd}</span>&nbsp;người chiến thắng
+              </span>
+              <span className="text-xs text-muted-foreground">
+                Trò chơi sẽ tự kết thúc khi số người chơi còn lại ≤ giá trị này (1 = người cuối cùng đứng vững).
+              </span>
+              <input
+                id="min-players"
+                type="number"
+                min={1}
+                max={100}
+                value={minPlayersToEnd}
+                onChange={(e) => setMinPlayersToEnd(Math.max(1, parseInt(e.target.value, 10) || 1))}
+                className="w-28 rounded-lg border border-border bg-input/60 px-3 py-2 text-sm font-mono text-foreground outline-none focus:border-accent/60"
+              />
+            </label>
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -80,7 +111,7 @@ export default function HostCreatePage() {
             <textarea
               value={raw}
               onChange={(e) => setRaw(e.target.value)}
-              placeholder='{ "title": "...", "questions": [ ... ] }'
+              placeholder={'{ "title": "...", "questions": [ { "text": "...", "correctAnswerId": 1, "answers": [...] } ] }'}
               spellCheck={false}
               className="h-56 w-full resize-none rounded-lg border border-border bg-input/60 p-3 font-mono text-xs text-foreground outline-none focus:border-accent/60"
             />
@@ -89,8 +120,10 @@ export default function HostCreatePage() {
             </Button>
           </CardContent>
         </Card>
+
         <p className="text-center text-xs text-muted-foreground">
-          Format: mỗi câu hỏi cần ≥2 đáp án và 1 đáp án <code className="text-accent">&quot;correct&quot;: true</code>.
+          Format: mỗi câu hỏi cần ≥2 đáp án và một trường{' '}
+          <code className="text-accent">&quot;correctAnswerId&quot;</code> trỏ tới id đáp án đúng.
         </p>
       </main>
     </Backdrop>
