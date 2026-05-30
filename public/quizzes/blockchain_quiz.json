@@ -1,0 +1,185 @@
+{
+  "title": "Chống Lừa Đảo - Police Quiz 2026",
+  "questions": [
+    {
+      "id": "q1",
+      "text": "Bạn vừa thực hiện một giao dịch chuyển USDT và muốn gửi thêm cho cùng địa chỉ đó. Bạn mở lịch sử giao dịch trên ví, copy địa chỉ đích và nhấn gửi. Điều gì có thể đã xảy ra?",
+      "correctAnswerId": 2,
+      "difficulty": "easy",
+      "answers": [
+        { "id": 1, "text": "Không có gì nguy hiểm, lịch sử giao dịch luôn chính xác" },
+        { "id": 2, "text": "Kẻ tấn công có thể đã chèn địa chỉ giả vào lịch sử bằng cách gửi giao dịch 0 đồng từ ví giả mạo" },
+        { "id": 3, "text": "Ví của bạn tự động xác minh địa chỉ nên không thể bị nhầm" },
+        { "id": 4, "text": "Chỉ cần kiểm tra 4 ký tự đầu là đủ để xác nhận địa chỉ đúng" }
+      ]
+    },
+    {
+      "id": "q2",
+      "text": "Một dApp airdrop yêu cầu bạn 'ký xác nhận' bằng ví MetaMask để nhận token miễn phí. Giao dịch không tốn phí gas. Bạn nên làm gì?",
+      "correctAnswerId": 3,
+      "difficulty": "easy",
+      "answers": [
+        { "id": 1, "text": "Ký ngay vì không tốn phí gas nên chắc chắn an toàn" },
+        { "id": 2, "text": "Ký thử một lần, nếu mất tiền thì hủy kết nối ví" },
+        { "id": 3, "text": "Dừng lại — chữ ký không tốn gas vẫn có thể cấp quyền rút toàn bộ token qua Permit2" },
+        { "id": 4, "text": "Chỉ nguy hiểm nếu dApp yêu cầu nhập seed phrase" }
+      ]
+    },
+    {
+      "id": "q3",
+      "text": "Bạn nhận được lời mời phỏng vấn từ 'BlockNovas Inc.' trên LinkedIn cho vị trí lập trình viên Web3. Họ yêu cầu bạn clone repo GitHub và chạy bài test kỹ thuật trên máy tính cá nhân. Nguy cơ lớn nhất ở đây là gì?",
+      "correctAnswerId": 1,
+      "difficulty": "medium",
+      "answers": [
+        { "id": 1, "text": "Repo có thể chứa mã độc (ví dụ BeaverTail) tự động đánh cắp khóa ví và thông tin đăng nhập trình duyệt" },
+        { "id": 2, "text": "Công ty muốn đánh cắp ý tưởng code của bạn" },
+        { "id": 3, "text": "Bài test chỉ là chiêu trò để không trả thù lao" },
+        { "id": 4, "text": "Không có rủi ro nào nếu repo được đăng trên GitHub công khai" }
+      ]
+    },
+    {
+      "id": "q4",
+      "text": "Bạn xem một video YouTube thấy Vitalik Buterin đang giới thiệu nền tảng 'Goliath Ventures' với lợi nhuận 30%/tháng, dashboard hiển thị số dư tăng theo thời gian thực. Dấu hiệu lừa đảo rõ ràng nhất là gì?",
+      "correctAnswerId": 4,
+      "difficulty": "easy",
+      "answers": [
+        { "id": 1, "text": "Nền tảng dùng thuật ngữ DeFi phức tạp" },
+        { "id": 2, "text": "Website có giao diện chuyên nghiệp và số liệu cập nhật liên tục" },
+        { "id": 3, "text": "Lợi nhuận được trả bằng token nội bộ" },
+        { "id": 4, "text": "Người nổi tiếng 'xác nhận' qua video — đây là dấu hiệu điển hình của deepfake AI kết hợp HYIP lừa đảo" }
+      ]
+    },
+    {
+      "id": "q5",
+      "text": "Bạn được mời tham gia công việc 'đánh giá ứng dụng' online kiếm thêm thu nhập qua Telegram. Ban đầu bạn nhận hoa hồng nhỏ thật sự. Đến 'nhiệm vụ đặc biệt', họ yêu cầu bạn nạp crypto để hoàn thành task và hứa hoàn tiền kèm thưởng. Đây là loại lừa đảo gì?",
+      "correctAnswerId": 2,
+      "difficulty": "easy",
+      "answers": [
+        { "id": 1, "text": "Mô hình affiliate marketing hợp pháp" },
+        { "id": 2, "text": "Kết hợp pig butchering + Ponzi nhiệm vụ — khoản hoa hồng đầu tạo lòng tin trước khi chiếm đoạt tiền nạp" },
+        { "id": 3, "text": "Sàn giao dịch P2P uy tín cần xác minh tài khoản" },
+        { "id": 4, "text": "Chiến dịch beta testing hợp lệ của dự án game blockchain" }
+      ]
+    },
+    {
+      "id": "q6",
+      "text": "Bạn muốn chuyển 50 ETH đến ví của đối tác. Biện pháp nào dưới đây hiệu quả NHẤT để chống 'address poisoning'?",
+      "correctAnswerId": 3,
+      "difficulty": "medium",
+      "answers": [
+        { "id": 1, "text": "Kiểm tra 4 ký tự đầu và 4 ký tự cuối của địa chỉ" },
+        { "id": 2, "text": "Copy địa chỉ từ tin nhắn Telegram đã xác minh của đối tác" },
+        { "id": 3, "text": "Gửi giao dịch thử nhỏ trước, sau đó xác minh địa chỉ đích qua kênh ngoài băng tần (gọi điện, video call) rồi mới chuyển toàn bộ" },
+        { "id": 4, "text": "Sử dụng địa chỉ từ lịch sử giao dịch thành công gần nhất" }
+      ]
+    },
+    {
+      "id": "q7",
+      "text": "Bạn sử dụng Revoke.cash để kiểm tra và thấy một approval có deadline là timestamp '1714509304969'. Hành động đúng đắn là gì?",
+      "correctAnswerId": 1,
+      "difficulty": "medium",
+      "answers": [
+        { "id": 1, "text": "Thu hồi ngay lập tức — đây là deadline gần như vô tận, nghĩa là hợp đồng có thể rút token bất cứ lúc nào" },
+        { "id": 2, "text": "Không cần lo, deadline dài là tính năng tiện lợi của các protocol lớn" },
+        { "id": 3, "text": "Chỉ thu hồi nếu số tiền approval vượt quá 1000 USD" },
+        { "id": 4, "text": "Chờ xem có giao dịch bất thường xảy ra không rồi mới xử lý" }
+      ]
+    },
+    {
+      "id": "q8",
+      "text": "Một dApp yêu cầu bạn ký thông báo hiển thị dưới dạng chuỗi hex '0x1a2b3c...'. Ví của bạn không hiển thị chi tiết nào khác. Bạn nên làm gì?",
+      "correctAnswerId": 4,
+      "difficulty": "medium",
+      "answers": [
+        { "id": 1, "text": "Ký vì đây chỉ là bước xác thực đăng nhập" },
+        { "id": 2, "text": "Ký nếu dApp có tên miền hợp lệ" },
+        { "id": 3, "text": "Ký miễn là không tốn phí gas" },
+        { "id": 4, "text": "Từ chối tuyệt đối — chữ ký hex mù (eth_sign) có thể được dùng để kiểm soát toàn bộ ví, không thể xác minh nội dung" }
+      ]
+    },
+    {
+      "id": "q9",
+      "text": "Bạn kết nối hardware wallet Ledger với một dApp và xác nhận vật lý trên thiết bị một giao dịch cấp quyền (approval) cho smart contract. Một tuần sau, toàn bộ token trong ví biến mất. Điều gì đã xảy ra?",
+      "correctAnswerId": 2,
+      "difficulty": "hard",
+      "answers": [
+        { "id": 1, "text": "Ledger bị hack từ xa và khóa cá nhân bị đánh cắp" },
+        { "id": 2, "text": "Bạn đã xác nhận một lệnh approval độc hại — hardware wallet bảo vệ khóa nhưng không đánh giá tính an toàn của giao dịch được ký" },
+        { "id": 3, "text": "Đây là lỗi phần mềm của Ledger, không liên quan đến hành động của bạn" },
+        { "id": 4, "text": "Không thể xảy ra nếu dùng hardware wallet — tài sản phải an toàn tuyệt đối" }
+      ]
+    },
+    {
+      "id": "q10",
+      "text": "Để quản lý rủi ro trong Web3, chiến lược 'phân vùng ví' hiệu quả nhất trông như thế nào?",
+      "correctAnswerId": 3,
+      "difficulty": "medium",
+      "answers": [
+        { "id": 1, "text": "Dùng một ví duy nhất cho tất cả mọi hoạt động để dễ quản lý" },
+        { "id": 2, "text": "Dùng hai ví: một cho DeFi, một cho NFT" },
+        { "id": 3, "text": "Hot wallet chỉ chứa lượng nhỏ để tương tác dApp; phần lớn tài sản để trong cold wallet offline không bao giờ kết nối trực tiếp với dApp" },
+        { "id": 4, "text": "Trải đều tài sản vào 5–10 hot wallet khác nhau" }
+      ]
+    },
+    {
+      "id": "q11",
+      "text": "Bạn ký một Permit2 approval trên một dApp. Hai tiếng sau, kiểm tra ví thấy tài sản vẫn nguyên vẹn. Bạn kết luận dApp đó an toàn và tiếp tục dùng. Sai lầm ở đây là gì?",
+      "correctAnswerId": 4,
+      "difficulty": "hard",
+      "answers": [
+        { "id": 1, "text": "Không có sai lầm — tài sản còn nguyên chứng minh dApp an toàn" },
+        { "id": 2, "text": "Chỉ nên chờ 24 giờ thay vì 2 tiếng" },
+        { "id": 3, "text": "Cần kiểm tra lại nếu dApp không có audit report" },
+        { "id": 4, "text": "Kẻ tấn công có thể giữ chữ ký Permit2 hàng tuần hoặc hàng tháng trước khi thực thi — tài sản an toàn ngay lúc đó không có nghĩa là signature vô hại" }
+      ]
+    },
+    {
+      "id": "q12",
+      "text": "Khi một EIP-712 structured message hiện ra trên ví yêu cầu xác nhận, trường nào QUAN TRỌNG NHẤT cần kiểm tra để ngăn chặn tấn công cross-chain replay?",
+      "correctAnswerId": 2,
+      "difficulty": "hard",
+      "answers": [
+        { "id": 1, "text": "Trường 'name' của protocol" },
+        { "id": 2, "text": "Trường 'chainId' — xác định blockchain cụ thể để chữ ký không bị dùng lại trên chain khác" },
+        { "id": 3, "text": "Trường 'version' của protocol" },
+        { "id": 4, "text": "Số lượng token được cấp phép" }
+      ]
+    },
+    {
+      "id": "q13",
+      "text": "Nhiều người trong cộng đồng crypto lo ngại máy tính lượng tử sẽ sớm phá vỡ mã hóa blockchain và đánh cắp tài sản. Thực tế hiện nay là gì?",
+      "correctAnswerId": 1,
+      "difficulty": "medium",
+      "answers": [
+        { "id": 1, "text": "Lượng tử chưa phải mối đe dọa hiện hữu — trên 99% tài sản bị mất là do phishing, lỗ hổng smart contract và social engineering, không phải do phá mã hóa" },
+        { "id": 2, "text": "Máy tính lượng tử hiện tại đã có thể crack khóa cá nhân của Bitcoin" },
+        { "id": 3, "text": "Chỉ có Ethereum dễ bị lượng tử tấn công, Bitcoin thì an toàn" },
+        { "id": 4, "text": "Nên chuyển toàn bộ tài sản sang tiền mặt vì blockchain sắp bị phá vỡ" }
+      ]
+    },
+    {
+      "id": "q14",
+      "text": "Bạn đang phát triển smart contract DeFi và một đội kiểm toán phát hiện hàm withdraw() có thể bị gọi lại trước khi số dư được cập nhật. Đây là loại lỗ hổng gì?",
+      "correctAnswerId": 3,
+      "difficulty": "hard",
+      "answers": [
+        { "id": 1, "text": "Flash loan exploit" },
+        { "id": 2, "text": "Oracle manipulation" },
+        { "id": 3, "text": "Reentrancy vulnerability — cho phép kẻ tấn công rút cạn quỹ bằng cách gọi đệ quy trước khi số dư được trừ" },
+        { "id": 4, "text": "Signature replay attack" }
+      ]
+    },
+    {
+      "id": "q15",
+      "text": "Trước khi chạy một dự án Node.js nhận được từ ứng viên tuyển dụng, bước kiểm tra bảo mật nào là ưu tiên HÀNG ĐẦU?",
+      "correctAnswerId": 4,
+      "difficulty": "medium",
+      "answers": [
+        { "id": 1, "text": "Đọc README để hiểu mục đích của dự án" },
+        { "id": 2, "text": "Chạy thử trong thư mục riêng, không dùng tài khoản admin" },
+        { "id": 3, "text": "Kiểm tra số lượng star trên GitHub" },
+        { "id": 4, "text": "Chạy trong môi trường cô lập hoàn toàn (VM, Docker, hoặc cloud sandbox) — không bao giờ thực thi code lạ trên máy chứa ví hoặc SSH key" }
+      ]
+    }
+  ]
+}

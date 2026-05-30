@@ -1,0 +1,149 @@
+{
+  "title": "Chống Lừa Đảo - Police Quiz 2026",
+  "questions": [
+    {
+      "id": "q1",
+      "text": "Bạn nhận được cuộc gọi video từ số lạ. Giọng nói giống hệt con trai bạn, khóc lóc báo bị tai nạn giao thông nghiêm trọng (có tiếng còi hú ồn ào ở nền) và đòi bạn chuyển khoản gấp 50 triệu đồng bằng tiền mã hóa hoặc thẻ cào, đồng thời yêu cầu giữ bí mật tuyệt đối. Bạn nên làm gì?",
+      "correctAnswerId": 1,
+      "difficulty": "easy",
+      "answers": [
+        { "id": 1, "text": "Cúp máy ngay lập tức, tự liên lạc lại với con trai hoặc người thân qua kênh liên lạc quen thuộc trước đó để xác minh." },
+        { "id": 2, "text": "Chuyển tiền ngay lập tức vì tiếng còi hú cảnh sát và giọng nói quá giống con trai đang trong cơn nguy kịch." },
+        { "id": 3, "text": "Tin tưởng tuyệt đối, chỉ chuyển một nửa số tiền để con trai kịp đóng viện phí cấp cứu trước." },
+        { "id": 4, "text": "Làm theo yêu cầu của cuộc gọi và giữ bí mật hoàn toàn để tránh rắc rối pháp lý cho gia đình." }
+      ]
+    },
+    {
+      "id": "q2",
+      "text": "Đồng nghiệp hoặc cấp trên gọi điện đột xuất bằng số lạ hoặc qua Zalo, yêu cầu bạn chuyển khoản gấp một khoản tiền lớn của công ty hoặc xuất mật khẩu hệ thống. Hành động nào thể hiện đúng quy trình kiểm tra kênh phụ độc lập (Out-of-Band Callback)?",
+      "correctAnswerId": 1,
+      "difficulty": "easy",
+      "answers": [
+        { "id": 1, "text": "Ngắt cuộc gọi ngay, tự tìm số điện thoại nội bộ hoặc tài khoản Teams/Slack đã được xác minh trước đó để gọi lại kiểm tra." },
+        { "id": 2, "text": "Tiếp tục cuộc gọi, yêu cầu sếp đọc số tài khoản để đối chiếu xem có đúng tài khoản quen thuộc của công ty không." },
+        { "id": 3, "text": "Gọi lại ngay vào chính số điện thoại vừa gọi đến để xác nhận lại nhu cầu cấp bách của sếp." },
+        { "id": 4, "text": "Thực hiện giao dịch chuyển tiền ngay để tránh làm chậm trễ công việc, sau đó báo cáo qua email." }
+      ]
+    },
+    {
+      "id": "q3",
+      "text": "Để hạn chế nguy cơ bị kẻ xấu tạo ra một bản sao giọng nói (vocal clone) cực kỳ giống bạn bằng AI để đi lừa đảo, biện pháp bảo vệ dấu chân kỹ thuật số (Audio-Visual OPSEC) nào dưới đây là tốt nhất?",
+      "correctAnswerId": 1,
+      "difficulty": "easy",
+      "answers": [
+        { "id": 1, "text": "Hạn chế đăng tải các đoạn video/âm thanh nói chuyện dài, rõ tiếng, chất lượng cao của bản thân lên các nền tảng mạng xã hội công khai." },
+        { "id": 2, "text": "Chỉ đăng các đoạn clip nói chuyện ngắn dưới 10 giây vì nghĩ AI cần hàng giờ âm thanh phòng thu mới bắt chước được." },
+        { "id": 3, "text": "Đổi mật khẩu định kỳ của tất cả tài khoản mạng xã hội cá nhân mỗi tháng." },
+        { "id": 4, "text": "Cố gắng nói giọng trầm hoặc thay đổi ngữ điệu liên tục trong mọi cuộc giao tiếp hàng ngày." }
+      ]
+    },
+    {
+      "id": "q4",
+      "text": "Một người tự xưng là nhân viên bộ phận IT (Helpdesk) của công ty chủ động gọi điện báo tài khoản của bạn đang gặp sự cố bảo mật nghiêm trọng và yêu cầu cung cấp mã xác thực OTP hoặc mã phê duyệt MFA để xử lý. Dấu hiệu cảnh báo đỏ (Red Flag) là gì?",
+      "correctAnswerId": 1,
+      "difficulty": "easy",
+      "answers": [
+        { "id": 1, "text": "Bộ phận kỹ thuật chủ động liên hệ yêu cầu bạn cung cấp mã xác thực OTP, mật khẩu hoặc xác nhận phê duyệt MFA trực tiếp." },
+        { "id": 2, "text": "Nhân viên hỗ trợ kỹ thuật gọi điện vào đúng khung giờ làm việc hành chính của công ty." },
+        { "id": 3, "text": "Nhân viên IT sử dụng ngôn từ chuyên nghiệp và đọc chính xác họ tên của bạn." },
+        { "id": 4, "text": "Nhân viên yêu cầu bạn tự truy cập vào cổng tự phục vụ của hệ thống để thay đổi mật khẩu cá nhân." }
+      ]
+    },
+    {
+      "id": "q5",
+      "text": "Khi nghi ngờ một cuộc gọi video là Deepfake thời gian thực, bạn yêu cầu đối phương đặt các ngón tay che ngang mũi/mắt hoặc vẫy tay nhanh liên tục trước mặt. Thử thách này khai thác lỗ hổng kỹ thuật cốt lõi nào của AI?",
+      "correctAnswerId": 1,
+      "difficulty": "medium",
+      "answers": [
+        { "id": 1, "text": "Giới hạn trong việc dựng hình ranh giới tay-mặt (hand-to-face boundary) và ánh xạ độ sâu không gian của công nghệ Deepfake thời gian thực." },
+        { "id": 2, "text": "Khả năng xử lý băng thông mạng Internet khi truyền tải các cử động cử chỉ tay phức tạp." },
+        { "id": 3, "text": "Sự thiếu hụt dữ liệu huấn luyện hình ảnh bàn tay trong các tập dữ liệu khuôn mặt phổ biến." },
+        { "id": 4, "text": "Độ phân giải màu sắc của camera điện thoại thông thường kém hơn khả năng xử lý của AI." }
+      ]
+    },
+    {
+      "id": "q6",
+      "text": "Trong cuộc gọi video nghi ngờ giả mạo, bạn yêu cầu người bên kia quay đầu chậm sang một bên góc 90 độ (nhìn nghiêng hoàn toàn). Hiện tượng lỗi kỹ thuật nào sẽ xảy ra nếu đó là Deepfake thời gian thực?",
+      "correctAnswerId": 1,
+      "difficulty": "medium",
+      "answers": [
+        { "id": 1, "text": "Lớp mặt nạ kỹ thuật số bị méo mó, co rúm vùng má/mũi hoặc biến mất hoàn toàn do mất các điểm mốc 2D ở góc xoay cực đại." },
+        { "id": 2, "text": "Cuộc gọi video sẽ lập tức bị ngắt kết nối tự động do phát hiện vi phạm bản quyền." },
+        { "id": 3, "text": "Hệ thống sẽ tự động tắt tiếng (mute) âm thanh truyền đi để bảo vệ danh tính kẻ giả mạo." },
+        { "id": 4, "text": "Màn hình camera của đối phương hiển thị màu xanh lá cây hoặc thông báo lỗi phần cứng." }
+      ]
+    },
+    {
+      "id": "q7",
+      "text": "Trong năm 2024, một giám đốc điều hành của hãng xe Ferrari đã ngăn chặn thành công vụ lừa đảo giả mạo giọng nói CEO bằng cách yêu cầu người gọi trả lời câu hỏi về một cuốn sách cụ thể mà CEO đã khuyên đọc trước đó. Kỹ thuật này dựa trên nguyên lý bảo mật nào?",
+      "correctAnswerId": 1,
+      "difficulty": "medium",
+      "answers": [
+        { "id": 1, "text": "Sử dụng tri thức cá nhân không thể khai thác từ nguồn công khai (Non-OSINT) và tính bất đối xứng thông tin đối với kẻ tấn công." },
+        { "id": 2, "text": "Đo lường độ trễ phản hồi giọng nói để phát hiện việc sử dụng máy chủ đám mây trích xuất Deepfake." },
+        { "id": 3, "text": "Bắt buộc kẻ giả mạo phải thực hiện xác thực đa yếu tố dựa trên phần cứng (Hardware-based MFA)." },
+        { "id": 4, "text": "Tận dụng các câu đố toán học phức tạp nhằm làm quá tải năng lực xử lý đồ họa GPU của kẻ xấu." }
+      ]
+    },
+    {
+      "id": "q8",
+      "text": "Một video lan truyền trên mạng xã hội quay cảnh một quan chức phát biểu cực kỳ chậm rãi, lắp bắp như thể say rượu. Kết quả giám định cho thấy video bị làm giả bằng cách lặp lại khung hình để giảm tốc độ phát mà không sử dụng AI. Đây là ví dụ của loại hình tấn công nào?",
+      "correctAnswerId": 1,
+      "difficulty": "medium",
+      "answers": [
+        { "id": 1, "text": "Cheap fake (hoặc Shallow fake) - kỹ thuật giả mạo thô sơ không dùng AI nhưng có tính phá hoại và độ hiệu quả cao." },
+        { "id": 2, "text": "Injection attack (tấn công tiêm mã) - kỹ thuật đưa luồng video trực tiếp vào camera ảo." },
+        { "id": 3, "text": "Presentation attack (tấn công giả mạo đầu vào) - kỹ thuật sử dụng mặt nạ silicon trước ống kính vật lý." },
+        { "id": 4, "text": "Real-time face-swap (tráo mặt thời gian thực) - kỹ thuật thay đổi khuôn mặt tức thời dưới 200 miliseconds." }
+      ]
+    },
+    {
+      "id": "q9",
+      "text": "Tổ chức tài chính tin tưởng tuyệt đối rằng quy trình định danh trực tuyến (KYC) của họ an toàn trước Deepfake vì phần mềm đạt chuẩn chứng nhận 'iBeta Level 2'. Điểm mù nghiêm trọng nhất trong quan niệm này là gì?",
+      "correctAnswerId": 1,
+      "difficulty": "hard",
+      "answers": [
+        { "id": 1, "text": "Chuẩn iBeta Level 2 chỉ kiểm tra khả năng chống các vụ tấn công vật lý trực tiếp (mặt nạ silicon, ảnh chụp), hoàn toàn mù trước tấn công tiêm luồng video kỹ thuật số ảo (Injection Attacks)." },
+        { "id": 2, "text": "Chuẩn iBeta Level 2 chỉ được thiết kế cho việc kiểm tra sinh trắc học vân tay, không áp dụng cho khuôn mặt hay video." },
+        { "id": 3, "text": "Hệ thống iBeta Level 2 có thể dễ dàng bị đánh lừa chỉ bằng việc đưa một bức ảnh đen trắng chất lượng thấp trước camera vật lý." },
+        { "id": 4, "text": "Chuẩn iBeta Level 2 đòi hỏi người dùng phải sử dụng thiết bị quét 3D chuyên dụng mà thiết bị di động thông thường không đáp ứng." }
+      ]
+    },
+    {
+      "id": "q10",
+      "text": "Trong các cuộc tấn công tiêm luồng video giả mạo (Video Injection Attacks) nhằm vượt qua hệ thống KYC từ xa, siêu dữ liệu (metadata) kỹ thuật nào dưới đây là dấu hiệu cảnh báo đỏ (Red Flag) cốt lõi?",
+      "correctAnswerId": 1,
+      "difficulty": "hard",
+      "answers": [
+        { "id": 1, "text": "Sự xuất hiện và đăng ký của các driver camera ảo (Virtual Camera Driver) thay vì thiết bị webcam phần cứng thực tế." },
+        { "id": 2, "text": "Tốc độ khung hình (FPS) của luồng video ghi nhận dao động ở mức cực cao trên 120 FPS." },
+        { "id": 3, "text": "Địa chỉ IP của người dùng truy cập trùng khớp hoàn toàn với dải IP của nhà mạng viễn thông nội địa." },
+        { "id": 4, "text": "Tệp hình ảnh giấy tờ tùy thân tải lên được định dạng dưới đuôi PNG thay vì đuôi mặc định JPEG." }
+      ]
+    },
+    {
+      "id": "q11",
+      "text": "Bạn đang phỏng vấn trực tuyến với ứng viên tuyển dụng. Hình ảnh ứng viên mượt mà, giọng nói tự nhiên hoàn hảo, có cả tiếng hắng giọng, tiếng thở nhẹ thực tế. Bạn tin tưởng người thật vì không thấy dấu hiệu robotic hay giật lag. Tại sao phán đoán cảm quan này lại cực kỳ nguy hiểm trong năm 2026?",
+      "correctAnswerId": 1,
+      "difficulty": "hard",
+      "answers": [
+        { "id": 1, "text": "Mô hình AI thế hệ mới trên các dòng GPU phổ thông đã xóa bỏ hoàn toàn lỗi cảm quan thông thường, xử lý tráo đổi khuôn mặt và giọng nói trơn tru dưới 200 ms." },
+        { "id": 2, "text": "Tất cả phần mềm họp trực tuyến hiện nay đều tích hợp công nghệ làm mượt và sửa lỗi hình ảnh tự động." },
+        { "id": 3, "text": "Mọi thuật toán Deepfake thời gian thực bắt buộc phải tạo ra lỗi giật lag để hạn chế sử dụng năng lượng thiết bị." },
+        { "id": 4, "text": "Deepfake thời gian thực chỉ có thể hoạt động ổn định trên các siêu máy tính của quân đội, không thể tự chạy ở máy cá nhân ứng viên." }
+      ]
+    },
+    {
+      "id": "q12",
+      "text": "Để ngăn chặn triệt để thiệt hại từ các cuộc tấn công lừa đảo Corporate Whaling công nghệ cao (như cuộc họp video giả mạo toàn bộ ban lãnh đạo trị giá 25 triệu USD), quy trình kiểm soát tài chính nào có vai trò quyết định?",
+      "correctAnswerId": 1,
+      "difficulty": "hard",
+      "answers": [
+        { "id": 1, "text": "Thiết lập cơ chế phê duyệt kép (Dual-Authorization) với chữ ký số độc lập từ hai nhân sự và xác thực kênh phụ (Out-of-band) trước khi chuyển khoản vượt ngưỡng." },
+        { "id": 2, "text": "Ban hành quy định bắt buộc toàn bộ nhân viên tham gia họp video phải bật bộ lọc chống nhiễu âm thanh của ứng dụng Zoom/Teams." },
+        { "id": 3, "text": "Cấm hoàn toàn việc họp video trực tuyến có sự tham gia đồng thời của nhiều hơn 3 thành viên trong ban điều hành." },
+        { "id": 4, "text": "Yêu cầu ngân hàng chỉ thực hiện giao dịch chuyển tiền khi có xác thực khuôn mặt sinh trắc học 3D của người nhận." }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,185 @@
+{
+  "title": "Chống Lừa Đảo - Police Quiz 2026",
+  "questions": [
+    {
+      "id": "q1",
+      "text": "Bạn nhận được cuộc gọi tự xưng là điều tra viên Bộ Công an thông báo danh tính của bạn bị lợi dụng để rửa tiền. Người này yêu cầu bạn rút toàn bộ tiền tiết kiệm, mua vàng vật chất và giao cho một \"nhân viên bảo mật\" đến tận nhà nhận cùng một mã xác nhận để tạm giữ an toàn. Bạn nên làm gì?",
+      "correctAnswerId": 1,
+      "difficulty": "easy",
+      "answers": [
+        { "id": 1, "text": "Cúp máy ngay lập tức, đây là trò lừa đảo mua vàng giao cho shipper; cơ quan công an không bao giờ làm việc qua điện thoại hay yêu cầu giao vàng, tiền mặt trực tiếp." },
+        { "id": 2, "text": "Hợp tác rút tiền mua vàng và ghi lại mã xác nhận để giao cho nhân viên bảo mật nhằm hỗ trợ tiến trình điều tra diễn ra tuyệt mật." },
+        { "id": 3, "text": "Mang số vàng này đến một địa điểm công cộng theo hướng dẫn và giao cho shipper để chuyển về kho lưu trữ an toàn của chính phủ." },
+        { "id": 4, "text": "Chỉ mua một phần nhỏ số vàng để thử nghiệm xem người shipper có đọc đúng mã xác nhận mà điều tra viên đã cung cấp hay không." }
+      ]
+    },
+    {
+      "id": "q2",
+      "text": "Bạn nhận được cuộc gọi từ số lạ nhưng giọng nói ở đầu dây bên kia giống hệt giọng của con trai bạn đang khóc lóc, báo rằng bị tai nạn giao thông nghiêm trọng ở xa và cần chuyển khoản gấp 100 triệu để phẫu thuật cấp cứu. Làm sao kẻ xấu có thể bắt chước giọng nói của con bạn một cách chính xác như vậy?",
+      "correctAnswerId": 1,
+      "difficulty": "easy",
+      "answers": [
+        { "id": 1, "text": "Chúng sử dụng mô hình trí tuệ nhân tạo (AI Voice Cloning) huấn luyện bằng các đoạn âm thanh công khai trên mạng xã hội của con bạn để nhân bản giọng nói hoàn hảo." },
+        { "id": 2, "text": "Chúng đã bắt cóc con bạn và ép buộc cậu ấy nói chuyện trực tiếp với bạn thông qua thiết bị thay đổi tần số âm thanh của điện thoại." },
+        { "id": 3, "text": "Chúng sử dụng các đoạn ghi âm hội thoại có sẵn của con bạn và ghép thủ công thành một cuộc hội thoại hoàn chỉnh bằng phần mềm dựng âm." },
+        { "id": 4, "text": "Chúng đã mua lại tần số giọng nói sinh trắc học của con bạn từ nhà mạng viễn thông để chèn vào cuộc gọi trực tiếp." }
+      ]
+    },
+    {
+      "id": "q3",
+      "text": "Khi đang lướt web, một cửa sổ cảnh báo hiện lên thông báo máy tính của bạn bị nhiễm virus nặng và yêu cầu gọi hotline. Khi gọi điện, nhân viên tổng đài hướng dẫn bạn cài đặt AnyDesk hoặc TeamViewer để hỗ trợ quét virus. Theo nghiên cứu thực tế, hành vi của kẻ lừa đảo trong kịch bản này diễn ra thế nào?",
+      "correctAnswerId": 1,
+      "difficulty": "medium",
+      "answers": [
+        { "id": 1, "text": "Chúng không hề vội vã, dành trung bình 17 phút để trò chuyện xây dựng lòng tin (grooming) trước khi che mắt nạn nhân để chiếm đoạt tài khoản trực tiếp từ thiết bị." },
+        { "id": 2, "text": "Chúng sẽ lập tức ngắt kết nối máy tính của bạn trong vòng 2 phút nếu bạn không đồng ý thực hiện giao dịch chuyển tiền khẩn cấp." },
+        { "id": 3, "text": "Chúng sử dụng các công cụ điều khiển từ xa để tự động mã hóa toàn bộ ổ cứng vật lý và đòi tiền chuộc bằng mã thẻ cào điện thoại." },
+        { "id": 4, "text": "Chúng chỉ tập trung vào việc cài đặt các ứng dụng quảng cáo để nhận tiền hoa hồng chứ không quan tâm đến ứng dụng ngân hàng trực tuyến." }
+      ]
+    },
+    {
+      "id": "q4",
+      "text": "Bạn lướt thấy một bài đăng trên Facebook quảng cáo căn hộ cho thuê trung tâm với giá rẻ giật mình, đầy đủ tiện nghi. Người đăng tin yêu cầu bạn chuyển khoản cọc trước 5 triệu đồng và phí làm hồ sơ ngay lập tức vì \"căn hộ đang có rất nhiều người tranh nhau thuê\". Đây là dấu hiệu của loại hình lừa đảo nào?",
+      "correctAnswerId": 1,
+      "difficulty": "easy",
+      "answers": [
+        { "id": 1, "text": "Lừa đảo cho thuê nhà (Rental Scam) - kẻ gian dùng tin đăng ảo, hình ảnh lung linh thu hút nhu cầu nhà ở để chiếm đoạt tiền cọc cược rồi biến mất." },
+        { "id": 2, "text": "Lừa đảo tình cảm lâu dài (Romance Scam) - thiết lập quan hệ yêu đương qua mạng để dụ dỗ nạn nhân tham gia các khóa học huấn luyện kinh doanh." },
+        { "id": 3, "text": "Lừa đảo khóa học làm giàu (Coaching Scam) - hứa hẹn lợi nhuận cao từ thị trường ngoại hối, tiền mã hóa hoặc giao dịch vàng vật chất." },
+        { "id": 4, "text": "Tấn công phi kỹ thuật nhắm vào lỗ hổng bảo mật của các ứng dụng mạng xã hội như Instagram và WhatsApp." }
+      ]
+    },
+    {
+      "id": "q5",
+      "text": "Vào đợt mở rộng đăng ký dịch vụ bảo hiểm y tế Medicare hoặc trợ cấp xã hội, bạn nhận được cuộc gọi từ số lạ tự xưng là cán bộ y tế yêu cầu cung cấp số thẻ Medicare và số An sinh Xã hội (SSN) để cập nhật thẻ mới. Kẻ xấu thường dùng các thông tin này để làm gì?",
+      "correctAnswerId": 1,
+      "difficulty": "medium",
+      "answers": [
+        { "id": 1, "text": "Bán dữ liệu cá nhân trên dark web hoặc thực hiện hành vi gian lận thanh toán y tế (double-billing), yêu cầu chi trả cho các dịch vụ y tế khống." },
+        { "id": 2, "text": "Rút tiền trực tiếp từ ví bảo hiểm xã hội của bạn thông qua việc quét mã vạch in trên thẻ y tế điện tử." },
+        { "id": 3, "text": "Liên kết số thẻ bảo hiểm của bạn với tài khoản ví điện tử P2P để thực hiện các giao dịch chuyển tiền xuyên biên giới." },
+        { "id": 4, "text": "Đăng ký các chương trình trúng thưởng quy mô lớn và bắt bạn phải đóng thuế thu nhập cá nhân trước khi nhận thưởng." }
+      ]
+    },
+    {
+      "id": "q6",
+      "text": "Bạn nhận được cuộc gọi tự xưng là nhân viên phòng giao dịch ngân hàng thông báo tài khoản của bạn đang phát sinh giao dịch chuyển khoản đáng ngờ 50 triệu đồng và yêu cầu làm việc ngay. Quy trình xác thực kênh phụ độc lập (Zero-Trust Callback Workflow) yêu cầu bạn hành động như thế nào?",
+      "correctAnswerId": 1,
+      "difficulty": "easy",
+      "answers": [
+        { "id": 1, "text": "Cúp máy ngay lập tức, tự tra cứu số điện thoại hotline chính thức trên thẻ ngân hàng hoặc website đã xác minh và chủ động gọi lại để kiểm tra." },
+        { "id": 2, "text": "Tiếp tục giữ máy và gọi lại vào đúng số điện thoại vừa gọi đến để xác minh xem đó có phải là số nội bộ của ngân hàng không." },
+        { "id": 3, "text": "Cung cấp mã xác thực OTP được gửi về điện thoại cho người gọi để họ tiến hành khóa giao dịch 50 triệu đồng đó lại ngay." },
+        { "id": 4, "text": "Chụp ảnh hai mặt thẻ căn cước công dân gửi qua ứng dụng Zalo cho người gọi để đối chiếu thông tin trên hệ thống." }
+      ]
+    },
+    {
+      "id": "q7",
+      "text": "Để nâng cấp bảo mật hệ thống tài khoản doanh nghiệp hoặc cá nhân trước nguy cơ bị đánh cắp mã xác thực OTP qua các kênh truyền dẫn kém an toàn (như SMS hay Email), giải pháp hardening hiệu quả nhất năm 2026 là gì?",
+      "correctAnswerId": 1,
+      "difficulty": "hard",
+      "answers": [
+        { "id": 1, "text": "Loại bỏ hoàn toàn mã OTP gửi qua SMS/Email, chuyển sang xác thực đa yếu tố phần cứng chuẩn FIDO2 (như khóa vật lý) kết hợp giới hạn số lần thử (rate limiting)." },
+        { "id": 2, "text": "Tăng độ dài của mã xác thực OTP gửi qua tin nhắn SMS từ 6 ký tự số thông thường lên 12 ký tự số ngẫu nhiên." },
+        { "id": 3, "text": "Cài đặt đồng thời nhiều ứng dụng sinh mã OTP (như Google và Microsoft Authenticator) trên cùng một thiết bị để dự phòng." },
+        { "id": 4, "text": "Bắt buộc người dùng phải xác thực lại tài khoản email cá nhân mỗi khi có yêu cầu nhận mã OTP gửi qua tin nhắn điện thoại." }
+      ]
+    },
+    {
+      "id": "q8",
+      "text": "Bạn lỡ đồng ý cho nhân viên hỗ trợ cài AnyDesk/TeamViewer để kiểm tra lỗi hệ thống, nhưng bất ngờ màn hình máy tính tối đen và bạn thấy con trỏ chuột tự động mở các ứng dụng ngân hàng trực tuyến. Theo giao thức ngắt kết nối phần cứng khẩn cấp (Local Hardware Connection Kill-Switch), bạn phải làm gì?",
+      "correctAnswerId": 1,
+      "difficulty": "medium",
+      "answers": [
+        { "id": 1, "text": "Ngắt kết nối Internet vật lý ngay lập tức (tắt Wi-Fi, rút cáp Ethernet, tắt dữ liệu di động), nhấn giữ nút nguồn vật lý để tắt cứng máy tính hoàn toàn." },
+        { "id": 2, "text": "Cố gắng sử dụng chuột để bấm vào biểu tượng phần mềm điều khiển từ xa trên màn hình và chọn tùy chọn ngắt kết nối (Disconnect)." },
+        { "id": 3, "text": "Mở trình duyệt web để nhanh chóng tìm kiếm và tải về một phần mềm diệt virus nhằm quét quét phần mềm độc hại đang hoạt động." },
+        { "id": 4, "text": "Gọi điện thoại cho nhà mạng viễn thông hoặc cảnh sát công nghệ cao để yêu cầu họ thực hiện khóa đường truyền Internet từ xa." }
+      ]
+    },
+    {
+      "id": "q9",
+      "text": "Với sự bùng nổ của các cuộc tấn công vishing sử dụng công nghệ nhân bản giọng nói bằng trí tuệ nhân tạo (AI Voice Cloning), giải pháp phòng vệ phi kỹ thuật thực tế và hiệu quả nhất cho các gia đình và nhóm doanh nghiệp nhạy cảm là gì?",
+      "correctAnswerId": 1,
+      "difficulty": "medium",
+      "answers": [
+        { "id": 1, "text": "Thiết lập một \"mật khẩu gia đình\" (safeword) ngẫu nhiên, không liên quan đến thông tin cá nhân công khai, trao đổi trực tiếp và yêu cầu người gọi đọc đúng khi có yêu cầu khẩn cấp." },
+        { "id": 2, "text": "Luôn yêu cầu người gọi bằng giọng nói người thân phải nói bằng ngôn ngữ nước ngoài hoặc sử dụng các từ ngữ cổ xưa để thử thách." },
+        { "id": 3, "text": "Cài đặt phần mềm ghi âm cuộc gọi trên tất cả thiết bị di động để lưu trữ giọng nói và đối chiếu sau khi cuộc gọi kết thúc." },
+        { "id": 4, "text": "Hạn chế nhận bất kỳ cuộc gọi nào từ số lạ, chỉ trả lời tin nhắn văn bản thông thường qua các ứng dụng OTT như Zalo." }
+      ]
+    },
+    {
+      "id": "q10",
+      "text": "Sau khi bị lừa đóng gói tiền mặt gửi qua bưu điện (USPS) cho kẻ giả danh công an hoặc bị lộ thông tin số An sinh Xã hội (SSN), nạn nhân cần thực hiện quy trình ứng phó khẩn cấp nào sau đây?",
+      "correctAnswerId": 1,
+      "difficulty": "hard",
+      "answers": [
+        { "id": 1, "text": "Gọi ngay hotline 877-876-2455 yêu cầu chặn gói hàng (Package Intercept) và truy cập IdentityTheft.gov để thiết lập giám sát cũng như đóng băng hồ sơ tín dụng." },
+        { "id": 2, "text": "Chờ đợi gói hàng được phát thành công để lấy bằng chứng biên nhận thực tế, sau đó làm đơn khiếu nại yêu cầu bồi thường bảo hiểm." },
+        { "id": 3, "text": "Liên hệ với bưu tá đang vận chuyển để thương lượng xin nhận lại gói hàng mà không cần thực hiện các giao thức khai báo pháp lý." },
+        { "id": 4, "text": "Đăng tải toàn bộ hóa đơn gửi hàng và thông tin cá nhân lên mạng xã hội để nhờ cộng đồng mạng hỗ trợ tìm kiếm gói hàng bị mất." }
+      ]
+    },
+    {
+      "id": "q11",
+      "text": "Bạn nhận được cuộc gọi có số hiển thị trên màn hình giống hệt số hotline chính thức của ngân hàng nơi bạn mở tài khoản. Tại sao việc tin tưởng tuyệt đối vào tên danh bạ hoặc số hiển thị này là một sai lầm nghiêm trọng?",
+      "correctAnswerId": 1,
+      "difficulty": "easy",
+      "answers": [
+        { "id": 1, "text": "Vì kẻ tấn công dễ dàng thực hiện giả mạo Caller ID (Caller-ID Spoofing) bằng cách khai thác lỗ hổng giao thức SS7 của mạng viễn thông thông qua phần mềm VoIP." },
+        { "id": 2, "text": "Vì các nhà mạng viễn thông thường xuyên tự động hoán đổi tên hiển thị của các cuộc gọi đến do lỗi định tuyến cuộc gọi rác." },
+        { "id": 3, "text": "Vì điện thoại thông minh của bạn đã bị tin tặc cài mã độc tự động thay đổi tên hiển thị của mọi cuộc gọi lạ." },
+        { "id": 4, "text": "Vì kẻ xấu đã mua lại bản quyền sử dụng hợp pháp số hotline này từ chính ngân hàng trong các khung giờ ngoài hành chính." }
+      ]
+    },
+    {
+      "id": "q12",
+      "text": "Một ngân hàng từ chối bồi thường cho khách hàng bị lừa đảo với lý do khách hàng đã tự nguyện cung cấp mã OTP/passcode cho kẻ mạo danh nhân viên ngân hàng. Đối chiếu với Đạo luật Chuyển khoản Điện tử (EFTA) và Quy định E (Regulation E) của CFPB, quyết định từ chối này của ngân hàng là đúng hay sai?",
+      "correctAnswerId": 1,
+      "difficulty": "hard",
+      "answers": [
+        { "id": 1, "text": "Sai. CFPB làm rõ rằng giao dịch do kẻ lừa đảo thực hiện sau khi dụ dỗ nạn nhân chia sẻ thông tin vẫn là giao dịch không ủy quyền; ngân hàng không được dùng sự bất cẩn của khách làm cơ sở phủ nhận trách nhiệm." },
+        { "id": 2, "text": "Đúng. Quy định E nêu rõ nếu người dùng tự nguyện tiết lộ mật khẩu hoặc mã OTP dưới bất kỳ hình thức nào, họ phải chịu trách nhiệm hoàn toàn đối với mọi thiệt hại phát sinh." },
+        { "id": 3, "text": "Đúng. Ngân hàng chỉ chịu trách nhiệm bồi thường trong trường hợp hệ thống máy chủ cốt lõi của chính ngân hàng bị tin tặc tấn công và đánh cắp cơ sở dữ liệu khách hàng." },
+        { "id": 4, "text": "Sai. Ngân hàng phải bồi thường nhưng chỉ khi khách hàng có đơn xác nhận của cơ quan điều tra cấp quận về việc họ bị ép buộc cung cấp mã OTP trong trạng thái thôi miên." }
+      ]
+    },
+    {
+      "id": "q13",
+      "text": "Trong chiêu trò \"chuyển tiền nhầm\" (accidental payment) trên các ứng dụng P2P như Venmo, Cash App hay Zelle, kẻ gian sử dụng thẻ tín dụng bị đánh cắp để gửi tiền cho bạn rồi nhờ bạn chuyển trả lại bằng tiền mặt hoặc tài khoản của bạn. Chuyện gì sẽ xảy ra tiếp theo?",
+      "correctAnswerId": 1,
+      "difficulty": "medium",
+      "answers": [
+        { "id": 1, "text": "Số tiền gửi nhầm (tiền bẩn) sẽ bị ngân hàng thu hồi (clawback), còn số tiền bạn chuyển trả lại sẽ biến mất vĩnh viễn và bạn phải tự chịu khoản lỗ này mà không được ứng dụng bảo hiểm." },
+        { "id": 2, "text": "Hệ thống P2P sẽ tự động bồi thường thiệt hại cho bạn nhờ cơ chế bảo hiểm tiền gửi liên bang FDIC được tích hợp mặc định trên mọi ví điện tử." },
+        { "id": 3, "text": "Bạn sẽ được nhận một khoản thưởng hoa hồng 20% giá trị giao dịch từ nền tảng vì đã có tinh thần hỗ trợ người gửi nhầm tiền." },
+        { "id": 4, "text": "Ứng dụng thanh toán sẽ tự động đóng băng tài khoản của kẻ gửi tiền nhầm và hoàn trả toàn bộ số tiền bạn đã chuyển lại." }
+      ]
+    },
+    {
+      "id": "q14",
+      "text": "Số liệu thống kê thực tế về các vụ lừa đảo tài chính qua mạng trong giai đoạn 2024-2025 chỉ ra nghịch lý nhân khẩu học (Demographic Paradox) nào dưới đây giữa các thế hệ?",
+      "correctAnswerId": 1,
+      "difficulty": "hard",
+      "answers": [
+        { "id": 1, "text": "Thế hệ trẻ (Millennials và Gen Z) chiếm số lượng báo cáo bị lừa đảo lớn nhất (lên tới 42% và 21%), nhưng thế hệ lớn tuổi (trên 80 tuổi) lại chịu thiệt hại tài chính trung bình lớn nhất trên mỗi vụ việc (trên 1.600 USD)." },
+        { "id": 2, "text": "Thế hệ lớn tuổi (Baby Boomers và trên 80 tuổi) có số lượng báo cáo bị lừa đảo nhiều nhất, trong khi thế hệ Millennials chiếm tỷ lệ thiệt hại tài chính lớn nhất." },
+        { "id": 3, "text": "Mức độ am hiểu công nghệ giúp Gen Z hoàn toàn tránh được các vụ lừa đảo qua mạng xã hội, trong khi Millennials chịu tổn thất trung bình trên 10.000 USD mỗi vụ." },
+        { "id": 4, "text": "Tỷ lệ phục hồi tài sản của nhóm Millennials cao gấp 10 lần so với nhóm Baby Boomers nhờ họ am hiểu sâu sắc về công nghệ blockchain." }
+      ]
+    },
+    {
+      "id": "q15",
+      "text": "Đạo luật TAKE IT DOWN (TIDA) được thực thi vào ngày 19 tháng 5 năm 2025 và Dự thảo Quy tắc Diễn giải của CFPB tháng 1 năm 2025 mang lại những thay đổi quan trọng nào trong việc bảo vệ người tiêu dùng?",
+      "correctAnswerId": 1,
+      "difficulty": "hard",
+      "answers": [
+        { "id": 1, "text": "TIDA thiết lập các chế tài mạnh mẽ chống chia sẻ ảnh nhạy cảm không đồng thuận (gồm cả deepfake AI), còn dự thảo CFPB mở rộng phạm vi áp dụng Quy định E sang tiền mã hóa và ví kỹ thuật số." },
+        { "id": 2, "text": "TIDA cấm hoàn toàn việc sử dụng trí tuệ nhân tạo để mô phỏng giọng nói trong kinh doanh, còn dự thảo CFPB bãi bỏ toàn bộ các giới hạn bồi thường thiệt hại trực tuyến." },
+        { "id": 3, "text": "TIDA buộc các mạng xã hội phải trả phí cho người dùng khi bị lộ lọt dữ liệu, còn dự thảo CFPB loại bỏ tiền mã hóa khỏi hệ thống tài chính chính quy." },
+        { "id": 4, "text": "TIDA áp đặt hình phạt tù chung thân cho các hành vi deepfake mạo danh, còn dự thảo CFPB cấm các ngân hàng sử dụng xác thực đa yếu tố bằng tin nhắn." }
+      ]
+    }
+  ]
+}

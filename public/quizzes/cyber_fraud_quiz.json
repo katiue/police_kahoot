@@ -1,0 +1,185 @@
+{
+  "title": "Chống Lừa Đảo - Police Quiz 2026",
+  "questions": [
+    {
+      "id": "q1",
+      "text": "Một cơ quan vừa công bố thông tin triển khai dự án mới. Chỉ 10 phút sau, sếp của bạn nhận được hàng loạt email lừa đảo được thiết kế cực kỳ tinh vi, cá nhân hóa sâu sắc theo đúng lĩnh vực dự án. Dựa trên nghiên cứu về các chiến dịch tấn công sử dụng AI tạo sinh tự động, tốc độ lắp ráp và triển khai một chiến dịch lừa đảo cá nhân hóa của tin tặc đã thay đổi như thế nào so với phương pháp thủ công truyền thống?",
+      "correctAnswerId": 3,
+      "difficulty": "easy",
+      "answers": [
+        { "id": 1, "text": "Tốc độ tăng gấp 10 lần, chỉ mất 1 giờ so với 10 giờ làm việc thủ công trước đây." },
+        { "id": 2, "text": "Tốc độ tăng gấp 50 lần, chỉ mất 30 phút so với 25 giờ chuẩn bị nội dung và thiết kế." },
+        { "id": 3, "text": "Tốc độ tăng 192 lần, chỉ mất 5 phút thông qua các hệ thống tạo sinh tự động so với 16 giờ nghiên cứu và soạn thảo thủ công trước đây." },
+        { "id": 4, "text": "Tốc độ tăng gấp 100 lần, chỉ mất 15 phút so với 24 giờ sàng lọc thông tin đối tượng." }
+      ]
+    },
+    {
+      "id": "q2",
+      "text": "Bộ phận An toàn thông tin của một ngân hàng ghi nhận tỷ lệ nhân viên click vào các liên kết giả lập lừa đảo tăng vọt đáng báo động. Trong kỷ nguyên AI tạo sinh tự động hóa việc hồ sơ hóa mục tiêu từ các mạng xã hội và nền tảng nghề nghiệp, tỷ lệ nhấp chuột (Click-Through Rate) của các chiến dịch lừa đảo siêu cá nhân hóa này có thể đạt tới mức trung bình là bao nhiêu?",
+      "correctAnswerId": 1,
+      "difficulty": "easy",
+      "answers": [
+        { "id": 1, "text": "Lên tới 54% trung bình (gấp khoảng 4.5 lần so với mức 12% của phương pháp thủ công truyền thống)." },
+        { "id": 2, "text": "Đạt khoảng 25% trung bình (gấp đôi so với mức 12% truyền thống)." },
+        { "id": 3, "text": "Lên tới 85% trung bình (gấp 7 lần so với mức 12% truyền thống)." },
+        { "id": 4, "text": "Chỉ duy trì ở mức 5% trung bình do người dùng ngày nay cảnh giác hơn." }
+      ]
+    },
+    {
+      "id": "q3",
+      "text": "Bạn thường xuyên đăng video chia sẻ kiến thức trên TikTok, YouTube và tham gia các buổi hội thảo trực tuyến (webinar) của công ty. Bạn bất ngờ nhận được cảnh báo rằng giọng nói của bạn có thể bị kẻ xấu thu hoạch và sao chép. Theo các nghiên cứu mới nhất, kẻ tấn công cần tối thiểu bao nhiêu giây dữ liệu âm thanh thô của bạn để tạo ra một bản sao giọng nói đạt độ khớp sinh trắc học tới 85%?",
+      "correctAnswerId": 2,
+      "difficulty": "easy",
+      "answers": [
+        { "id": 1, "text": "Cần ít nhất 30 giây âm thanh chất lượng phòng thu không có tiếng ồn nền." },
+        { "id": 2, "text": "Chỉ cần tối thiểu 3 giây dữ liệu giọng nói thô được thu hoạch từ dấu chân kỹ thuật số công khai của bạn." },
+        { "id": 3, "text": "Cần tối thiểu 5 phút ghi âm liên tục ở nhiều tông giọng và cảm xúc khác nhau." },
+        { "id": 4, "text": "Cần khoảng 1 giờ dữ liệu nói chuyện tự nhiên để thuật toán AI học được ngữ điệu." }
+      ]
+    },
+    {
+      "id": "q4",
+      "text": "Một người cao tuổi trong gia đình bạn nhận được cuộc gọi từ một số lạ. Ở đầu dây bên kia là giọng nói giống hệt giọng của cháu ngoại, khóc lóc cầu cứu vì bị tai nạn giao thông nghiêm trọng và đang bị cảnh sát tạm giữ, yêu cầu chuyển gấp 100 triệu đồng qua ví điện tử hoặc thẻ quà tặng để được bảo lãnh. Kỹ thuật thao túng tâm lý cốt lõi nào được kẻ tấn công sử dụng ở đây?",
+      "correctAnswerId": 4,
+      "difficulty": "easy",
+      "answers": [
+        { "id": 1, "text": "Tấn công kỹ thuật trực tiếp vào thiết bị của nạn nhân để tự động thực hiện lệnh chuyển khoản." },
+        { "id": 2, "text": "Sử dụng các phần mềm quét sinh trắc học khuôn mặt từ xa để ép nạn nhân mở khóa điện thoại." },
+        { "id": 3, "text": "Giả mạo tin nhắn thông báo trúng thưởng từ ngân hàng để dụ nạn nhân tự nhập mã OTP." },
+        { "id": 4, "text": "Sử dụng công nghệ nhân bản giọng nói kết hợp với sự khẩn cấp giả tạo và kích hoạt cảm xúc mạnh để gây hoảng loạn, vô hiệu hóa khả năng tư duy xác minh của nạn nhân." }
+      ]
+    },
+    {
+      "id": "q5",
+      "text": "Bạn nhận được một cuộc gọi khẩn cấp từ tài khoản Zalo của đồng nghiệp yêu cầu bạn cung cấp thông tin đăng nhập hệ thống hoặc chuyển khoản gấp một khoản tiền nhỏ để xử lý công việc. Theo giao thức phòng thủ Zero-Trust, hành động kiểm tra kênh độc lập (Out-of-Band Verification) đúng đắn nhất là gì?",
+      "correctAnswerId": 2,
+      "difficulty": "easy",
+      "answers": [
+        { "id": 1, "text": "Tiếp tục trò chuyện và yêu cầu đối phương đọc lại mã nhân viên hoặc số tài khoản ngân hàng để đối chiếu." },
+        { "id": 2, "text": "Ngắt kết nối cuộc gọi hiện tại và chủ động liên hệ lại qua một kênh độc lập hoàn toàn như số điện thoại cá nhân đã lưu hoặc hệ thống danh bạ nội bộ được công ty phê duyệt." },
+        { "id": 3, "text": "Gửi tin nhắn phản hồi trực tiếp vào tin nhắn Zalo vừa nhận để yêu cầu gửi thêm ảnh chụp căn cước công dân." },
+        { "id": 4, "text": "Kiểm tra xem ảnh đại diện Zalo có sắc nét và tài khoản đó có hoạt động thường xuyên hay không." }
+      ]
+    },
+    {
+      "id": "q6",
+      "text": "Một nhân viên tài chính tại tập đoàn kỹ thuật Arup đã bị đánh lừa và thực hiện các giao dịch chuyển khoản trái phép trị giá 25,6 triệu USD cho kẻ lừa đảo. Tại sao nhân viên này lại tin tưởng và thực hiện giao dịch mà không nghi ngờ gì trong suốt quá trình?",
+      "correctAnswerId": 1,
+      "difficulty": "medium",
+      "answers": [
+        { "id": 1, "text": "Do nhân viên được yêu cầu thực hiện giao dịch trong một cuộc họp video trực tuyến trực tiếp có sự tham gia của nhiều người, hiển thị hình ảnh và giọng nói giả mạo (deepfake) thời gian thực của Giám đốc Tài chính (CFO) cùng các thành viên ban lãnh đạo khác." },
+        { "id": 2, "text": "Do kẻ tấn công đã hack thành công hệ thống chuyển tiền tự động của ngân hàng đối tác và tự động phê duyệt lệnh chuyển." },
+        { "id": 3, "text": "Do kẻ lừa đảo gửi một email có chữ ký số hợp pháp của CFO kèm theo các tài liệu giả mạo được đóng dấu đỏ của tòa án tối cao." },
+        { "id": 4, "text": "Do nhân viên bị đe dọa sa thải lập tức thông qua một tin nhắn văn bản SMS gửi trực tiếp từ số điện thoại cá nhân của CEO." }
+      ]
+    },
+    {
+      "id": "q7",
+      "text": "Bạn nhận được một cuộc gọi hỗ trợ khách hàng từ một tổ chức tài chính. Người gọi nói chuyện rất lưu loát và tự nhiên, nhưng bạn có cảm giác nghi ngờ đây là một tổng đài lừa đảo tự động sử dụng mô hình ngôn ngữ lớn (LLM) và giọng nói AI thời gian thực. Những dấu hiệu cảnh báo đỏ (Red Flags) đặc trưng nào giúp bạn nhận diện cuộc gọi vishing tự động này?",
+      "correctAnswerId": 4,
+      "difficulty": "medium",
+      "answers": [
+        { "id": 1, "text": "Giọng nói có âm thanh robotic thô sơ, luôn phát ra các tiếng bíp định kỳ mỗi 5 giây, và cuộc gọi tự ngắt nếu bạn nói quá lớn." },
+        { "id": 2, "text": "Đối phương liên tục ngắt lời bạn, nói tiếng nước ngoài xen lẫn tiếng Việt, và yêu cầu bạn đọc to toàn bộ mật khẩu tài khoản." },
+        { "id": 3, "text": "Tín hiệu âm thanh bị chập chờn liên tục, có nhiều tiếng ồn của tiếng gió thổi và người gọi liên tục hoặc hắt hơi lớn." },
+        { "id": 4, "text": "Sự xuất hiện của các độ trễ siêu nhỏ (micro-delays) trước khi trả lời, tông giọng biểu đạt cảm xúc hơi phẳng lặng, hoặc các lỗi ngữ cảnh nhỏ khi bạn đột ngột thay đổi chủ đề trò chuyện." }
+      ]
+    },
+    {
+      "id": "q8",
+      "text": "Trong một phi vụ lừa đảo đầu tư trực tuyến, bạn được dẫn dắt truy cập một trang web tài chính trông rất chuyên nghiệp, có đầy đủ đánh giá tích cực của người dùng và tin tức deepfake của các chính trị gia nổi tiếng để xây dựng lòng tin. Hệ thống sau đó yêu cầu bạn tải lên ảnh chụp Căn cước công dân và thực hiện chụp ảnh khuôn mặt (selfie verification). Bẫy sinh trắc học này được kẻ xấu thiết lập nhằm mục đích cốt lõi nào?",
+      "correctAnswerId": 3,
+      "difficulty": "medium",
+      "answers": [
+        { "id": 1, "text": "Kích hoạt phần mềm đào tiền mã hóa ngầm trực tiếp trên trình duyệt Web của thiết bị bạn đang sử dụng." },
+        { "id": 2, "text": "Tự động đồng bộ hóa tài khoản ngân hàng của bạn với ví điện tử quốc tế thông qua giao thức NFC." },
+        { "id": 3, "text": "Thu hoạch dữ liệu sinh trắc học khuôn mặt và các giấy tờ định danh hợp pháp của bạn để xây dựng các bộ hồ sơ danh tính tổng hợp (synthetic identity kits) phục vụ cho các vụ lừa đảo khác." },
+        { "id": 4, "text": "Theo dõi hành vi gõ phím và áp lực vuốt màn hình của bạn để bẻ khóa mật khẩu iCloud." }
+      ]
+    },
+    {
+      "id": "q9",
+      "text": "Để phòng ngừa rủi ro các thành viên trong gia đình hoặc các nhân sự chủ chốt trong doanh nghiệp bị lừa bởi công nghệ sao chép giọng nói bằng AI, bạn quyết định triển khai cơ chế 'Mật mã an toàn' (Offline Challenge-Response Code Phrase). Phương pháp thiết lập và lưu trữ mật mã này thế nào mới đảm bảo an toàn tuyệt đối?",
+      "correctAnswerId": 1,
+      "difficulty": "medium",
+      "answers": [
+        { "id": 1, "text": "Thống nhất mật mã trực tiếp bằng lời nói khi gặp mặt trực tiếp, tuyệt đối không truyền tin, lưu trữ hoặc trao đổi qua bất kỳ phương tiện kỹ thuật số nào." },
+        { "id": 2, "text": "Tạo mật mã ngẫu nhiên trên trang web trực tuyến và chia sẻ thông qua các ứng dụng nhắn tin bảo mật có mã hóa đầu cuối như Signal." },
+        { "id": 3, "text": "Lưu trữ mật mã trong một tệp ghi chú được bảo vệ bằng mật khẩu mạnh trên dịch vụ lưu trữ đám mây Google Drive hoặc iCloud." },
+        { "id": 4, "text": "Đăng ký mật mã này với nhà mạng viễn thông để hệ thống tự động chặn các cuộc gọi giả mạo không cung cấp đúng mật mã." }
+      ]
+    },
+    {
+      "id": "q10",
+      "text": "Khi thảo luận về các nạn nhân của tội phạm lừa đảo công nghệ cao, nhiều người cho rằng chỉ những người lớn tuổi thiếu kiến thức công nghệ mới dễ sập bẫy. Theo số liệu báo cáo chính thức của IC3 năm 2025, nhận định về nhân khẩu học này có điểm sai lầm nghiêm trọng nào?",
+      "correctAnswerId": 2,
+      "difficulty": "medium",
+      "answers": [
+        { "id": 1, "text": "Nhóm thanh thiếu niên dưới 20 tuổi là đối tượng chịu thiệt hại nặng nề nhất, chiếm tới hơn 50% tổng số tiền bị lừa đảo trên toàn cầu." },
+        { "id": 2, "text": "Mặc dù nhóm trên 60 tuổi chịu thiệt hại tài chính điều chỉnh cao nhất ($7.7 tỷ), nhưng nhóm chuyên gia và người lao động trong độ tuổi làm việc chịu thiệt hại khổng lồ lên tới hơn $8.3 tỷ do lừa đảo nhắm vào bối cảnh nghề nghiệp." },
+        { "id": 3, "text": "Hơn 95% các vụ lừa đảo thành công chỉ nhắm vào những người chưa từng sử dụng máy tính hoặc không có tài khoản ngân hàng trực tuyến." },
+        { "id": 4, "text": "Các giám đốc điều hành (C-level) hoàn toàn không chịu bất kỳ thiệt hại nào do luôn có đội ngũ trợ lý bảo mật kiểm tra thông tin 24/7." }
+      ]
+    },
+    {
+      "id": "q11",
+      "text": "Là một doanh nhân thường xuyên phát biểu trước công chúng, bạn lo ngại giọng nói của mình bị ghi âm và sử dụng để huấn luyện mô hình AI sao chép giọng nói. Bạn quyết định sử dụng công cụ 'Nhiễu đối kháng âm thanh' (Adversarial Audio Perturbation). Cơ chế hoạt động của công nghệ phòng thủ sinh trắc học chủ động này là gì?",
+      "correctAnswerId": 4,
+      "difficulty": "hard",
+      "answers": [
+        { "id": 1, "text": "Tự động nén dung lượng file âm thanh xuống dưới mức tối thiểu để loại bỏ hoàn toàn các dải tần số cao mà AI cần để học giọng nói." },
+        { "id": 2, "text": "Phát ra các tần số siêu âm liên tục trong quá trình ghi âm để làm hỏng phần cứng microphone của các thiết bị thu âm lén xung quanh." },
+        { "id": 3, "text": "Mã hóa file âm thanh thành một định dạng độc quyền mà các mô hình AI tạo sinh chưa được cấp phép giải mã." },
+        { "id": 4, "text": "Bơm các biến dạng toán học siêu nhỏ vào file âm thanh; tai người hoàn toàn không nhận ra nhưng chúng làm rối loạn mạng thần kinh nhân tạo của công cụ AI tạo sinh giọng nói, khiến bản sao bị méo mó không thể sử dụng." }
+      ]
+    },
+    {
+      "id": "q12",
+      "text": "Do tin tặc có khả năng dễ dàng vượt qua các lớp bảo mật mật khẩu truyền thống và đánh chặn mã xác thực MFA gửi qua tin nhắn SMS hoặc cuộc gọi thoại, các tổ chức tài chính hiện đại được khuyến nghị chuyển dịch sang kiến trúc bảo mật nào để chống lại các cuộc tấn công tài khoản tự động bằng AI?",
+      "correctAnswerId": 3,
+      "difficulty": "hard",
+      "answers": [
+        { "id": 1, "text": "Tăng độ dài mật khẩu tĩnh lên tối thiểu 30 ký tự và yêu cầu thay đổi hàng tuần kết hợp với xác thực email phụ." },
+        { "id": 2, "text": "Sử dụng hệ thống xác thực cuộc gọi thoại tự động bằng robot AI để phỏng vấn trực tiếp người dùng mỗi khi có lệnh chuyển tiền." },
+        { "id": 3, "text": "Sử dụng trình tạo mã TOTP chuyên dụng hoặc khóa bảo mật vật lý FIDO2 kết hợp với sinh trắc học hành vi liên tục (giám sát tốc độ gõ phím, áp lực vuốt, thói quen điều hướng)." },
+        { "id": 4, "text": "Thiết lập cơ chế gửi mã OTP ngân hàng thông qua đường bưu điện hoặc fax bảo mật để tránh rủi ro đánh chặn kỹ thuật số." }
+      ]
+    },
+    {
+      "id": "q13",
+      "text": "Bạn phát hiện ra mình vừa vô tình đăng nhập và tải lên ảnh chụp giấy tờ cá nhân, ảnh selfie định danh lên một website giả mạo ngân hàng. Để ngăn chặn tối đa thiệt hại tài chính và pháp lý theo quy trình ứng phó đa tầng (Multi-Tiered Containment), bạn nên thực hiện chuỗi hành động khẩn cấp nào sau đây theo đúng thứ tự ưu tiên?",
+      "correctAnswerId": 1,
+      "difficulty": "hard",
+      "answers": [
+        { "id": 1, "text": "Tạm khóa thẻ trên ứng dụng ngân hàng -> Đăng ký phong tỏa tín dụng tại 3 tổ chức Equifax, Experian, TransUnion -> Nộp tờ khai IRS Form 14039 chống gian lận thuế -> Báo cáo FTC và IC3 của FBI để kích hoạt Đội thu hồi tài sản." },
+        { "id": 2, "text": "Gửi email cảnh báo cho nhà mạng viễn thông -> Xóa toàn bộ tài khoản mạng xã hội cá nhân -> Thực hiện khôi phục cài đặt gốc điện thoại -> Thay đổi mật khẩu Wi-Fi gia đình." },
+        { "id": 3, "text": "Đổi mật khẩu tài khoản email chính -> Làm đơn tố cáo gửi ủy ban nhân dân phường -> Mua khóa bảo mật vật lý FIDO2 mới -> Liên hệ trực tiếp với kẻ lừa đảo qua trang web giả mạo để đòi lại thông tin." },
+        { "id": 4, "text": "Khóa tài khoản Zalo cá nhân -> Thay đổi số điện thoại liên kết ngân hàng -> Đóng toàn bộ các tài khoản tiết kiệm online -> Yêu cầu cấp lại hộ chiếu mới tại cục quản lý xuất nhập cảnh." }
+      ]
+    },
+    {
+      "id": "q14",
+      "text": "Nhiều chuyên gia bảo mật và người dùng vẫn duy trì quan điểm rằng có thể dễ dàng phát hiện video deepfake hoặc giọng nói giả mạo bằng mắt thường và tai nghe thông qua các lỗi như: chớp mắt bất thường, lệch khẩu hình miệng, hoặc nhịp ngắt quãng không tự nhiên. Tại sao niềm tin này lại là một sai lầm nhận thức cực kỳ nguy hiểm trong bối cảnh hiện nay?",
+      "correctAnswerId": 4,
+      "difficulty": "hard",
+      "answers": [
+        { "id": 1, "text": "Các lỗi hiển thị vật lý chỉ xuất hiện trên các thiết bị di động đời cũ, còn các dòng máy tính cao cấp đã tự động loại bỏ các lỗi này trước khi hiển thị cho người dùng." },
+        { "id": 2, "text": "Các phần mềm deepfake ngày nay được lập trình để cố tình tạo ra các lỗi chớp mắt giả nhằm đánh lừa người dùng tin rằng đó là video thật." },
+        { "id": 3, "text": "Toàn bộ các nền tảng họp trực tuyến lớn đã tích hợp sẵn công nghệ ngăn chặn và cảnh báo deepfake trực tiếp trên màn hình cuộc gọi." },
+        { "id": 4, "text": "Công nghệ nhân bản giọng nói và hình ảnh động đã vượt qua 'ngưỡng không thể phân biệt', các nghiên cứu cho thấy mắt và tai người không thể tự nhận biết một cách nhất quán, trong khi các hệ thống phát hiện tự động có độ chính xác cao hơn nhiều." }
+      ]
+    },
+    {
+      "id": "q15",
+      "text": "Bạn tin tưởng rằng các nền tảng công nghệ lớn và tổ chức tài chính sở hữu các giải pháp xác thực thực thể sống (liveness verification) rất tiên tiến, bắt buộc quay mặt các góc hoặc đọc dãy số nên không thể bị vượt qua bởi AI. Thực tế các cuộc thử nghiệm bảo mật đã chứng minh điểm yếu cốt lõi nào của các hệ thống này?",
+      "correctAnswerId": 1,
+      "difficulty": "hard",
+      "answers": [
+        { "id": 1, "text": "Các hệ thống xác thực thực thể sống đã bị nghiên cứu sinh bẻ khóa chỉ trong vòng 24 giờ sau khi ra mắt bằng cách sử dụng luồng deepfake thời gian thực được ánh xạ tới một người vận hành trực tiếp thực hiện các động tác quay đầu và nói số theo yêu cầu." },
+        { "id": 2, "text": "Hệ thống liveness verification thực chất chỉ là các trò chơi tương tác tĩnh và không hề thực hiện bất kỳ phép phân tích toán học hay so sánh sinh trắc học nào trên máy chủ." },
+        { "id": 3, "text": "Các camera trên điện thoại thông minh thông thường có độ phân giải quá thấp, khiến hệ thống tự động phê duyệt mọi hình ảnh tải lên bất kể có phải là người thật hay không." },
+        { "id": 4, "text": "Các nhà phát triển hệ thống bảo mật đã cố ý để lại các cổng hậu (backdoors) trong thuật toán liveness nhằm cho phép các cơ quan thực thi pháp luật truy cập dễ dàng." }
+      ]
+    }
+  ]
+}

@@ -5,55 +5,120 @@
       "id": "q1",
       "text": "Khi nhận cuộc gọi tự xưng là công an yêu cầu chuyển tiền, bạn nên làm gì?",
       "correctAnswerId": 1,
+      "difficulty": "easy",
       "answers": [
-        { "id": 1, "text": "Cúp máy, gọi tổng đài 113 xác minh" },
-        { "id": 2, "text": "Chuyển tiền ngay cho an toàn" },
-        { "id": 3, "text": "Cung cấp mã OTP" },
-        { "id": 4, "text": "Cài app theo hướng dẫn" }
+        {
+          "id": 1,
+          "text": "Cúp máy, gọi tổng đài 113 xác minh"
+        },
+        {
+          "id": 2,
+          "text": "Chuyển tiền ngay cho an toàn"
+        },
+        {
+          "id": 3,
+          "text": "Cung cấp mã OTP"
+        },
+        {
+          "id": 4,
+          "text": "Cài app theo hướng dẫn"
+        }
       ]
     },
     {
       "id": "q2",
       "text": "OTP ngân hàng dùng để làm gì?",
       "correctAnswerId": 1,
+      "difficulty": "easy",
       "answers": [
-        { "id": 1, "text": "Xác thực giao dịch của chính bạn" },
-        { "id": 2, "text": "Chia sẻ cho nhân viên hỗ trợ" },
-        { "id": 3, "text": "Gửi cho người trúng thưởng" },
-        { "id": 4, "text": "Đăng lên mạng xã hội" }
+        {
+          "id": 1,
+          "text": "Xác thực giao dịch của chính bạn"
+        },
+        {
+          "id": 2,
+          "text": "Chia sẻ cho nhân viên hỗ trợ"
+        },
+        {
+          "id": 3,
+          "text": "Gửi cho người trúng thưởng"
+        },
+        {
+          "id": 4,
+          "text": "Đăng lên mạng xã hội"
+        }
       ]
     },
     {
       "id": "q3",
       "text": "Dấu hiệu nào CẢNH BÁO một website giả mạo ngân hàng?",
       "correctAnswerId": 1,
+      "difficulty": "easy",
       "answers": [
-        { "id": 1, "text": "Tên miền lạ, sai chính tả, không có HTTPS" },
-        { "id": 2, "text": "Có logo ngân hàng" },
-        { "id": 3, "text": "Giao diện đẹp" },
-        { "id": 4, "text": "Có ô đăng nhập" }
+        {
+          "id": 1,
+          "text": "Tên miền lạ, sai chính tả, không có HTTPS"
+        },
+        {
+          "id": 2,
+          "text": "Có logo ngân hàng"
+        },
+        {
+          "id": 3,
+          "text": "Giao diện đẹp"
+        },
+        {
+          "id": 4,
+          "text": "Có ô đăng nhập"
+        }
       ]
     },
     {
       "id": "q4",
       "text": "Link lạ trong tin nhắn 'trúng thưởng' nên xử lý thế nào?",
       "correctAnswerId": 1,
+      "difficulty": "easy",
       "answers": [
-        { "id": 1, "text": "Không bấm, xóa tin nhắn" },
-        { "id": 2, "text": "Bấm xem thử" },
-        { "id": 3, "text": "Nhập thông tin nhận thưởng" },
-        { "id": 4, "text": "Gửi cho bạn bè cùng nhận" }
+        {
+          "id": 1,
+          "text": "Không bấm, xóa tin nhắn"
+        },
+        {
+          "id": 2,
+          "text": "Bấm xem thử"
+        },
+        {
+          "id": 3,
+          "text": "Nhập thông tin nhận thưởng"
+        },
+        {
+          "id": 4,
+          "text": "Gửi cho bạn bè cùng nhận"
+        }
       ]
     },
     {
       "id": "q5",
       "text": "Mật khẩu mạnh nên có đặc điểm gì?",
       "correctAnswerId": 1,
+      "difficulty": "easy",
       "answers": [
-        { "id": 1, "text": "Dài, gồm chữ hoa, thường, số, ký tự đặc biệt" },
-        { "id": 2, "text": "Là ngày sinh của mình" },
-        { "id": 3, "text": "123456 cho dễ nhớ" },
-        { "id": 4, "text": "Dùng chung cho mọi tài khoản" }
+        {
+          "id": 1,
+          "text": "Dài, gồm chữ hoa, thường, số, ký tự đặc biệt"
+        },
+        {
+          "id": 2,
+          "text": "Là ngày sinh của mình"
+        },
+        {
+          "id": 3,
+          "text": "123456 cho dễ nhớ"
+        },
+        {
+          "id": 4,
+          "text": "Dùng chung cho mọi tài khoản"
+        }
       ]
     }
   ]

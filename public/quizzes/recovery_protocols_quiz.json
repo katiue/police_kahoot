@@ -1,0 +1,185 @@
+{
+  "title": "Chống Lừa Đảo - Police Quiz 2026",
+  "questions": [
+    {
+      "id": "q1",
+      "text": "Bạn làm quen với một đối tác thành đạt qua ứng dụng hẹn hò hoặc LinkedIn. Người này rất lịch sự, chia sẻ ảnh cuộc sống sang trọng, nói chuyện tình cảm mỗi ngày suốt 3 tháng mà chưa từng mở lời mượn tiền hay xin giúp đỡ tài chính. Sau đó, họ khéo léo khoe các khoản lợi nhuận đầu tư lớn và hướng dẫn bạn tự lập tài khoản trên một sàn giao dịch tiền mã hóa mới để \"cùng nhau gia tăng tài sản\". Đây là dấu hiệu của hành vi gì?",
+      "correctAnswerId": 1,
+      "difficulty": "easy",
+      "answers": [
+        { "id": 1, "text": "Thủ đoạn lừa đảo \"luyện heo\" (Pig Butchering) hiện đại: Tránh đòi tiền trực tiếp để không kích hoạt cảnh giác tâm lý, thay vào đó tạo dựng quan hệ thân mật rồi dẫn dụ nạn nhân tự nộp tiền vào sàn giao dịch giả mạo." },
+        { "id": 2, "text": "Tấn công trực diện bằng kỹ thuật xã hội: Dùng áp lực tâm lý cao độ để ép buộc bạn chuyển khoản tiền mặt ngay lập tức vào tài khoản cá nhân của họ." },
+        { "id": 3, "text": "Chiến dịch tiếp thị liên kết (Affiliate Marketing): Đây chỉ là hình thức thu hút người dùng đăng ký để nhận hoa hồng giới thiệu từ các sàn giao dịch uy tín toàn cầu." },
+        { "id": 4, "text": "Spam quảng cáo kỹ thuật số: Kẻ xấu sử dụng các công cụ tự động gửi tin nhắn hàng loạt từ dữ liệu rò rỉ nhằm tăng lượt truy cập website." }
+      ]
+    },
+    {
+      "id": "q2",
+      "text": "Khi tham gia đầu tư theo hướng dẫn của một \"chuyên gia\" quen qua mạng, những khoản tiền nộp đầu tiên của bạn đều hiển thị mức lợi nhuận cực kỳ ấn tượng trên giao diện trang web đầu tư giả mạo. Khi bạn muốn rút thử một phần nhỏ, hệ thống cho rút rất nhanh chóng. Hành vi này của nền tảng nhằm mục đích gì?",
+      "correctAnswerId": 3,
+      "difficulty": "medium",
+      "answers": [
+        { "id": 1, "text": "Thử nghiệm kỹ thuật hệ thống để đảm bảo kết nối giữa ví cá nhân của bạn và bể thanh khoản (liquidity pool) của sàn không bị lỗi." },
+        { "id": 2, "text": "Chính sách ưu đãi chào mừng thành viên mới để khuyến khích trải nghiệm các tính năng giao dịch nâng cao của hệ thống." },
+        { "id": 3, "text": "Tạo ra lợi nhuận giả lập và cho rút thử lượng nhỏ để xây dựng niềm tin giả tạo, thúc đẩy nạn nhân đi vay mượn hoặc rút hết tiền tiết kiệm để đầu tư số tiền lớn hơn gấp nhiều lần." },
+        { "id": 4, "text": "Chứng minh sàn giao dịch hoạt động hoàn toàn minh bạch, có thanh khoản cao và được bảo chứng bởi các tổ chức tài chính quốc tế." }
+      ]
+    },
+    {
+      "id": "q3",
+      "text": "Bạn đang làm thủ tục nhận việc từ xa (onboarding) cho một công ty mới. Người tự xưng là trưởng nhóm kỹ thuật yêu cầu bạn tải phần mềm AnyDesk về máy tính cá nhân để hỗ trợ cấu hình tài khoản doanh nghiệp. Ngay sau khi bạn cấp quyền truy cập, bạn thấy con trỏ chuột tự di chuyển và mở các thư mục chứa tài liệu cá nhân. Bạn nên xử lý như thế nào?",
+      "correctAnswerId": 2,
+      "difficulty": "easy",
+      "answers": [
+        { "id": 1, "text": "Tiếp tục để họ thao tác vì đây là quy trình làm thủ tục nhận việc (onboarding) tiêu chuẩn của hầu hết các doanh nghiệp công nghệ hiện nay." },
+        { "id": 2, "text": "Ngắt kết nối mạng (rút cáp Ethernet, tắt Wi-Fi) ngay lập tức để cắt đứt liên lạc điều khiển (C2) của kẻ tấn công, sau đó tiến hành quét mã độc ngoại tuyến." },
+        { "id": 3, "text": "Gõ tin nhắn trò chuyện (chat) yêu cầu người hỗ trợ dừng thao tác để bạn tự thực hiện tiếp các bước cài đặt." },
+        { "id": 4, "text": "Tắt màn hình máy tính và để yên trong vài giờ để hệ thống tự động hoàn tất quá trình cài đặt phần mềm doanh nghiệp." }
+      ]
+    },
+    {
+      "id": "q4",
+      "text": "Bạn nhận được một cuộc gọi điện thoại từ số lạ, nhưng đầu dây bên kia lại là giọng nói giống hệt của con trai bạn, hớt hải báo tin vừa gây tai nạn giao thông nghiêm trọng và đang bị công an tạm giữ, cần chuyển khoản gấp 50 triệu đồng vào tài khoản của \"cán bộ điều tra\" để được bảo lãnh. Điểm đáng ngờ nhất trong tình huống này là gì?",
+      "correctAnswerId": 4,
+      "difficulty": "easy",
+      "answers": [
+        { "id": 1, "text": "Giọng nói của con trai bạn quá rõ ràng và không hề có bất kỳ tiếng ồn nền nào như tiếng còi xe hay tiếng khóc lóc lo lắng." },
+        { "id": 2, "text": "Số điện thoại gọi đến hiển thị là số thuê bao di động thông thường thay vì số điện thoại khẩn cấp của cơ quan công an (113)." },
+        { "id": 3, "text": "Con trai bạn chủ động gọi điện trực tiếp thay vì nhờ nhân viên y tế hoặc lực lượng chức năng liên hệ với gia đình." },
+        { "id": 4, "text": "Yêu cầu chuyển tiền gấp vào một tài khoản lạ, tạo áp lực thời gian cao độ và tìm cách ngăn cản bạn thực hiện kiểm tra chéo qua các kênh liên lạc khác." }
+      ]
+    },
+    {
+      "id": "q5",
+      "text": "Một nạn nhân vừa bị lừa đảo chiếm đoạt 300 triệu đồng tiền mã hóa. Hai ngày sau, có một người tự xưng là luật sư thuộc \"Ban hỗ trợ thu hồi tài sản\" của cơ quan CIRO hoặc SEC liên hệ, cam kết đã định vị được dòng tiền và sẽ giúp phong tỏa ví kẻ trộm, nhưng yêu cầu nạn nhân phải đóng trước 10 triệu đồng tiền thuế liên bang để làm thủ tục giải ngân. Tình huống này cảnh báo điều gì?",
+      "correctAnswerId": 1,
+      "difficulty": "medium",
+      "answers": [
+        { "id": 1, "text": "Đây là thủ đoạn lừa đảo thu hồi tài sản lần hai (Secondary Recoupment Scam): Kẻ xấu khai thác danh sách nạn nhân có sẵn để tiếp tục chiếm đoạt tiền qua việc đòi phí trả trước." },
+        { "id": 2, "text": "Quy trình nghiệp vụ tiêu chuẩn của cơ quan quản lý tài chính nhằm đảm bảo tính hợp pháp của các giao dịch hoàn trả tài sản quốc tế." },
+        { "id": 3, "text": "Cơ hội duy nhất để lấy lại tiền vì các tổ chức này có công cụ truy vết blockchain chuyên dụng được Chính phủ cấp phép hoạt động." },
+        { "id": 4, "text": "Dịch vụ hỗ trợ pháp lý có thu phí thông thường, khoản phí này sẽ được hoàn trả lại 100% cùng với số tiền bị lừa sau khi hoàn tất thủ tục." }
+      ]
+    },
+    {
+      "id": "q6",
+      "text": "Bị kẻ lừa đảo giả danh đe dọa, bạn đã đóng gói 150 triệu đồng tiền mặt và gửi qua dịch vụ bưu điện Hoa Kỳ (USPS) đến địa chỉ chỉ định. Chỉ 30 phút sau khi rời bưu cục, bạn nhận ra mình bị lừa. Để chặn đứng gói hàng này trước khi nó đến tay kẻ xấu, bạn phải thực hiện hành động kỹ thuật nào ngay lập tức?",
+      "correctAnswerId": 3,
+      "difficulty": "medium",
+      "answers": [
+        { "id": 1, "text": "Đăng nhập vào website bưu điện và gửi một phiếu khiếu nại thông thường trong mục hỗ trợ khách hàng để hệ thống xếp hàng xử lý." },
+        { "id": 2, "text": "Đến trực tiếp bưu cục giao hàng đích và túc trực tại đó để giải thích với nhân viên bưu điện khi gói hàng được chuyển đến." },
+        { "id": 3, "text": "Gọi ngay đường dây nóng của Dịch vụ Kiểm tra Bưu điện Hoa Kỳ (877-876-2455) để yêu cầu chặn gói hàng khẩn cấp (USPS Package Intercept) trước khi bưu tá giao hàng." },
+        { "id": 4, "text": "Liên hệ với số điện thoại của người nhận ghi trên gói hàng để thương lượng và yêu cầu họ từ chối nhận bưu phẩm từ bưu tá." }
+      ]
+    },
+    {
+      "id": "q7",
+      "text": "Sau khi thực hiện một giao dịch chuyển khoản ngân hàng hoặc gửi tiền qua Western Union cho một đối tượng nghi vấn lừa đảo, bạn nên thực hiện chuỗi hành động khẩn cấp nào sau đây để tối đa hóa cơ hội ngăn chặn dòng tiền thất thoát?",
+      "correctAnswerId": 2,
+      "difficulty": "medium",
+      "answers": [
+        { "id": 1, "text": "Thay đổi mật khẩu đăng nhập ứng dụng ngân hàng và chờ đợi hệ thống tự động quét và thu hồi các giao dịch đáng ngờ trong vòng 24 giờ." },
+        { "id": 2, "text": "Gọi ngay hotline fraud của ngân hàng gửi và mạng lưới trung gian chuyển tiền để yêu cầu thu hồi khẩn cấp, đồng thời kích hoạt khóa thẻ tạm thời trên ứng dụng di động." },
+        { "id": 3, "text": "Gửi tin nhắn đe dọa tố cáo lên cơ quan công an cho kẻ nhận tiền để ép buộc họ phải tự nguyện thực hiện lệnh chuyển khoản ngược lại." },
+        { "id": 4, "text": "Đợi đến ngày làm việc tiếp theo để ra trực tiếp quầy giao dịch gặp giao dịch viên giải quyết để tránh phát sinh thủ tục online phức tạp." }
+      ]
+    },
+    {
+      "id": "q8",
+      "text": "Khi trình báo một vụ lừa đảo chiếm đoạt tiền mã hóa (cryptocurrency) lên Trung tâm Khiếu nại Tội phạm Internet (IC3) của FBI hoặc cơ quan phòng chống tội phạm công nghệ cao, những chỉ dấu kỹ thuật (forensic markers) nào bắt buộc phải cung cấp đầy đủ để phục vụ truy vết?",
+      "correctAnswerId": 4,
+      "difficulty": "hard",
+      "answers": [
+        { "id": 1, "text": "Khóa riêng tư (Private Key) hoặc cụm từ khôi phục (Seed Phrase) của ví bạn để cơ quan điều tra đăng nhập và kiểm tra lịch sử." },
+        { "id": 2, "text": "Tên thương hiệu của ví phi tập trung bạn sử dụng, ảnh chụp số dư ví hiển thị 0 USD và địa chỉ IP nhà mạng bạn đang dùng." },
+        { "id": 3, "text": "Số lượng bạn bè kết nối với bạn trên mạng xã hội và thông tin các giao dịch chuyển tiền ngân hàng truyền thống trước đó." },
+        { "id": 4, "text": "Mã hash giao dịch (TxID) chính xác, mốc thời gian (timestamp), địa chỉ ví gửi tiền của bạn và địa chỉ ví nhận đích của kẻ tấn công." }
+      ]
+    },
+    {
+      "id": "q9",
+      "text": "Tài khoản Microsoft 365 doanh nghiệp của một quản trị viên bị tấn công bằng phương thức AiTM (Adversary-in-the-Middle). Dù nhân viên này đã lập tức đổi mật khẩu tài khoản ngay sau khi phát hiện sự cố, kẻ tấn công vẫn tiếp tục truy cập và đọc được email nội bộ. Nguyên nhân cốt lõi của tình trạng này là gì?",
+      "correctAnswerId": 1,
+      "difficulty": "hard",
+      "answers": [
+        { "id": 1, "text": "Việc đổi mật khẩu không tự động thu hồi (revoke) các session cookie đang hoạt động mà kẻ tấn công đã đánh cắp từ trước, cho phép chúng duy trì phiên truy cập hợp lệ trên máy chủ." },
+        { "id": 2, "text": "Kẻ tấn công đã ghi nhớ mật khẩu cũ và sử dụng các thuật toán giải mã ngược để tính toán ra mật khẩu mới của quản trị viên." },
+        { "id": 3, "text": "Hệ thống Microsoft 365 mặc định yêu cầu thời gian trễ 48 giờ để đồng bộ hóa mật khẩu mới trên toàn bộ các máy chủ đám mây toàn cầu." },
+        { "id": 4, "text": "Thiết bị di động của quản trị viên đã bị chiếm quyền kiểm soát sim (SIM Swapping), cho phép kẻ tấn công tự động nhận mã OTP đặt lại mật khẩu." }
+      ]
+    },
+    {
+      "id": "q10",
+      "text": "Máy tính của bạn bị nhiễm mã độc infostealer sau khi bạn lỡ mở một file đính kèm giả mạo trong email tuyển dụng. Bạn đã ngắt kết nối internet của máy tính. Bước tiếp theo bạn cần thực hiện là gì để đảm bảo an toàn tuyệt đối cho toàn bộ hệ thống tài khoản cá nhân?",
+      "correctAnswerId": 3,
+      "difficulty": "medium",
+      "answers": [
+        { "id": 1, "text": "Để máy tính tắt nguồn trong vòng 48 giờ để mã độc tự động bị xóa khỏi bộ nhớ đệm RAM rồi tiếp tục sử dụng bình thường." },
+        { "id": 2, "text": "Cài đặt lại hệ điều hành trực tiếp từ phân vùng khôi phục (recovery partition) của máy tính bị nhiễm độc mà không cần kiểm tra phần cứng." },
+        { "id": 3, "text": "Thực hiện quét virus ngoại tuyến trên máy tính bị nhiễm độc, đồng thời sử dụng một thiết bị sạch khác hoàn toàn để đổi toàn bộ mật khẩu tài khoản quan trọng từ thiết bị đó." },
+        { "id": 4, "text": "Bật lại Wi-Fi để tải các phần mềm diệt virus mới nhất về máy và thực hiện đổi mật khẩu trực tiếp trên trình duyệt của máy tính bị nhiễm độc." }
+      ]
+    },
+    {
+      "id": "q11",
+      "text": "Có quan niệm cho rằng: \"Vì giao dịch blockchain là bất biến và không thể đảo ngược, nên một khi tiền mã hóa đã bị chuyển đi thì vĩnh viễn không bao giờ có thể truy vết hay thu hồi được.\" Nhận định này có chính xác không và thực tế thế nào?",
+      "correctAnswerId": 2,
+      "difficulty": "easy",
+      "answers": [
+        { "id": 1, "text": "Chính xác tuyệt đối. Tiền mã hóa một khi đã rời ví cá nhân sẽ biến mất hoàn toàn vào không gian mạng và không một công nghệ nào có thể truy vết được dòng chảy của nó." },
+        { "id": 2, "text": "Không chính xác. Mặc dù giao dịch không thể đảo ngược trên chuỗi, nhưng việc truy vết blockchain chủ động cho phép cơ quan chức năng theo dõi dòng tiền và ra lệnh phong tỏa khi chúng chạm tới các sàn giao dịch tập trung (CEX)." },
+        { "id": 3, "text": "Không chính xác. Cơ quan an ninh có một siêu máy tính đặc biệt có khả năng can thiệp trực tiếp vào mã nguồn của mạng lưới Bitcoin để hoàn tác bất kỳ giao dịch nào." },
+        { "id": 4, "text": "Chính xác một nửa. Chỉ có thể thu hồi được tiền mã hóa nếu kẻ lừa đảo sử dụng ví lạnh (Hardware Wallet) để cất giữ, còn ví nóng thì hoàn toàn không thể truy vết." }
+      ]
+    },
+    {
+      "id": "q12",
+      "text": "Một doanh nghiệp tự tin rằng hệ thống của họ an toàn tuyệt đối trước mọi cuộc tấn công lừa đảo vì đã áp dụng chính sách bắt buộc xác thực đa yếu tố (MFA) qua tin nhắn SMS hoặc ứng dụng Authenticator (Push Notification). Điểm yếu chết người nào trong mô hình bảo mật này vẫn có thể bị tin tặc khai thác?",
+      "correctAnswerId": 4,
+      "difficulty": "hard",
+      "answers": [
+        { "id": 1, "text": "Các tin nhắn SMS OTP có thể bị bẻ khóa dễ dàng bằng các phần mềm quét sóng radio bán tự động trên điện thoại di động thông thường." },
+        { "id": 2, "text": "Mã OTP 6 số trên các ứng dụng Authenticator có thể bị dò ra bằng các thuật toán brute-force đơn giản trong vòng chưa đầy 5 phút." },
+        { "id": 3, "text": "Kẻ tấn công có thể giả mạo dấu vân tay sinh trắc học của nhân viên thông qua hình ảnh độ phân giải cao thu thập từ mạng xã hội." },
+        { "id": 4, "text": "Các cuộc tấn công proxy ngược AiTM (Adversary-in-the-Middle) có thể dụ người dùng đăng nhập qua trang giả mạo, từ đó đánh cắp trực tiếp session cookie đã được xác thực MFA hợp lệ." }
+      ]
+    },
+    {
+      "id": "q13",
+      "text": "Bạn nhận được cuộc gọi từ một người tự xưng là Cảnh sát điều tra hoặc cán bộ Viện Kiểm sát, đe dọa rằng bạn đang nằm trong danh sách truy tố hình sự và yêu cầu bạn rút toàn bộ tiền tiết kiệm chuyển vào \"Tài khoản bảo chứng an toàn của cơ quan điều tra\" để phục vụ thanh tra. Bạn nên ứng phó thế nào?",
+      "correctAnswerId": 1,
+      "difficulty": "easy",
+      "answers": [
+        { "id": 1, "text": "Cúp máy ngay lập tức, vì không có bất kỳ cơ quan Chính phủ hay Công an nào yêu cầu người dân chuyển tiền hoặc vàng vào tài khoản bảo chứng/escrow để phục vụ điều tra." },
+        { "id": 2, "text": "Chuyển tiền ngay để hợp tác chứng minh sự trong sạch của mình, tránh việc bị bắt giữ khẩn cấp tại nhà riêng." },
+        { "id": 3, "text": "Yêu cầu đối phương gửi biên bản làm việc có dấu đỏ qua mạng xã hội trước khi bạn thực hiện lệnh chuyển khoản tại ngân hàng." },
+        { "id": 4, "text": "Chỉ chuyển một phần nhỏ số tiền tiết kiệm để làm thủ tục xác minh ban đầu, giữ lại phần lớn để bảo toàn tài sản cá nhân." }
+      ]
+    },
+    {
+      "id": "q14",
+      "text": "Nhận được cuộc gọi từ một số điện thoại lạ, bạn nghe thấy giọng nói của con gái mình đang khóc lóc cầu cứu vì bị tai nạn hoặc bắt cóc tống tiền. Giọng nói giống hệt từ âm điệu đến cách xưng hô hàng ngày. Tại sao việc chỉ tin vào sự quen thuộc của giọng nói (auditory familiarity) lại cực kỳ nguy hiểm?",
+      "correctAnswerId": 3,
+      "difficulty": "hard",
+      "answers": [
+        { "id": 1, "text": "Các thiết bị giả lập giọng nói bằng phần cứng có thể tự động nhận diện và mô phỏng giọng nói của bất kỳ người thân nào trong danh bạ điện thoại." },
+        { "id": 2, "text": "Kẻ bắt cóc có thể sử dụng các kỹ thuật thôi miên qua điện thoại để ép buộc con gái bạn phải nói theo kịch bản có sẵn của chúng." },
+        { "id": 3, "text": "Công nghệ AI voice cloning có thể tạo ra bản sao giọng nói cực kỳ hoàn hảo chỉ từ một đoạn âm thanh ngắn vài giây lấy trên mạng xã hội của con gái bạn, đòi hỏi bạn phải xác minh bằng một mật khẩu gia đình tự thỏa thuận trước." },
+        { "id": 4, "text": "Tín hiệu mạng di động thế hệ mới tự động chuẩn hóa tần số âm thanh, khiến giọng nói của những người có cùng độ tuổi nghe giống hệt nhau." }
+      ]
+    },
+    {
+      "id": "q15",
+      "text": "Để ngăn chặn triệt để các cuộc tấn công chiếm đoạt tài khoản thông qua đánh cắp session cookie bằng proxy ngược (AiTM), doanh nghiệp cần chuyển đổi từ các hình thức MFA truyền thống (SMS, Push Notification) sang giải pháp bảo mật nào sau đây?",
+      "correctAnswerId": 2,
+      "difficulty": "hard",
+      "answers": [
+        { "id": 1, "text": "Tăng số lượng câu hỏi bảo mật cá nhân lên 5 câu và bắt buộc người dùng nhập bằng tay mỗi khi đăng nhập từ địa chỉ IP lạ." },
+        { "id": 2, "text": "Cơ chế xác thực FIDO2/Passkey dựa trên phần cứng hoặc khóa bảo mật liên kết thiết bị, có khả năng ràng buộc dòng dữ liệu xác thực trực tiếp với tên miền (domain-bound)." },
+        { "id": 3, "text": "Hệ thống yêu cầu thay đổi mật khẩu định kỳ 7 ngày một lần kèm theo kiểm tra lịch sử 10 mật khẩu gần nhất của người dùng." },
+        { "id": 4, "text": "Sử dụng ứng dụng gửi mã OTP qua email nội bộ được bảo vệ bởi giao thức mã hóa đường truyền TLS thế hệ mới nhất." }
+      ]
+    }
+  ]
+}
