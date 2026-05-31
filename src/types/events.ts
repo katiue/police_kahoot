@@ -70,6 +70,10 @@ export interface ClientToServerEvents {
   'host:start': (payload: { pin: string }) => void
   'host:next': (payload: { pin: string }) => void
   'host:end': (payload: { pin: string }) => void
+  'host:reset': (
+    payload: { pin: string },
+    ack?: (res: { ok: boolean; error?: string }) => void
+  ) => void
 
   'player:join': (
     payload: { pin: string; nickname: string; playerId?: string },
@@ -79,6 +83,12 @@ export interface ClientToServerEvents {
     payload: { pin: string; questionIndex: number; answerId: number },
     ack: (res: { ok: boolean; error?: string }) => void
   ) => void
+
+  /** Read-only audience view of a room. */
+  'projector:join': (
+    payload: { pin: string },
+    ack: (res: { ok: boolean; state?: ProjectorSnapshot; error?: string }) => void
+  ) => void
 }
 
 // ── Server → Client events ──────────────────────────────────────
@@ -87,6 +97,7 @@ export interface ServerToClientEvents {
   'game:question': (payload: PublicQuestion) => void
   'question:result': (payload: QuestionResult) => void
   'game:over': (payload: { survivors: PlayerView[]; eliminated: PlayerView[] }) => void
+  'question:progress': (payload: { questionIndex: number; answered: number; total: number }) => void
   'answer:ack': (payload: { questionIndex: number; received: boolean }) => void
   'player:eliminated': (payload: { reason: 'wrong' | 'timeout' }) => void
   'error:msg': (payload: { message: string }) => void
@@ -101,4 +112,21 @@ export interface HostSnapshot {
   questionIndex: number
   totalQuestions: number
   minPlayersToEnd: number
+}
+
+/** State snapshot a projector receives on (re)join. Includes live question/result so the projector can resync mid-game without history replay. */
+export interface ProjectorSnapshot {
+  pin: string
+  quizTitle: string
+  status: GameStatus
+  players: PlayerView[]
+  questionIndex: number
+  totalQuestions: number
+  minPlayersToEnd: number
+  /** Present when status === 'question'. */
+  question?: PublicQuestion
+  /** Present when status === 'result'. */
+  result?: QuestionResult
+  /** Present when status === 'ended'. */
+  ended?: { survivors: PlayerView[]; eliminated: PlayerView[] }
 }
