@@ -1,6 +1,7 @@
 'use client'
 import { use, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Backdrop } from '@/components/game/Backdrop'
 import { Button } from '@/components/ui/button'
@@ -11,10 +12,12 @@ import { PlayerStatus } from '@/components/game/Leaderboard'
 import { PlayerAvatar } from '@/components/game/PlayerAvatar'
 import { ConnectionDot } from '@/components/game/ConnectionDot'
 import { PlayerCount } from '@/components/game/PlayerCount'
+import { HostAuthCard, HOST_LOGIN_STORAGE_KEY } from '@/components/auth/HostAuthCard'
 import { getSocket } from '@/lib/socket-client'
 import { formatPin } from '@/lib/utils'
 import type {
   GameStatus,
+  HostSnapshot,
   PlayerView,
   PublicQuestion,
   QuestionResult,
@@ -34,29 +37,66 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
   const [eliminated, setEliminated] = useState<PlayerView[]>([])
   const [joinUrl, setJoinUrl] = useState('')
   const [notFound, setNotFound] = useState(false)
+  const [authRequired, setAuthRequired] = useState(false)
+  const [authBusy, setAuthBusy] = useState(false)
+  const [authError, setAuthError] = useState('')
+  const [loginKey, setLoginKey] = useState('')
   const [minPlayersToEnd, setMinPlayersToEnd] = useState(1)
   const [progress, setProgress] = useState({ answered: 0, total: 0 })
 
   useEffect(() => {
     setIsMounted(true)
     setJoinUrl(`${window.location.origin}/play?pin=${pin}`)
+    const savedLoginKey = sessionStorage.getItem(HOST_LOGIN_STORAGE_KEY) ?? ''
+    setLoginKey(savedLoginKey)
     const socket = getSocket()
 
-    const join = () =>
-      socket.emit('host:join', { pin }, (res) => {
+    const applySnapshot = (state: HostSnapshot) => {
+      setStatus(state.status)
+      setPlayers(state.players)
+      setMinPlayersToEnd(state.minPlayersToEnd)
+      setQuestion(state.question ?? null)
+      setResult(state.result ?? null)
+      if (state.ended) {
+        setSurvivors(state.ended.survivors)
+        setEliminated(state.ended.eliminated)
+      } else {
+        setSurvivors([])
+        setEliminated([])
+      }
+      setProgress({ answered: 0, total: state.players.filter((p) => !p.eliminated).length })
+    }
+
+    const join = (key = sessionStorage.getItem(HOST_LOGIN_STORAGE_KEY) ?? '') =>
+      socket.emit('host:join', { pin, loginKey: key }, (res) => {
         if (!res.ok) {
+          if (res.error === 'Invalid login key') {
+            sessionStorage.removeItem(HOST_LOGIN_STORAGE_KEY)
+            setAuthRequired(true)
+            setAuthError('')
+            return
+          }
           setNotFound(true)
           return
         }
         if (res.state) {
-          setStatus(res.state.status)
-          setPlayers(res.state.players)
-          setMinPlayersToEnd(res.state.minPlayersToEnd)
+          setAuthRequired(false)
+          applySnapshot(res.state)
         }
       })
 
-    join()
+    join(savedLoginKey)
     socket.on('connect', join)
+
+    const onError = (p: { message: string }) => {
+      toast.error(p.message)
+      // Auth-expiry signal — reopen the login card so the host can recover.
+      if (/LOGIN_KEY/i.test(p.message)) {
+        sessionStorage.removeItem(HOST_LOGIN_STORAGE_KEY)
+        setAuthRequired(true)
+      }
+    }
+    socket.on('error:msg', onError)
 
     socket.on('lobby:update', (p) => {
       setPlayers(p.players)
@@ -88,8 +128,39 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
       socket.off('question:progress')
       socket.off('question:result')
       socket.off('game:over')
+      socket.off('error:msg', onError)
     }
   }, [pin])
+
+  function submitHostLogin() {
+    setAuthBusy(true)
+    setAuthError('')
+    getSocket().emit('host:join', { pin, loginKey }, (res) => {
+      setAuthBusy(false)
+      if (!res.ok) {
+        if (res.error === 'Invalid login key') {
+          sessionStorage.removeItem(HOST_LOGIN_STORAGE_KEY)
+          setAuthRequired(true)
+          setAuthError('LOGIN_KEY không đúng')
+          return
+        }
+        setNotFound(true)
+        return
+      }
+      if (res.state) {
+        sessionStorage.setItem(HOST_LOGIN_STORAGE_KEY, loginKey)
+        setAuthRequired(false)
+        setAuthError('')
+        setStatus(res.state.status)
+        setPlayers(res.state.players)
+        setMinPlayersToEnd(res.state.minPlayersToEnd)
+        setQuestion(res.state.question ?? null)
+        setResult(res.state.result ?? null)
+        setSurvivors(res.state.ended?.survivors ?? [])
+        setEliminated(res.state.ended?.eliminated ?? [])
+      }
+    })
+  }
 
   // Derive active/eliminated from current player list
   const activePlayers = players.filter((p) => !p.eliminated)
@@ -111,6 +182,18 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
 
   return (
     <Backdrop>
+      {authRequired && (
+        <HostAuthCard
+          loginKey={loginKey}
+          busy={authBusy}
+          error={authError}
+          onChange={(value) => {
+            setLoginKey(value)
+            setAuthError('')
+          }}
+          onSubmit={submitHostLogin}
+        />
+      )}
       {/* ── Header ─────────────────────────────────────── */}
       {status !== 'lobby' && (
         <header className="relative z-10 border-b border-[rgba(0,191,255,0.15)] bg-transparent backdrop-blur-sm">
@@ -247,7 +330,7 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
 
               <Button
                 size="xl"
-                onClick={() => getSocket().emit('host:start', { pin })}
+                onClick={() => getSocket().emit('host:start', { pin, loginKey })}
                 className="gap-2"
               >
                 <Play className="size-6" /> Bắt đầu
@@ -386,7 +469,7 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
               <div className="flex justify-center">
                 <Button
                   size="xl"
-                  onClick={() => getSocket().emit('host:next', { pin })}
+                  onClick={() => getSocket().emit('host:next', { pin, loginKey })}
                   className="gap-2"
                 >
                   {isLast ? <Square className="size-5" /> : <SkipForward className="size-5" />}
@@ -485,7 +568,7 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
                   variant="accent"
                   className="gap-2"
                   onClick={() => {
-                    getSocket().emit('host:reset', { pin }, (res) => {
+                    getSocket().emit('host:reset', { pin, loginKey }, (res) => {
                       if (!res?.ok) return
                       setStatus('lobby')
                       setQuestion(null)

@@ -94,10 +94,20 @@ export class RoomManager {
   constructor(private io: IO) {}
 
   // ── lifecycle ────────────────────────────────────────────────
+  /**
+   * Create or replace a room. When fixedPin is provided and a room with that
+   * PIN already exists, the existing room is dropped first — so re-creating
+   * with the same PIN swaps in the new quiz (instead of silently keeping the
+   * old one). Boot-time auto-create runs only once per process, so this is
+   * always safe.
+   */
   createRoom(quiz: Quiz, minPlayersToEnd = 1, fixedPin?: string): string {
     const pin = genPin(new Set(this.rooms.keys()), fixedPin)
-    // Idempotent: if a fixed-PIN room already exists, return it.
-    if (this.rooms.has(pin)) return pin
+    const existing = this.rooms.get(pin)
+    if (existing) {
+      this.clearTimer(existing)
+      this.rooms.delete(pin)
+    }
     const randomizedQuiz = randomizeQuiz(quiz)
     this.rooms.set(pin, {
       pin,
@@ -173,6 +183,11 @@ export class RoomManager {
       snap.ended = this.getPlayerSummary(room)
     }
     return snap
+  }
+
+  /** Host snapshot includes the same live state needed to recover after a refresh/reconnect. */
+  hostSnapshot(pin: string): ProjectorSnapshot | null {
+    return this.projectorSnapshot(pin)
   }
 
   getRoom(pin: string): Room | undefined {
@@ -320,14 +335,18 @@ export class RoomManager {
     const activeConnected = [...room.players.values()].filter(
       (p) => !p.eliminated && p.connected
     )
+    const activeConnectedIds = new Set(activeConnected.map((p) => p.id))
+    const connectedResponseCount = [...room.responses.keys()].filter((id) =>
+      activeConnectedIds.has(id)
+    ).length
     this.io.to(room.pin).emit('question:progress', {
       questionIndex: room.questionIndex,
-      answered: room.responses.size,
+      answered: connectedResponseCount,
       total: activeConnected.length,
     })
 
     // close early if every active (non-eliminated) connected player has answered
-    if (room.responses.size >= activeConnected.length && activeConnected.length > 0) {
+    if (connectedResponseCount >= activeConnected.length && activeConnected.length > 0) {
       this.closeQuestion(room)
     }
     return { ok: true }

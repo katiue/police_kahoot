@@ -1,11 +1,12 @@
 'use client'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { toast } from 'sonner'
 import { Backdrop } from '@/components/game/Backdrop'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { HostAuthCard, HOST_LOGIN_STORAGE_KEY } from '@/components/auth/HostAuthCard'
 import { getSocket } from '@/lib/socket-client'
 import { parseQuiz } from '@/lib/quiz'
 import { Upload, FileJson, Rocket, Users, ArrowLeft, AlertTriangle } from 'lucide-react'
@@ -15,6 +16,43 @@ export default function HostCreatePage() {
   const [raw, setRaw] = useState('')
   const [busy, setBusy] = useState(false)
   const [minPlayersToEnd, setMinPlayersToEnd] = useState(1)
+  const [loginKey, setLoginKey] = useState('')
+  const [authOk, setAuthOk] = useState(false)
+  const [authBusy, setAuthBusy] = useState(true)
+  const [authError, setAuthError] = useState('')
+
+  useEffect(() => {
+    const saved = sessionStorage.getItem(HOST_LOGIN_STORAGE_KEY) ?? ''
+    setLoginKey(saved)
+    // Probe with the saved key (empty string ⇒ "no auth" path on the server).
+    // If the server has LOGIN_KEY unset, it returns ok for any value, so the
+    // host UI silently bypasses the login modal in dev / no-auth mode.
+    getSocket().emit('host:auth', { loginKey: saved }, (res) => {
+      setAuthBusy(false)
+      if (res.ok) {
+        setAuthOk(true)
+      } else {
+        if (saved) sessionStorage.removeItem(HOST_LOGIN_STORAGE_KEY)
+        setAuthOk(false)
+      }
+    })
+  }, [])
+
+  function authenticate() {
+    setAuthBusy(true)
+    setAuthError('')
+    getSocket().emit('host:auth', { loginKey }, (res) => {
+      setAuthBusy(false)
+      if (res.ok) {
+        sessionStorage.setItem(HOST_LOGIN_STORAGE_KEY, loginKey)
+        setAuthOk(true)
+      } else {
+        sessionStorage.removeItem(HOST_LOGIN_STORAGE_KEY)
+        setAuthOk(false)
+        setAuthError('LOGIN_KEY không đúng')
+      }
+    })
+  }
 
   function loadFile(file: File) {
     const reader = new FileReader()
@@ -48,11 +86,18 @@ export default function HostCreatePage() {
     }
     setBusy(true)
     const socket = getSocket()
-    socket.emit('host:create', { quiz, minPlayersToEnd }, (res) => {
+    socket.emit('host:create', { quiz, minPlayersToEnd, loginKey }, (res) => {
       setBusy(false)
       if (res.ok && res.pin) {
+        sessionStorage.setItem(HOST_LOGIN_STORAGE_KEY, loginKey)
         router.push(`/host/${res.pin}`)
       } else {
+        if (res.error === 'Invalid login key') {
+          sessionStorage.removeItem(HOST_LOGIN_STORAGE_KEY)
+          setAuthOk(false)
+          setAuthError('LOGIN_KEY không đúng')
+          return
+        }
         toast.error(res.error ?? 'Tạo phòng thất bại')
       }
     })
@@ -60,6 +105,18 @@ export default function HostCreatePage() {
 
   return (
     <Backdrop>
+      {!authOk && (
+        <HostAuthCard
+          loginKey={loginKey}
+          busy={authBusy}
+          error={authError}
+          onChange={(value) => {
+            setLoginKey(value)
+            setAuthError('')
+          }}
+          onSubmit={authenticate}
+        />
+      )}
       <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col justify-center gap-6 px-6 py-12">
         <Link
           href="/"

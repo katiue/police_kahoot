@@ -6,6 +6,12 @@ import { parseQuiz } from '@/lib/quiz'
 type IO = Server<ClientToServerEvents, ServerToClientEvents>
 type Sock = Socket<ClientToServerEvents, ServerToClientEvents>
 
+function isAuthorized(loginKey?: string): boolean {
+  const expected = process.env.LOGIN_KEY
+  if (!expected) return true
+  return typeof loginKey === 'string' && loginKey === expected
+}
+
 export function registerSocketHandlers(io: IO): RoomManager {
   const manager = new RoomManager(io)
 
@@ -13,9 +19,17 @@ export function registerSocketHandlers(io: IO): RoomManager {
   setInterval(() => manager.sweep(), 60 * 60 * 1000)
 
   io.on('connection', (socket: Sock) => {
+    socket.on('host:auth', ({ loginKey }, ack) => {
+      ack(isAuthorized(loginKey) ? { ok: true } : { ok: false, error: 'Invalid login key' })
+    })
+
     // ── Host: create room ──
-    socket.on('host:create', ({ quiz, minPlayersToEnd }, ack) => {
+    socket.on('host:create', ({ quiz, minPlayersToEnd, loginKey }, ack) => {
       try {
+        if (!isAuthorized(loginKey)) {
+          ack({ ok: false, error: 'Invalid login key' })
+          return
+        }
         const parsed = parseQuiz(quiz)
         const pin = manager.createRoom(parsed, minPlayersToEnd ?? 1)
         ack({ ok: true, pin })
@@ -25,26 +39,39 @@ export function registerSocketHandlers(io: IO): RoomManager {
     })
 
     // ── Host: join room channel ──
-    socket.on('host:join', ({ pin }, ack) => {
+    socket.on('host:join', ({ pin, loginKey }, ack) => {
+      if (!isAuthorized(loginKey)) return ack({ ok: false, error: 'Invalid login key' })
       const room = manager.setHost(pin, socket.id)
       if (!room) return ack({ ok: false, error: 'Room not found' })
       socket.join(pin)
-      const snapshot: HostSnapshot = {
-        pin: room.pin,
-        quizTitle: room.quiz.title,
-        status: room.status,
-        players: manager.playerViews(room),
-        questionIndex: room.questionIndex,
-        totalQuestions: room.quiz.questions.length,
-        minPlayersToEnd: room.minPlayersToEnd,
-      }
+      const snapshot = manager.hostSnapshot(pin) as HostSnapshot | null
+      if (!snapshot) return ack({ ok: false, error: 'Room not found' })
       ack({ ok: true, state: snapshot })
     })
 
-    socket.on('host:start', ({ pin }) => manager.startGame(pin))
-    socket.on('host:next', ({ pin }) => manager.nextQuestion(pin))
-    socket.on('host:end', ({ pin }) => manager.endGame(pin))
-    socket.on('host:reset', ({ pin }, ack) => {
+    /**
+     * Host control events have no ack callback by design (they're fire-and-
+     * forget), so a silently-rejected auth would just look like a broken
+     * button. Emit error:msg back to the calling socket so the client can
+     * surface it (toast + reopen auth card).
+     */
+    const denyHost = (event: string) => {
+      socket.emit('error:msg', { message: `LOGIN_KEY hết hạn (${event}) — đăng nhập lại` })
+    }
+    socket.on('host:start', ({ pin, loginKey }) => {
+      if (!isAuthorized(loginKey)) return denyHost('start')
+      manager.startGame(pin)
+    })
+    socket.on('host:next', ({ pin, loginKey }) => {
+      if (!isAuthorized(loginKey)) return denyHost('next')
+      manager.nextQuestion(pin)
+    })
+    socket.on('host:end', ({ pin, loginKey }) => {
+      if (!isAuthorized(loginKey)) return denyHost('end')
+      manager.endGame(pin)
+    })
+    socket.on('host:reset', ({ pin, loginKey }, ack) => {
+      if (!isAuthorized(loginKey)) return ack?.({ ok: false, error: 'Invalid login key' })
       const ok = manager.resetRoom(pin)
       ack?.({ ok, error: ok ? undefined : 'Room not found' })
     })
