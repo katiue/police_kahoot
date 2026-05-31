@@ -59,6 +59,25 @@ function genId(): string {
   return Math.random().toString(36).slice(2, 10) + Date.now().toString(36)
 }
 
+function shuffled<T>(items: T[]): T[] {
+  const copy = [...items]
+  for (let i = copy.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[copy[i], copy[j]] = [copy[j], copy[i]]
+  }
+  return copy
+}
+
+function randomizeQuiz(quiz: Quiz): Quiz {
+  return {
+    ...quiz,
+    questions: shuffled(quiz.questions).map((question) => ({
+      ...question,
+      answers: shuffled(question.answers),
+    })),
+  }
+}
+
 export class RoomManager {
   private rooms = new Map<string, Room>()
   constructor(private io: IO) {}
@@ -66,9 +85,10 @@ export class RoomManager {
   // ── lifecycle ────────────────────────────────────────────────
   createRoom(quiz: Quiz, minPlayersToEnd = 1): string {
     const pin = genPin(new Set(this.rooms.keys()))
+    const randomizedQuiz = randomizeQuiz(quiz)
     this.rooms.set(pin, {
       pin,
-      quiz,
+      quiz: randomizedQuiz,
       status: 'lobby',
       players: new Map(),
       questionIndex: -1,
