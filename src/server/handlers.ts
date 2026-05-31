@@ -44,6 +44,18 @@ export function registerSocketHandlers(io: IO): RoomManager {
     socket.on('host:start', ({ pin }) => manager.startGame(pin))
     socket.on('host:next', ({ pin }) => manager.nextQuestion(pin))
     socket.on('host:end', ({ pin }) => manager.endGame(pin))
+    socket.on('host:reset', ({ pin }, ack) => {
+      const ok = manager.resetRoom(pin)
+      ack?.({ ok, error: ok ? undefined : 'Room not found' })
+    })
+
+    // ── Projector: read-only audience view ──
+    socket.on('projector:join', ({ pin }, ack) => {
+      const snap = manager.projectorSnapshot(pin)
+      if (!snap) return ack({ ok: false, error: 'Room not found' })
+      socket.join(pin)
+      ack({ ok: true, state: snap })
+    })
 
     // ── Player: join / reconnect ──
     socket.on('player:join', ({ pin, nickname, playerId }, ack) => {

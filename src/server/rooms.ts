@@ -6,8 +6,10 @@ import type {
   GameStatus,
   PlayerView,
   PublicQuestion,
+  ProjectorSnapshot,
   QuestionResult,
 } from '@/types/events'
+import { checkNickname } from '@/lib/nickname'
 
 type IO = Server<ClientToServerEvents, ServerToClientEvents>
 
@@ -29,6 +31,9 @@ interface Response {
 
 interface Room {
   pin: string
+  /** Original quiz as parsed — kept so reset() can reshuffle without re-uploading. */
+  sourceQuiz: Quiz
+  /** Shuffled-for-this-match copy. */
   quiz: Quiz
   status: GameStatus
   players: Map<string, Player>
@@ -37,6 +42,8 @@ interface Room {
   questionEndsAt: number
   /** playerId -> response for the CURRENT question */
   responses: Map<string, Response>
+  /** Cached result for projector resync (only present while status === 'result'). */
+  lastResult: QuestionResult | null
   timer: NodeJS.Timeout | null
   hostSocketId: string | null
   createdAt: number
@@ -47,7 +54,11 @@ interface Room {
   minPlayersToEnd: number
 }
 
-function genPin(existing: Set<string>): string {
+function genPin(existing: Set<string>, fixed?: string): string {
+  if (fixed) {
+    const norm = fixed.trim().toUpperCase()
+    if (norm) return norm
+  }
   let pin = ''
   do {
     pin = Math.floor(100000 + Math.random() * 900000).toString()
@@ -83,11 +94,14 @@ export class RoomManager {
   constructor(private io: IO) {}
 
   // ── lifecycle ────────────────────────────────────────────────
-  createRoom(quiz: Quiz, minPlayersToEnd = 1): string {
-    const pin = genPin(new Set(this.rooms.keys()))
+  createRoom(quiz: Quiz, minPlayersToEnd = 1, fixedPin?: string): string {
+    const pin = genPin(new Set(this.rooms.keys()), fixedPin)
+    // Idempotent: if a fixed-PIN room already exists, return it.
+    if (this.rooms.has(pin)) return pin
     const randomizedQuiz = randomizeQuiz(quiz)
     this.rooms.set(pin, {
       pin,
+      sourceQuiz: quiz,
       quiz: randomizedQuiz,
       status: 'lobby',
       players: new Map(),
@@ -95,12 +109,70 @@ export class RoomManager {
       questionStartedAt: 0,
       questionEndsAt: 0,
       responses: new Map(),
+      lastResult: null,
       timer: null,
       hostSocketId: null,
       createdAt: Date.now(),
       minPlayersToEnd: Math.max(1, Math.round(minPlayersToEnd)),
     })
     return pin
+  }
+
+  /**
+   * Reset a room back to lobby state with a fresh shuffle. Players keep their
+   * slots but lose eliminated status. Use for "Trận mới" between event rounds.
+   */
+  resetRoom(pin: string): boolean {
+    const room = this.rooms.get(pin)
+    if (!room) return false
+    this.clearTimer(room)
+    room.quiz = randomizeQuiz(room.sourceQuiz)
+    room.status = 'lobby'
+    room.questionIndex = -1
+    room.questionStartedAt = 0
+    room.questionEndsAt = 0
+    room.responses = new Map()
+    room.lastResult = null
+    for (const p of room.players.values()) p.eliminated = false
+    this.broadcastLobby(room)
+    return true
+  }
+
+  /** First active room PIN, used by /api/active-room when running in single-room mode. */
+  firstRoomPin(): string | null {
+    for (const pin of this.rooms.keys()) return pin
+    return null
+  }
+
+  /** Read-only snapshot for projector / spectator UIs. Includes live question or result so a reconnecting projector can resync immediately. */
+  projectorSnapshot(pin: string): ProjectorSnapshot | null {
+    const room = this.rooms.get(pin)
+    if (!room) return null
+    const snap: ProjectorSnapshot = {
+      pin: room.pin,
+      quizTitle: room.quiz.title,
+      status: room.status,
+      players: this.playerViews(room),
+      questionIndex: room.questionIndex,
+      totalQuestions: room.quiz.questions.length,
+      minPlayersToEnd: room.minPlayersToEnd,
+    }
+    if (room.status === 'question' && room.questionIndex >= 0) {
+      const q = room.quiz.questions[room.questionIndex]
+      snap.question = {
+        index: room.questionIndex,
+        total: room.quiz.questions.length,
+        text: q.text,
+        answers: q.answers.map((a) => ({ id: a.id, text: a.text })),
+        timeLimitSec: q.timeLimitSec,
+        endsAt: room.questionEndsAt,
+      }
+    } else if (room.status === 'result' && room.lastResult) {
+      snap.result = room.lastResult
+    } else if (room.status === 'ended') {
+      snap.ended = this.getPlayerSummary(room)
+    }
+    return snap
   }
 
   getRoom(pin: string): Room | undefined {
@@ -147,8 +219,9 @@ export class RoomManager {
     if (room.status !== 'lobby') {
       return { ok: false, error: 'Game already started' }
     }
-    const clean = nickname.trim().slice(0, 20)
-    if (!clean) return { ok: false, error: 'Nickname required' }
+    const check = checkNickname(nickname)
+    if (!check.ok) return { ok: false, error: check.reason ?? 'Nickname invalid' }
+    const clean = check.cleaned
     const taken = [...room.players.values()].some(
       (p) => p.nickname.toLowerCase() === clean.toLowerCase()
     )
@@ -183,7 +256,8 @@ export class RoomManager {
   startGame(pin: string): void {
     const room = this.rooms.get(pin)
     if (!room || room.status !== 'lobby') return
-    if (room.players.size === 0) return
+    // Solo-test allowed: 0 players is valid. The auto-end check in
+    // shouldEndGame() will still fire after the first question if no one survives.
     this.askQuestion(room, 0)
   }
 
@@ -242,10 +316,17 @@ export class RoomManager {
     const correct = chosen.id === q.correctAnswerId
     room.responses.set(playerId, { answerId, correct })
 
-    // close early if every active (non-eliminated) connected player has answered
+    // Live answered/total counter for projector + host control panel.
     const activeConnected = [...room.players.values()].filter(
       (p) => !p.eliminated && p.connected
     )
+    this.io.to(room.pin).emit('question:progress', {
+      questionIndex: room.questionIndex,
+      answered: room.responses.size,
+      total: activeConnected.length,
+    })
+
+    // close early if every active (non-eliminated) connected player has answered
     if (room.responses.size >= activeConnected.length && activeConnected.length > 0) {
       this.closeQuestion(room)
     }
@@ -258,6 +339,7 @@ export class RoomManager {
     room.questionIndex = index
     room.status = 'question'
     room.responses = new Map()
+    room.lastResult = null
 
     const q = room.quiz.questions[index]
     const timeLimitSec = q.timeLimitSec ?? DEFAULT_TIME_LIMIT_SEC
@@ -311,6 +393,7 @@ export class RoomManager {
       counts,
       eliminatedIds: eliminatedThisRound,
     }
+    room.lastResult = base
 
     // host gets base result
     if (room.hostSocketId) {
