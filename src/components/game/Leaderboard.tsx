@@ -17,7 +17,9 @@ export function PlayerStatus({
   highlightId?: string
   max?: number
 }) {
-  const active = players.filter((p) => !p.eliminated).slice(0, max)
+  const allActive = players.filter((p) => !p.eliminated)
+  const active = allActive.slice(0, max)
+  const hiddenCount = allActive.length - active.length
   const eliminated = players.filter((p) => p.eliminated)
 
   return (
@@ -33,6 +35,14 @@ export function PlayerStatus({
           </div>
 
           <div className="grid grid-cols-4 gap-2 sm:grid-cols-5 md:grid-cols-6">
+            {hiddenCount > 0 && (
+              <div
+                className="flex items-center justify-center rounded-xl border border-[rgba(0,212,255,0.18)] bg-[rgba(0,212,255,0.05)] px-2 py-3 text-[11px] font-bold text-[var(--accent)]"
+                aria-label={`Còn ${hiddenCount} người chơi khác không hiển thị`}
+              >
+                +{hiddenCount}
+              </div>
+            )}
             <AnimatePresence initial={false}>
               {active.map((p, i) => {
                 const isHighlight = p.id === highlightId
