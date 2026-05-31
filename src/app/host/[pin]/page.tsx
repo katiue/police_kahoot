@@ -10,6 +10,7 @@ import { LobbyHero } from '@/components/game/LobbyHero'
 import { PlayerStatus } from '@/components/game/Leaderboard'
 import { PlayerAvatar } from '@/components/game/PlayerAvatar'
 import { ConnectionDot } from '@/components/game/ConnectionDot'
+import { PlayerCount } from '@/components/game/PlayerCount'
 import { getSocket } from '@/lib/socket-client'
 import { formatPin } from '@/lib/utils'
 import type {
@@ -18,7 +19,7 @@ import type {
   PublicQuestion,
   QuestionResult,
 } from '@/types/events'
-import { Play, SkipForward, Square, Users, ShieldOff, Trophy } from 'lucide-react'
+import { Play, SkipForward, Square, Users, ShieldOff, Trophy, RefreshCw } from 'lucide-react'
 
 export default function HostRoomPage({ params }: { params: Promise<{ pin: string }> }) {
   const { pin } = use(params)
@@ -34,6 +35,7 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
   const [joinUrl, setJoinUrl] = useState('')
   const [notFound, setNotFound] = useState(false)
   const [minPlayersToEnd, setMinPlayersToEnd] = useState(1)
+  const [progress, setProgress] = useState({ answered: 0, total: 0 })
 
   useEffect(() => {
     setIsMounted(true)
@@ -63,7 +65,11 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
     socket.on('game:question', (q) => {
       setQuestion(q)
       setResult(null)
+      setProgress({ answered: 0, total: 0 })
       setStatus('question')
+    })
+    socket.on('question:progress', (p) => {
+      setProgress({ answered: p.answered, total: p.total })
     })
     socket.on('question:result', (r) => {
       setResult(r)
@@ -79,6 +85,7 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
       socket.off('connect', join)
       socket.off('lobby:update')
       socket.off('game:question')
+      socket.off('question:progress')
       socket.off('question:result')
       socket.off('game:over')
     }
@@ -187,20 +194,51 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
                     </div>
                     <div className="max-h-[40vh] overflow-y-auto rounded-xl border border-[rgba(0,212,255,0.08)] bg-[rgba(2,8,23,0.4)] p-2">
                       <div className="grid grid-cols-4 gap-2 sm:grid-cols-6 md:grid-cols-8">
-                        <AnimatePresence>
-                          {players.map((p, i) => (
-                            <motion.div
-                              key={p.id}
-                              initial={{ opacity: 0, scale: 0.7 }}
-                              animate={{ opacity: 1, scale: 1 }}
-                              transition={{ type: 'spring', stiffness: 400, damping: 28, delay: Math.min(i, 20) * 0.02 }}
-                              className="flex flex-col items-center gap-1.5 rounded-xl border border-[rgba(0,212,255,0.15)] bg-[rgba(6,24,48,0.8)] px-2 py-3"
-                            >
-                              <PlayerAvatar nickname={p.nickname} size="sm" pulse />
-                              <span className="w-full truncate text-center text-[10px] font-semibold">{p.nickname}</span>
-                            </motion.div>
-                          ))}
-                        </AnimatePresence>
+                        {/*
+                          Perf cap: large rooms drop the pulse animation +
+                          entry spring (200+ avatars killed CPU). Visible
+                          roster also caps to LOBBY_VISIBLE_CAP — overflow
+                          shows a "+N" chip.
+                        */}
+                        {(() => {
+                          const LOBBY_VISIBLE_CAP = 80
+                          const heavy = players.length > 40
+                          const visible = players.slice(0, LOBBY_VISIBLE_CAP)
+                          const overflow = players.length - visible.length
+                          return (
+                            <>
+                              <AnimatePresence initial={false}>
+                                {visible.map((p, i) =>
+                                  heavy ? (
+                                    <div
+                                      key={p.id}
+                                      className="flex flex-col items-center gap-1.5 rounded-xl border border-[rgba(0,212,255,0.15)] bg-[rgba(6,24,48,0.8)] px-2 py-3"
+                                    >
+                                      <PlayerAvatar nickname={p.nickname} size="sm" />
+                                      <span className="w-full truncate text-center text-[10px] font-semibold">{p.nickname}</span>
+                                    </div>
+                                  ) : (
+                                    <motion.div
+                                      key={p.id}
+                                      initial={{ opacity: 0, scale: 0.7 }}
+                                      animate={{ opacity: 1, scale: 1 }}
+                                      transition={{ type: 'spring', stiffness: 400, damping: 28, delay: Math.min(i, 20) * 0.02 }}
+                                      className="flex flex-col items-center gap-1.5 rounded-xl border border-[rgba(0,212,255,0.15)] bg-[rgba(6,24,48,0.8)] px-2 py-3"
+                                    >
+                                      <PlayerAvatar nickname={p.nickname} size="sm" pulse />
+                                      <span className="w-full truncate text-center text-[10px] font-semibold">{p.nickname}</span>
+                                    </motion.div>
+                                  )
+                                )}
+                              </AnimatePresence>
+                              {overflow > 0 && (
+                                <div className="flex items-center justify-center rounded-xl border border-accent/30 bg-accent/10 px-2 py-3 text-xs font-bold text-accent">
+                                  +{overflow}
+                                </div>
+                              )}
+                            </>
+                          )
+                        })()}
                       </div>
                     </div>
                   </>
@@ -238,14 +276,16 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
               <h2 className="text-display text-center text-3xl font-bold sm:text-4xl">{question.text}</h2>
               <AnswerGrid answers={question.answers} mode="play" disabled />
 
-              {/* Live player status */}
-              <div className="flex justify-center gap-6 text-sm">
-                <span className="text-emerald-400 font-semibold">
-                  {activePlayers.length} người đang trả lời
-                </span>
+              {/* Live answered / total */}
+              <div className="flex flex-col items-center gap-3">
+                <PlayerCount
+                  answered={progress.answered}
+                  total={progress.total || activePlayers.length}
+                  variant="host"
+                />
                 {eliminatedPlayers.length > 0 && (
-                  <span className="text-red-400">
-                    {eliminatedPlayers.length} đang xem
+                  <span className="text-[10px] uppercase tracking-widest text-red-400/70">
+                    {eliminatedPlayers.length} khán giả
                   </span>
                 )}
               </div>
@@ -439,7 +479,30 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
                 )}
               </div>
 
-              <Button size="lg" onClick={() => router.push('/host')}>Tạo phòng mới</Button>
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <Button
+                  size="lg"
+                  variant="accent"
+                  className="gap-2"
+                  onClick={() => {
+                    getSocket().emit('host:reset', { pin }, (res) => {
+                      if (!res?.ok) return
+                      setStatus('lobby')
+                      setQuestion(null)
+                      setResult(null)
+                      setSurvivors([])
+                      setEliminated([])
+                      setProgress({ answered: 0, total: 0 })
+                    })
+                  }}
+                >
+                  <RefreshCw className="size-5" />
+                  Trận mới (giữ PIN)
+                </Button>
+                <Button size="lg" variant="outline" onClick={() => router.push('/host')}>
+                  Tạo phòng khác
+                </Button>
+              </div>
             </motion.div>
           )}
 

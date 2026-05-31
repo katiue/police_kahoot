@@ -25,12 +25,26 @@ function JoinForm() {
 
   useEffect(() => {
     const p = search.get('pin')
-    if (p) setPin(p.replace(/\D/g, '').slice(0, 6))
+    if (p) {
+      setPin(p.replace(/[^A-Za-z0-9]/g, '').slice(0, 12).toUpperCase())
+      return
+    }
+    // Single-room event mode: ask the server which PIN is live so the player
+    // doesn't have to type one in. Silent fail if no active room.
+    fetch('/api/active-room', { cache: 'no-store' })
+      .then((r) => r.json())
+      .then((d: { pin?: string | null }) => {
+        if (d?.pin) setPin(String(d.pin).toUpperCase())
+      })
+      .catch(() => {
+        /* no-op — fall back to manual entry */
+      })
   }, [search])
 
-  // Auto-advance to nickname when PIN reaches 6 digits
+  // Auto-advance to nickname when PIN is filled in (auto-resolved or 6-digit typed)
   useEffect(() => {
-    if (pin.length === 6 && nicknameRef.current && document.activeElement !== nicknameRef.current) {
+    const ready = pin.length >= 4
+    if (ready && nicknameRef.current && document.activeElement !== nicknameRef.current) {
       nicknameRef.current.focus()
     }
   }, [pin])
@@ -38,9 +52,9 @@ function JoinForm() {
   const effectiveNickname = nickname.trim() || 'Guest'
 
   function join() {
-    const cleanPin = pin.replace(/\D/g, '')
+    const cleanPin = pin.replace(/[^A-Za-z0-9]/g, '').toUpperCase()
     const nick = nickname.trim()
-    if (cleanPin.length !== 6) return toast.error('PIN gồm 6 chữ số')
+    if (cleanPin.length < 4) return toast.error('PIN phải có ít nhất 4 ký tự')
     if (!nick) return toast.error('Nhập nickname')
     setBusy(true)
     const socket = getSocket()
@@ -140,11 +154,10 @@ function JoinForm() {
 
       <input
         value={pin}
-        onChange={(e) => setPin(e.target.value.replace(/\D/g, '').slice(0, 6))}
-        inputMode="numeric"
+        onChange={(e) => setPin(e.target.value.replace(/[^A-Za-z0-9]/g, '').toUpperCase().slice(0, 12))}
         autoFocus={!pin}
         placeholder="Game PIN"
-        className="pin-display h-14 w-full rounded-xl border border-border bg-input/60 text-center text-2xl font-bold text-accent outline-none focus:border-accent/70"
+        className="pin-display h-14 w-full rounded-xl border border-border bg-input/60 text-center text-2xl font-bold text-accent outline-none focus:border-accent/70 uppercase"
       />
       <input
         ref={nicknameRef}
