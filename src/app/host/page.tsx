@@ -1,13 +1,14 @@
 'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { toast } from 'sonner'
 import { Backdrop } from '@/components/game/Backdrop'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { getSocket } from '@/lib/socket-client'
 import { parseQuiz } from '@/lib/quiz'
-import { Upload, FileJson, Rocket, Users } from 'lucide-react'
+import { Upload, FileJson, Rocket, Users, ArrowLeft, AlertTriangle } from 'lucide-react'
 
 export default function HostCreatePage() {
   const router = useRouter()
@@ -24,9 +25,15 @@ export default function HostCreatePage() {
   async function useSample() {
     try {
       const res = await fetch('/quizzes/sample.json')
+      if (!res.ok) {
+        console.error('sample fetch failed', res.status, res.statusText)
+        toast.error(`Không tải được quiz mẫu (HTTP ${res.status})`)
+        return
+      }
       setRaw(await res.text())
       toast.success('Đã nạp quiz mẫu')
-    } catch {
+    } catch (e) {
+      console.error('sample fetch threw', e)
       toast.error('Không tải được quiz mẫu')
     }
   }
@@ -54,6 +61,12 @@ export default function HostCreatePage() {
   return (
     <Backdrop>
       <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col justify-center gap-6 px-6 py-12">
+        <Link
+          href="/"
+          className="self-start inline-flex items-center gap-1 text-xs uppercase tracking-widest text-muted-foreground hover:text-accent transition-colors"
+        >
+          <ArrowLeft className="size-3.5" /> Trang chủ
+        </Link>
         <h1 className="text-display text-4xl font-bold">
           Tạo <span className="text-accent neon-text-cyan">phòng</span>
         </h1>
@@ -80,9 +93,17 @@ export default function HostCreatePage() {
                 min={1}
                 max={100}
                 value={minPlayersToEnd}
-                onChange={(e) => setMinPlayersToEnd(Math.max(1, parseInt(e.target.value, 10) || 1))}
+                onChange={(e) =>
+                  setMinPlayersToEnd(Math.min(100, Math.max(1, parseInt(e.target.value, 10) || 1)))
+                }
                 className="w-28 rounded-lg border border-border bg-input/60 px-3 py-2 text-sm font-mono text-foreground outline-none focus:border-accent/60"
               />
+              {minPlayersToEnd > 10 && (
+                <span className="inline-flex items-center gap-1.5 text-[11px] text-amber-400">
+                  <AlertTriangle className="size-3.5" />
+                  Ngưỡng cao — đảm bảo phòng có ≥ {minPlayersToEnd} người tham gia, không trận sẽ kết thúc ngay khi bắt đầu.
+                </span>
+              )}
             </label>
           </CardContent>
         </Card>

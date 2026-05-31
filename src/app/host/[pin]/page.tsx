@@ -6,12 +6,12 @@ import { Backdrop } from '@/components/game/Backdrop'
 import { Button } from '@/components/ui/button'
 import { Timer } from '@/components/game/Timer'
 import { AnswerGrid } from '@/components/game/AnswerGrid'
-import { QrPanel } from '@/components/game/QrPanel'
+import { LobbyHero } from '@/components/game/LobbyHero'
 import { PlayerStatus } from '@/components/game/Leaderboard'
 import { PlayerAvatar } from '@/components/game/PlayerAvatar'
-import { PoliceEmblem } from '@/components/game/PoliceEmblem'
-import { ChongLuaDaoMark } from '@/components/game/ChongLuaDao'
+import { ConnectionDot } from '@/components/game/ConnectionDot'
 import { getSocket } from '@/lib/socket-client'
+import { formatPin } from '@/lib/utils'
 import type {
   GameStatus,
   PlayerView,
@@ -94,7 +94,7 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
       <Backdrop>
         <main className="flex flex-1 flex-col items-center justify-center gap-4">
           <p className="text-xl">
-            Phòng <span className="pin-display text-[var(--accent)]">{pin}</span> không tồn tại.
+            Phòng <span className="pin-display text-[var(--accent)]">{formatPin(pin)}</span> không tồn tại.
           </p>
           <Button onClick={() => router.push('/host')}>Tạo phòng mới</Button>
         </main>
@@ -123,10 +123,24 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
             </div>
             <div className="flex flex-col items-center">
               <span className="text-[9px] uppercase tracking-widest text-[var(--muted-foreground)]">PIN</span>
-              <span className="pin-display text-lg font-bold text-[var(--accent)] neon-text-cyan">{pin}</span>
+              <span className="pin-display text-lg font-bold text-[var(--accent)] neon-text-cyan">{formatPin(pin)}</span>
             </div>
-            <div className="text-[10px] text-[var(--muted-foreground)]">
-              Kết thúc khi ≤{minPlayersToEnd}
+            <div className="flex items-center gap-3">
+              <span
+                className={`text-[10px] ${
+                  minPlayersToEnd > activePlayers.length
+                    ? 'text-amber-400'
+                    : 'text-[var(--muted-foreground)]'
+                }`}
+                title={
+                  minPlayersToEnd > activePlayers.length
+                    ? `Ngưỡng (${minPlayersToEnd}) > người chơi hiện tại (${activePlayers.length})`
+                    : undefined
+                }
+              >
+                Kết thúc khi ≤{minPlayersToEnd}
+              </span>
+              <ConnectionDot label={false} />
             </div>
           </div>
         </header>
@@ -134,44 +148,8 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
 
       <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-6 px-6 py-8">
         {!isMounted ? (
-          <div className="flex flex-1 flex-col items-center justify-center gap-8">
-            {/* Brand Grid in Lobby Center (the 2 logos together!) */}
-            <div className="grid grid-cols-3 grid-rows-2 gap-x-4 gap-y-0.5 w-max mx-auto items-center mb-4">
-              {/* Police Logo taking 2x2 on the left (col-span-2 row-span-2) */}
-              <div className="col-span-2 row-span-2 flex items-center gap-3.5 pr-5 border-r border-[rgba(0,212,255,0.15)]">
-                <PoliceEmblem
-                  className="h-16 w-16 shrink-0"
-                  style={{ filter: 'drop-shadow(0 0 10px rgba(200,150,12,0.55))' }}
-                />
-                <div className="flex flex-col justify-center leading-tight">
-                  <span className="text-sm font-bold uppercase tracking-[0.18em] text-[var(--foreground)]">CỤC AN NINH MẠNG</span>
-                  <span className="text-[9.5px] uppercase tracking-[0.12em] text-[var(--muted-foreground)] opacity-85">BỘ CÔNG AN</span>
-                </div>
-              </div>
-
-              {/* "phối hợp" taking 1 square top right (col-start-3 row-start-1) */}
-              <div className="col-start-3 row-start-1 flex justify-start items-end pl-2">
-                <span className="text-[8px] uppercase tracking-[0.2em] text-[var(--muted-foreground)] opacity-70">phối hợp</span>
-              </div>
-
-              {/* "Chống Lừa Đảo" taking 1 square bottom right (col-start-3 row-start-2) */}
-              <div className="col-start-3 row-start-2 flex items-center gap-2 pl-2">
-                <ChongLuaDaoMark className="h-6 w-6 opacity-90" />
-                <span className="text-[10px] font-bold tracking-widest text-[#22b36c]">CHỐNG LỪA ĐẢO</span>
-              </div>
-            </div>
-
-            <div className="flex flex-col items-center gap-2">
-              <p className="text-xs uppercase tracking-widest text-[var(--muted-foreground)]">Vào chơi tại</p>
-              <p className="text-display text-2xl font-bold text-center">
-                {joinUrl.replace(/^https?:\/\//, '') || 'localhost:3000/play'}
-              </p>
-              <div className="mt-2 flex flex-col items-center">
-                <span className="text-xs uppercase tracking-widest text-[var(--muted-foreground)]">Game PIN</span>
-                <span className="pin-display text-7xl font-bold text-[var(--accent)] neon-text-cyan">{pin}</span>
-              </div>
-            </div>
-            <p className="text-sm text-[var(--muted-foreground)]">Đang kết nối server bảo mật…</p>
+          <div className="flex flex-1 flex-col items-center justify-center">
+            <LobbyHero pin={pin} joinUrl={joinUrl} connecting />
           </div>
         ) : (
           <AnimatePresence mode="wait">
@@ -184,46 +162,9 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
-              className="flex flex-1 flex-col items-center justify-center gap-8"
+              className="flex flex-1 flex-col items-center justify-center gap-6"
             >
-              {/* Brand Grid in Lobby Center (the 2 logos together!) */}
-              <div className="grid grid-cols-3 grid-rows-2 gap-x-4 gap-y-0.5 w-max mx-auto items-center mb-4">
-                {/* Police Logo taking 2x2 on the left (col-span-2 row-span-2) */}
-                <div className="col-span-2 row-span-2 flex items-center gap-3.5 pr-5 border-r border-[rgba(0,212,255,0.15)]">
-                  <PoliceEmblem
-                    className="h-16 w-16 shrink-0"
-                    style={{ filter: 'drop-shadow(0 0 10px rgba(200,150,12,0.55))' }}
-                  />
-                  <div className="flex flex-col justify-center leading-tight">
-                    <span className="text-sm font-bold uppercase tracking-[0.18em] text-[var(--foreground)]">CỤC AN NINH MẠNG</span>
-                    <span className="text-[9.5px] uppercase tracking-[0.12em] text-[var(--muted-foreground)] opacity-85">BỘ CÔNG AN</span>
-                  </div>
-                </div>
-
-                {/* "phối hợp" taking 1 square top right (col-start-3 row-start-1) */}
-                <div className="col-start-3 row-start-1 flex justify-start items-end pl-2">
-                  <span className="text-[8px] uppercase tracking-[0.2em] text-[var(--muted-foreground)] opacity-70">phối hợp</span>
-                </div>
-
-                {/* "Chống Lừa Đảo" taking 1 square bottom right (col-start-3 row-start-2) */}
-                <div className="col-start-3 row-start-2 flex items-center gap-2 pl-2">
-                  <ChongLuaDaoMark className="h-6 w-6 opacity-90" />
-                  <span className="text-[10px] font-bold tracking-widest text-[#22b36c]">CHỐNG LỪA ĐẢO</span>
-                </div>
-              </div>
-
-              <div className="flex flex-col items-center gap-2">
-                <p className="text-xs uppercase tracking-widest text-[var(--muted-foreground)]">Vào chơi tại</p>
-                <p className="text-display text-2xl font-bold">
-                  {joinUrl.replace(/^https?:\/\//, '')}
-                </p>
-                <div className="mt-2 flex flex-col items-center">
-                  <span className="text-xs uppercase tracking-widest text-[var(--muted-foreground)]">Game PIN</span>
-                  <span className="pin-display text-7xl font-bold text-[var(--accent)] neon-text-cyan">{pin}</span>
-                </div>
-              </div>
-
-              {joinUrl && <QrPanel joinUrl={joinUrl} />}
+              <LobbyHero pin={pin} joinUrl={joinUrl} showQr />
 
               <a
                 href={`/lobby?pin=${pin}`}
@@ -234,34 +175,41 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
                 Mở màn hình chờ (projector) →
               </a>
 
-              {/* Player grid */}
+              {/* Player grid — capped + scrollable for big rooms */}
               <div className="w-full max-w-2xl">
                 {players.length === 0 ? (
                   <p className="text-center text-[var(--muted-foreground)]">Đang chờ người chơi tham gia...</p>
                 ) : (
-                  <div className="grid grid-cols-4 gap-2 sm:grid-cols-6 md:grid-cols-8">
-                    <AnimatePresence>
-                      {players.map((p, i) => (
-                        <motion.div
-                          key={p.id}
-                          initial={{ opacity: 0, scale: 0.7 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          transition={{ type: 'spring', stiffness: 400, damping: 28, delay: i * 0.02 }}
-                          className="flex flex-col items-center gap-1.5 rounded-xl border border-[rgba(0,212,255,0.15)] bg-[rgba(6,24,48,0.8)] px-2 py-3"
-                        >
-                          <PlayerAvatar nickname={p.nickname} size="sm" pulse />
-                          <span className="w-full truncate text-center text-[10px] font-semibold">{p.nickname}</span>
-                        </motion.div>
-                      ))}
-                    </AnimatePresence>
-                  </div>
+                  <>
+                    <div className="mb-2 flex items-center justify-between text-[10px] uppercase tracking-widest text-[var(--muted-foreground)]">
+                      <span>Người chơi đã vào</span>
+                      <span className="text-[var(--accent)]">{players.length}</span>
+                    </div>
+                    <div className="max-h-[40vh] overflow-y-auto rounded-xl border border-[rgba(0,212,255,0.08)] bg-[rgba(2,8,23,0.4)] p-2">
+                      <div className="grid grid-cols-4 gap-2 sm:grid-cols-6 md:grid-cols-8">
+                        <AnimatePresence>
+                          {players.map((p, i) => (
+                            <motion.div
+                              key={p.id}
+                              initial={{ opacity: 0, scale: 0.7 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              transition={{ type: 'spring', stiffness: 400, damping: 28, delay: Math.min(i, 20) * 0.02 }}
+                              className="flex flex-col items-center gap-1.5 rounded-xl border border-[rgba(0,212,255,0.15)] bg-[rgba(6,24,48,0.8)] px-2 py-3"
+                            >
+                              <PlayerAvatar nickname={p.nickname} size="sm" pulse />
+                              <span className="w-full truncate text-center text-[10px] font-semibold">{p.nickname}</span>
+                            </motion.div>
+                          ))}
+                        </AnimatePresence>
+                      </div>
+                    </div>
+                  </>
                 )}
               </div>
 
               <Button
                 size="xl"
                 onClick={() => getSocket().emit('host:start', { pin })}
-                disabled={players.length === 0}
                 className="gap-2"
               >
                 <Play className="size-6" /> Bắt đầu
