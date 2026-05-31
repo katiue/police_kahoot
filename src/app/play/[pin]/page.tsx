@@ -10,8 +10,9 @@ import { AnswerGrid } from '@/components/game/AnswerGrid'
 import { SpectatorView } from '@/components/game/SpectatorView'
 import { PlayerAvatar } from '@/components/game/PlayerAvatar'
 import { PoliceEmblem } from '@/components/game/PoliceEmblem'
-import { ChongLuaDaoMark } from '@/components/game/ChongLuaDao'
+import { ConnectionDot } from '@/components/game/ConnectionDot'
 import { getSocket } from '@/lib/socket-client'
+import { formatPin, haptic } from '@/lib/utils'
 import type { GameStatus, PublicQuestion, QuestionResult, PlayerView } from '@/types/events'
 import { CheckCircle2, XCircle, Hourglass, Trophy, Frown, ShieldCheck } from 'lucide-react'
 
@@ -79,11 +80,17 @@ export default function PlayRoomPage({ params }: { params: Promise<{ pin: string
     socket.on('question:result', (r) => {
       setResult(r)
       // If eliminated this round via result payload
-      if (r.you?.eliminated) setIsEliminated(true)
+      if (r.you?.eliminated) {
+        setIsEliminated(true)
+        haptic([60, 40, 80])
+      } else if (r.you?.correct) {
+        haptic(30)
+      }
       setStatus('result')
     })
     socket.on('player:eliminated', () => {
       setIsEliminated(true)
+      haptic([60, 40, 80])
     })
     socket.on('lobby:update', (p) => {
       setAllPlayers(p.players)
@@ -107,6 +114,7 @@ export default function PlayRoomPage({ params }: { params: Promise<{ pin: string
 
   function pick(answerId: number) {
     if (!question || selected !== null || isEliminated) return
+    haptic(15)
     setSelected(answerId)
     getSocket().emit(
       'player:answer',
@@ -130,15 +138,12 @@ export default function PlayRoomPage({ params }: { params: Promise<{ pin: string
       {/* ── Header ─────────────────────────────────────── */}
       <header className="relative z-10 border-b border-[rgba(0,191,255,0.15)] bg-transparent backdrop-blur-sm">
         {/* Logo strip centered */}
-        <div className="flex items-center justify-center gap-3 px-5 py-2">
+        <div className="flex items-center justify-center gap-2 px-5 py-2">
           <PoliceEmblem
             className="h-7 w-7 shrink-0"
             style={{ filter: 'drop-shadow(0 0 6px rgba(200,150,12,0.5))' }}
           />
           <span className="text-[9px] font-bold uppercase tracking-[0.16em] text-[var(--foreground)]">Cục An Ninh Mạng</span>
-          <div className="h-4 w-px bg-[rgba(0,212,255,0.2)]" />
-          <ChongLuaDaoMark className="h-3.5 w-3.5" style={{ opacity: 0.7 }} />
-          <span className="text-[8px] font-semibold" style={{ color: '#22b36c', opacity: 0.75 }}>Chống Lừa Đảo</span>
         </div>
         {/* Player status row */}
         <div className="flex items-center justify-between border-t border-[rgba(0,212,255,0.1)] px-5 py-1.5">
@@ -146,17 +151,20 @@ export default function PlayRoomPage({ params }: { params: Promise<{ pin: string
             <PlayerAvatar nickname={nickname} size="xs" pulse={!isEliminated} eliminated={isEliminated} iconIndex={customIconIndex} colorIndex={customColorIndex} />
             <span className="font-semibold text-xs">{nickname}</span>
           </div>
-          {isEliminated && status !== 'ended' && (
-            <span className="flex items-center gap-1 rounded-full border border-red-500/30 bg-red-500/10 px-2 py-0.5 text-[10px] font-bold text-red-400">
-              Khán giả
-            </span>
-          )}
-          {!isEliminated && (
-            <span className="flex items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-400">
-              <ShieldCheck className="size-2.5" />
-              Đang chơi
-            </span>
-          )}
+          <div className="flex items-center gap-2">
+            {isEliminated && status !== 'ended' && (
+              <span className="flex items-center gap-1 rounded-full border border-red-500/30 bg-red-500/10 px-2 py-0.5 text-[10px] font-bold text-red-400">
+                Khán giả
+              </span>
+            )}
+            {!isEliminated && (
+              <span className="flex items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-400">
+                <ShieldCheck className="size-2.5" />
+                Đang chơi
+              </span>
+            )}
+            <ConnectionDot label={false} />
+          </div>
         </div>
       </header>
 
@@ -171,7 +179,7 @@ export default function PlayRoomPage({ params }: { params: Promise<{ pin: string
                 Game PIN
               </p>
               <span className="pin-display text-4xl font-bold text-[var(--cyan-accent)] neon-text-cyan">
-                {pin}
+                {formatPin(pin)}
               </span>
               <p className="text-sm text-[var(--muted-foreground)]">Đã vào phòng — chờ host bắt đầu…</p>
             </div>
