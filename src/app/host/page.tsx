@@ -1,4 +1,5 @@
 'use client'
+
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -9,34 +10,78 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { HostAuthCard, HOST_LOGIN_STORAGE_KEY } from '@/components/auth/HostAuthCard'
 import { getSocket } from '@/lib/socket-client'
 import { parseQuiz } from '@/lib/quiz'
-import { Upload, FileJson, Rocket, Users, ArrowLeft, AlertTriangle } from 'lucide-react'
+import {
+  AlertTriangle,
+  ArrowLeft,
+  ClipboardCheck,
+  FileJson,
+  MonitorPlay,
+  Rocket,
+  Users,
+} from 'lucide-react'
+
+interface QuizOption {
+  file: string
+  title: string
+  questionCount: number
+  error?: string
+}
 
 export default function HostCreatePage() {
   const router = useRouter()
-  const [raw, setRaw] = useState('')
   const [busy, setBusy] = useState(false)
+  const [checkingActive, setCheckingActive] = useState(false)
   const [minPlayersToEnd, setMinPlayersToEnd] = useState(1)
   const [loginKey, setLoginKey] = useState('')
   const [authOk, setAuthOk] = useState(false)
   const [authBusy, setAuthBusy] = useState(true)
   const [authError, setAuthError] = useState('')
+  const [quizzes, setQuizzes] = useState<QuizOption[]>([])
+  const [selectedQuiz, setSelectedQuiz] = useState('')
 
   useEffect(() => {
     const saved = sessionStorage.getItem(HOST_LOGIN_STORAGE_KEY) ?? ''
     setLoginKey(saved)
-    // Probe with the saved key (empty string ⇒ "no auth" path on the server).
-    // If the server has LOGIN_KEY unset, it returns ok for any value, so the
-    // host UI silently bypasses the login modal in dev / no-auth mode.
     getSocket().emit('host:auth', { loginKey: saved }, (res) => {
       setAuthBusy(false)
       if (res.ok) {
         setAuthOk(true)
+        sessionStorage.setItem(HOST_LOGIN_STORAGE_KEY, saved)
+        checkActiveRoom()
+        loadQuizzes()
       } else {
         if (saved) sessionStorage.removeItem(HOST_LOGIN_STORAGE_KEY)
         setAuthOk(false)
       }
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  function checkActiveRoom() {
+    const forceNew = new URLSearchParams(window.location.search).get('new') === '1'
+    if (forceNew) return
+    setCheckingActive(true)
+    fetch('/api/active-room', { cache: 'no-store' })
+      .then((r) => r.json())
+      .then((d: { pin?: string | null }) => {
+        if (d?.pin) router.replace(`/host/${d.pin}`)
+      })
+      .catch(() => {
+        /* no active room or server not ready */
+      })
+      .finally(() => setCheckingActive(false))
+  }
+
+  function loadQuizzes() {
+    fetch('/api/quizzes', { cache: 'no-store' })
+      .then((r) => r.json())
+      .then((d: { quizzes?: QuizOption[] }) => {
+        const valid = (d.quizzes ?? []).filter((q) => !q.error)
+        setQuizzes(d.quizzes ?? [])
+        if (!selectedQuiz && valid[0]) setSelectedQuiz(valid[0].file)
+      })
+      .catch(() => toast.error('Không tải được danh sách quiz'))
+  }
 
   function authenticate() {
     setAuthBusy(true)
@@ -46,6 +91,8 @@ export default function HostCreatePage() {
       if (res.ok) {
         sessionStorage.setItem(HOST_LOGIN_STORAGE_KEY, loginKey)
         setAuthOk(true)
+        checkActiveRoom()
+        loadQuizzes()
       } else {
         sessionStorage.removeItem(HOST_LOGIN_STORAGE_KEY)
         setAuthOk(false)
@@ -54,54 +101,37 @@ export default function HostCreatePage() {
     })
   }
 
-  function loadFile(file: File) {
-    const reader = new FileReader()
-    reader.onload = () => setRaw(String(reader.result ?? ''))
-    reader.readAsText(file)
-  }
-
-  async function useSample() {
-    try {
-      const res = await fetch('/quizzes/sample.json')
-      if (!res.ok) {
-        console.error('sample fetch failed', res.status, res.statusText)
-        toast.error(`Không tải được quiz mẫu (HTTP ${res.status})`)
-        return
-      }
-      setRaw(await res.text())
-      toast.success('Đã nạp quiz mẫu')
-    } catch (e) {
-      console.error('sample fetch threw', e)
-      toast.error('Không tải được quiz mẫu')
-    }
-  }
-
-  function create() {
-    let quiz
-    try {
-      quiz = parseQuiz(JSON.parse(raw))
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : 'JSON không hợp lệ')
-      return
-    }
+  async function create() {
+    const chosen = quizzes.find((q) => q.file === selectedQuiz)
+    if (!chosen) return toast.error('Chọn một quiz hợp lệ trước')
     setBusy(true)
-    const socket = getSocket()
-    socket.emit('host:create', { quiz, minPlayersToEnd, loginKey }, (res) => {
-      setBusy(false)
-      if (res.ok && res.pin) {
-        sessionStorage.setItem(HOST_LOGIN_STORAGE_KEY, loginKey)
-        router.push(`/host/${res.pin}`)
-      } else {
-        if (res.error === 'Invalid login key') {
-          sessionStorage.removeItem(HOST_LOGIN_STORAGE_KEY)
-          setAuthOk(false)
-          setAuthError('LOGIN_KEY không đúng')
-          return
+    try {
+      const quizRes = await fetch(`/quizzes/${chosen.file}`, { cache: 'no-store' })
+      if (!quizRes.ok) throw new Error(`Không tải được quiz (${quizRes.status})`)
+      const quiz = parseQuiz(await quizRes.json())
+      const socket = getSocket()
+      socket.emit('host:create', { quiz, minPlayersToEnd, loginKey }, (res) => {
+        setBusy(false)
+        if (res.ok && res.pin) {
+          sessionStorage.setItem(HOST_LOGIN_STORAGE_KEY, loginKey)
+          router.push(`/host/${res.pin}`)
+        } else {
+          if (res.error === 'Invalid login key') {
+            sessionStorage.removeItem(HOST_LOGIN_STORAGE_KEY)
+            setAuthOk(false)
+            setAuthError('LOGIN_KEY không đúng')
+            return
+          }
+          toast.error(res.error ?? 'Tạo phòng thất bại')
         }
-        toast.error(res.error ?? 'Tạo phòng thất bại')
-      }
-    })
+      })
+    } catch (e) {
+      setBusy(false)
+      toast.error(e instanceof Error ? e.message : 'Không tải được quiz')
+    }
   }
+
+  const selected = quizzes.find((q) => q.file === selectedQuiz)
 
   return (
     <Backdrop>
@@ -118,17 +148,61 @@ export default function HostCreatePage() {
         />
       )}
       <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col justify-center gap-6 px-6 py-12">
-        <Link
-          href="/"
-          className="self-start inline-flex items-center gap-1 text-xs uppercase tracking-widest text-muted-foreground hover:text-accent transition-colors"
-        >
-          <ArrowLeft className="size-3.5" /> Trang chủ
-        </Link>
-        <h1 className="text-display text-4xl font-bold">
-          Tạo <span className="text-accent neon-text-cyan">phòng</span>
-        </h1>
+        <div className="flex items-center justify-between gap-3">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-1 text-xs uppercase tracking-widest text-muted-foreground transition-colors hover:text-accent"
+          >
+            <ArrowLeft className="size-3.5" /> Trang chủ
+          </Link>
+          <Link href="/host/check">
+            <Button variant="outline" size="sm" className="gap-2">
+              <ClipboardCheck className="size-4" />
+              Checklist
+            </Button>
+          </Link>
+        </div>
 
-        {/* Min players to end setting */}
+        <div>
+          <h1 className="text-display text-4xl font-bold">
+            Tạo <span className="text-accent neon-text-cyan">phòng</span>
+          </h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Single-room mode: nếu đã có phòng active, host sẽ được chuyển thẳng vào phòng đó.
+          </p>
+        </div>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <FileJson className="size-5 text-accent" /> Chọn quiz sự kiện
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-4">
+            <select
+              value={selectedQuiz}
+              onChange={(e) => setSelectedQuiz(e.target.value)}
+              className="h-12 w-full rounded-lg border border-border bg-input/60 px-3 text-sm font-semibold text-foreground outline-none focus:border-accent/60"
+              disabled={!authOk || quizzes.length === 0}
+            >
+              {quizzes.length === 0 ? (
+                <option value="">Đang tải quiz...</option>
+              ) : (
+                quizzes.map((quiz) => (
+                  <option key={quiz.file} value={quiz.file} disabled={!!quiz.error}>
+                    {quiz.title} ({quiz.questionCount} câu)
+                  </option>
+                ))
+              )}
+            </select>
+            {selected && (
+              <div className="rounded-lg border border-border/60 bg-card/40 px-3 py-2 text-xs text-muted-foreground">
+                File: <span className="font-mono text-accent">{selected.file}</span>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -138,11 +212,7 @@ export default function HostCreatePage() {
           <CardContent className="flex flex-col gap-3">
             <label className="flex flex-col gap-1.5">
               <span className="text-sm font-semibold">
-                Kết thúc khi còn lại&nbsp;
-                <span className="text-accent">{minPlayersToEnd}</span>&nbsp;người chiến thắng
-              </span>
-              <span className="text-xs text-muted-foreground">
-                Trò chơi sẽ tự kết thúc khi số người chơi còn lại ≤ giá trị này (1 = người cuối cùng đứng vững).
+                Kết thúc khi còn lại <span className="text-accent">{minPlayersToEnd}</span> người chiến thắng
               </span>
               <input
                 id="min-players"
@@ -158,51 +228,32 @@ export default function HostCreatePage() {
               {minPlayersToEnd > 10 && (
                 <span className="inline-flex items-center gap-1.5 text-[11px] text-amber-400">
                   <AlertTriangle className="size-3.5" />
-                  Ngưỡng cao — đảm bảo phòng có ≥ {minPlayersToEnd} người tham gia, không trận sẽ kết thúc ngay khi bắt đầu.
+                  Ngưỡng cao: đảm bảo số người tham gia lớn hơn ngưỡng này.
                 </span>
               )}
             </label>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <FileJson className="size-5 text-accent" /> Nạp Quiz (JSON)
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-4">
-            <div className="flex flex-wrap gap-3">
-              <label>
-                <input
-                  type="file"
-                  accept="application/json,.json"
-                  className="hidden"
-                  onChange={(e) => e.target.files?.[0] && loadFile(e.target.files[0])}
-                />
-                <span className="inline-flex h-10 cursor-pointer items-center gap-2 rounded-lg border border-border bg-card/40 px-4 text-sm font-semibold hover:border-accent/50">
-                  <Upload className="size-4" /> Chọn file
-                </span>
-              </label>
-              <Button variant="outline" onClick={useSample}>Dùng quiz mẫu</Button>
-            </div>
-            <textarea
-              value={raw}
-              onChange={(e) => setRaw(e.target.value)}
-              placeholder={'{ "title": "...", "questions": [ { "text": "...", "correctAnswerId": 1, "answers": [...] } ] }'}
-              spellCheck={false}
-              className="h-56 w-full resize-none rounded-lg border border-border bg-input/60 p-3 font-mono text-xs text-foreground outline-none focus:border-accent/60"
-            />
-            <Button size="lg" onClick={create} disabled={busy || !raw.trim()} className="gap-2">
-              <Rocket className="size-5" /> {busy ? 'Đang tạo...' : 'Tạo phòng'}
-            </Button>
-          </CardContent>
-        </Card>
+        <Button
+          size="lg"
+          onClick={create}
+          disabled={!authOk || busy || checkingActive || !selectedQuiz}
+          className="gap-2"
+        >
+          <Rocket className="size-5" />
+          {checkingActive ? 'Đang kiểm tra phòng active...' : busy ? 'Đang tạo...' : 'Tạo phòng'}
+        </Button>
 
-        <p className="text-center text-xs text-muted-foreground">
-          Format: mỗi câu hỏi cần ≥2 đáp án và một trường{' '}
-          <code className="text-accent">&quot;correctAnswerId&quot;</code> trỏ tới id đáp án đúng.
-        </p>
+        <a
+          href="/lobby"
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex items-center justify-center gap-2 text-xs uppercase tracking-widest text-muted-foreground underline-offset-4 transition-colors hover:text-accent hover:underline"
+        >
+          <MonitorPlay className="size-4" />
+          Mở projector auto-detect
+        </a>
       </main>
     </Backdrop>
   )

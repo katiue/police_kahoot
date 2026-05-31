@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Backdrop } from '@/components/game/Backdrop'
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { Timer } from '@/components/game/Timer'
 import { AnswerGrid } from '@/components/game/AnswerGrid'
 import { LobbyHero } from '@/components/game/LobbyHero'
@@ -12,9 +12,10 @@ import { PlayerStatus } from '@/components/game/Leaderboard'
 import { PlayerAvatar } from '@/components/game/PlayerAvatar'
 import { ConnectionDot } from '@/components/game/ConnectionDot'
 import { PlayerCount } from '@/components/game/PlayerCount'
+import { ConfirmDialog } from '@/components/game/ConfirmDialog'
 import { HostAuthCard, HOST_LOGIN_STORAGE_KEY } from '@/components/auth/HostAuthCard'
 import { getSocket } from '@/lib/socket-client'
-import { formatPin } from '@/lib/utils'
+import { cn, formatPin } from '@/lib/utils'
 import type {
   GameStatus,
   HostSnapshot,
@@ -22,7 +23,18 @@ import type {
   PublicQuestion,
   QuestionResult,
 } from '@/types/events'
-import { Play, SkipForward, Square, Users, ShieldOff, Trophy, RefreshCw } from 'lucide-react'
+import {
+  Download,
+  FileJson,
+  MonitorPlay,
+  Play,
+  RefreshCw,
+  ShieldOff,
+  SkipForward,
+  Square,
+  Trophy,
+  Users,
+} from 'lucide-react'
 
 export default function HostRoomPage({ params }: { params: Promise<{ pin: string }> }) {
   const { pin } = use(params)
@@ -43,6 +55,7 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
   const [loginKey, setLoginKey] = useState('')
   const [minPlayersToEnd, setMinPlayersToEnd] = useState(1)
   const [progress, setProgress] = useState({ answered: 0, total: 0 })
+  const [confirmAction, setConfirmAction] = useState<'reset' | 'end' | null>(null)
 
   useEffect(() => {
     setIsMounted(true)
@@ -167,6 +180,27 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
   const eliminatedPlayers = players.filter((p) => p.eliminated)
   const isLast = question ? question.index >= question.total - 1 : false
 
+  function resetLocalToLobby() {
+    setStatus('lobby')
+    setQuestion(null)
+    setResult(null)
+    setSurvivors([])
+    setEliminated([])
+    setProgress({ answered: 0, total: 0 })
+  }
+
+  function confirmCurrentAction() {
+    if (confirmAction === 'end') {
+      getSocket().emit('host:end', { pin, loginKey })
+    } else if (confirmAction === 'reset') {
+      getSocket().emit('host:reset', { pin, loginKey }, (res) => {
+        if (!res?.ok) return toast.error(res?.error ?? 'Reset thất bại')
+        resetLocalToLobby()
+      })
+    }
+    setConfirmAction(null)
+  }
+
   if (notFound) {
     return (
       <Backdrop>
@@ -182,6 +216,19 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
 
   return (
     <Backdrop>
+      <ConfirmDialog
+        open={confirmAction !== null}
+        title={confirmAction === 'reset' ? 'Reset trận đấu?' : 'Kết thúc trận đấu?'}
+        description={
+          confirmAction === 'reset'
+            ? 'Bạn chắc chắn? Reset sẽ xóa scores hiện tại, đưa tất cả người chơi về lobby và giữ nguyên PIN.'
+            : 'Bạn chắc chắn? Trận sẽ kết thúc ngay lập tức và màn hình kết quả sẽ được hiển thị.'
+        }
+        confirmLabel={confirmAction === 'reset' ? 'Reset trận' : 'Kết thúc'}
+        destructive
+        onCancel={() => setConfirmAction(null)}
+        onConfirm={confirmCurrentAction}
+      />
       {authRequired && (
         <HostAuthCard
           loginKey={loginKey}
@@ -216,6 +263,13 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
               <span className="pin-display text-lg font-bold text-[var(--accent)] neon-text-cyan">{formatPin(pin)}</span>
             </div>
             <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => setConfirmAction('end')}
+                className="text-[10px] font-semibold uppercase tracking-widest text-red-400 transition-colors hover:text-red-300"
+              >
+                Kết thúc ngay
+              </button>
               <span
                 className={`text-[10px] ${
                   minPlayersToEnd > activePlayers.length
@@ -260,7 +314,7 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
                 href={`/lobby?pin=${pin}`}
                 target="_blank"
                 rel="noreferrer"
-                className="text-xs uppercase tracking-widest text-[var(--muted-foreground)] underline-offset-4 hover:text-[var(--accent)] hover:underline transition-colors"
+                className={cn(buttonVariants({ variant: 'outline', size: 'lg' }), 'gap-2')}
               >
                 Mở màn hình chờ (projector) →
               </a>
@@ -469,7 +523,9 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
               <div className="flex justify-center">
                 <Button
                   size="xl"
-                  onClick={() => getSocket().emit('host:next', { pin, loginKey })}
+                  onClick={() =>
+                    isLast ? setConfirmAction('end') : getSocket().emit('host:next', { pin, loginKey })
+                  }
                   className="gap-2"
                 >
                   {isLast ? <Square className="size-5" /> : <SkipForward className="size-5" />}
@@ -563,26 +619,30 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
               </div>
 
               <div className="flex flex-wrap items-center justify-center gap-3">
+                <a
+                  href={`/api/export?pin=${pin}&format=csv`}
+                  className={cn(buttonVariants({ variant: 'outline', size: 'lg' }), 'gap-2')}
+                >
+                  <Download className="size-5" />
+                  Tải CSV
+                </a>
+                <a
+                  href={`/api/export?pin=${pin}&format=json`}
+                  className={cn(buttonVariants({ variant: 'outline', size: 'lg' }), 'gap-2')}
+                >
+                  <FileJson className="size-5" />
+                  Tải JSON
+                </a>
                 <Button
                   size="lg"
                   variant="accent"
                   className="gap-2"
-                  onClick={() => {
-                    getSocket().emit('host:reset', { pin, loginKey }, (res) => {
-                      if (!res?.ok) return
-                      setStatus('lobby')
-                      setQuestion(null)
-                      setResult(null)
-                      setSurvivors([])
-                      setEliminated([])
-                      setProgress({ answered: 0, total: 0 })
-                    })
-                  }}
+                  onClick={() => setConfirmAction('reset')}
                 >
                   <RefreshCw className="size-5" />
                   Trận mới (giữ PIN)
                 </Button>
-                <Button size="lg" variant="outline" onClick={() => router.push('/host')}>
+                <Button size="lg" variant="outline" onClick={() => router.push('/host?new=1')}>
                   Tạo phòng khác
                 </Button>
               </div>

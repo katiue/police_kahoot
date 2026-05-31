@@ -94,6 +94,15 @@ export default function PlayRoomPage({ params }: { params: Promise<{ pin: string
     })
     socket.on('lobby:update', (p) => {
       setAllPlayers(p.players)
+      if (p.status === 'lobby') {
+        setStatus('lobby')
+        setQuestion(null)
+        setSelected(null)
+        setResult(null)
+        setSurvivors([])
+        setEliminated([])
+        setIsEliminated(false)
+      }
     })
     socket.on('game:over', (o) => {
       setSurvivors(o.survivors)
