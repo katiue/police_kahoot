@@ -17,8 +17,8 @@ const spaceGrotesk = localFont({
 })
 
 export const metadata: Metadata = {
-  title: 'Police Kahoot — Realtime Quiz',
-  description: 'Realtime quiz battle for events — Chống Lừa Đảo edition',
+  title: 'Rung Chuông Vàng',
+  description: 'Mini Game Rung Chuông Vàng',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

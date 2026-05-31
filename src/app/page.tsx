@@ -76,7 +76,7 @@ export default function HomePage() {
 
       {/* ── Hero Content ── */}
       <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col items-center justify-center px-6 py-12 md:py-16">
-        
+
         {/* Premium Tech HUD Screen Frame */}
         <div className="tech-screen tech-screen-boot mx-auto w-full max-w-4xl px-6 py-14 text-center md:px-12 md:py-16">
           <span className="tech-hud-grid" aria-hidden />
@@ -89,7 +89,7 @@ export default function HomePage() {
 
           {/* Screen inner content */}
           <div className="tech-screen-content flex flex-col items-center">
-            
+
             {/* Tag Badge */}
             <div className="inline-flex items-center gap-2 bg-[rgba(0,191,255,0.08)] border border-[rgba(0,191,255,0.22)] text-[var(--primary)] px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-[0.16em] mb-6">
               <ShieldCheck className="size-4 text-[var(--primary)]" />
@@ -142,11 +142,6 @@ export default function HomePage() {
         </div>
 
       </main>
-
-      {/* ── Footer ── */}
-      <footer className="relative z-10 border-t border-[var(--header-border)] px-6 py-4 text-center text-[10px] text-[var(--muted-foreground)] opacity-40 uppercase tracking-widest">
-        police-kahoot · realtime quiz battle · Next.js + Socket.IO
-      </footer>
     </Backdrop>
   )
 }
