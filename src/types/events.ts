@@ -59,19 +59,23 @@ export interface QuestionResult {
 
 // ── Client → Server events ──────────────────────────────────────
 export interface ClientToServerEvents {
+  'host:auth': (
+    payload: { loginKey?: string },
+    ack: (res: { ok: boolean; error?: string }) => void
+  ) => void
   'host:create': (
-    payload: { quiz: Quiz; minPlayersToEnd?: number },
+    payload: { quiz: Quiz; minPlayersToEnd?: number; loginKey?: string },
     ack: (res: { ok: boolean; pin?: string; error?: string }) => void
   ) => void
   'host:join': (
-    payload: { pin: string },
+    payload: { pin: string; loginKey?: string },
     ack: (res: { ok: boolean; state?: HostSnapshot; error?: string }) => void
   ) => void
-  'host:start': (payload: { pin: string }) => void
-  'host:next': (payload: { pin: string }) => void
-  'host:end': (payload: { pin: string }) => void
+  'host:start': (payload: { pin: string; loginKey?: string }) => void
+  'host:next': (payload: { pin: string; loginKey?: string }) => void
+  'host:end': (payload: { pin: string; loginKey?: string }) => void
   'host:reset': (
-    payload: { pin: string },
+    payload: { pin: string; loginKey?: string },
     ack?: (res: { ok: boolean; error?: string }) => void
   ) => void
 
@@ -112,6 +116,12 @@ export interface HostSnapshot {
   questionIndex: number
   totalQuestions: number
   minPlayersToEnd: number
+  /** Present when status === 'question'. */
+  question?: PublicQuestion
+  /** Present when status === 'result'. */
+  result?: QuestionResult
+  /** Present when status === 'ended'. */
+  ended?: { survivors: PlayerView[]; eliminated: PlayerView[] }
 }
 
 /** State snapshot a projector receives on (re)join. Includes live question/result so the projector can resync mid-game without history replay. */

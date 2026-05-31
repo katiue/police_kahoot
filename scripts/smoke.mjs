@@ -1,6 +1,11 @@
 import { io } from 'socket.io-client'
+import nextEnv from '@next/env'
 
-const URL = 'http://localhost:3100'
+const { loadEnvConfig } = nextEnv
+loadEnvConfig(process.cwd())
+
+const URL = process.env.SMOKE_URL || `http://localhost:${process.env.PORT || 3000}`
+const loginKey = process.env.LOGIN_KEY || ''
 const opts = { path: '/api/socket', transports: ['websocket'] }
 const quiz = {
   title: 'Smoke',
@@ -8,11 +13,10 @@ const quiz = {
     {
       id: 'q1',
       text: '2+2?',
-      timeLimitSec: 5,
-      points: 1000,
+      correctAnswerId: 1,
       answers: [
-        { id: 1, text: '4', correct: true },
-        { id: 2, text: '5', correct: false },
+        { id: 1, text: '4' },
+        { id: 2, text: '5' },
       ],
     },
   ],
@@ -25,11 +29,11 @@ const host = io(URL, opts)
 
 host.on('connect', () => {
   log('host connected')
-  host.emit('host:create', { quiz }, (res) => {
+  host.emit('host:create', { quiz, loginKey }, (res) => {
     if (!res.ok) return fail('create: ' + res.error)
     const pin = res.pin
     log('room pin', pin)
-    host.emit('host:join', { pin }, (hj) => {
+    host.emit('host:join', { pin, loginKey }, (hj) => {
       if (!hj.ok) return fail('host:join: ' + hj.error)
 
       const player = io(URL, opts)
@@ -49,18 +53,15 @@ host.on('connect', () => {
             log('result: correctId=' + r.correctAnswerId, 'you=', JSON.stringify(r.you))
             if (r.correctAnswerId !== 1) return fail('wrong correctId')
             if (!r.you?.correct) return fail('player should be correct')
-            if (!(r.you.gained > 0)) return fail('should gain points')
-            if (r.leaderboard[0]?.nickname !== 'Tester') return fail('leaderboard wrong')
-            log('PASS — full loop ok, gained', r.you.gained)
+            log('PASS - full loop ok')
             process.exit(0)
           })
 
-          // start after player is in
-          setTimeout(() => host.emit('host:start', { pin }), 300)
+          setTimeout(() => host.emit('host:start', { pin, loginKey }), 300)
         })
       })
     })
   })
 })
 
-setTimeout(() => fail('timeout — no result in 12s'), 12000)
+setTimeout(() => fail('timeout - no result in 12s'), 12000)
