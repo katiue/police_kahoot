@@ -3,13 +3,14 @@ import { Suspense, useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { QrPanel } from '@/components/game/QrPanel'
-import { ShieldCheck } from 'lucide-react'
+import { PoliceEmblem } from '@/components/game/PoliceEmblem'
+import { formatPin } from '@/lib/utils'
 
 const MARQUEE_ITEMS = [
-  'CHỐNG LỪA ĐẢO',
+  'CỤC AN NINH MẠNG',
   'ANTI-SCAM',
   'DIGITAL TRUST',
-  'POLICE KAHOOT',
+  'RUNG CHUÔNG VÀNG',
   'EVENT EDITION',
   'ONLINE SAFETY',
   'CYBER AWARENESS',
@@ -72,12 +73,12 @@ function LobbyView() {
       <header className="relative z-10 border-b border-[rgba(0,191,255,0.15)] bg-transparent backdrop-blur-sm">
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-8 py-4">
           <div className="flex items-center gap-3">
-            <ShieldCheck className="size-7 text-accent" />
+            <PoliceEmblem className="h-9 w-9 shrink-0" />
             <div className="flex flex-col leading-tight">
               <span className="text-[10px] font-medium uppercase tracking-[0.25em] text-muted-foreground">
-                Chống Lừa Đảo
+                Cục An Ninh Mạng
               </span>
-              <span className="text-sm font-semibold tracking-tight">Police Kahoot · v1</span>
+              <span className="text-sm font-semibold tracking-tight">Rung Chuông Vàng · v1</span>
             </div>
           </div>
           <span className="hidden items-center gap-2 text-[10px] font-medium uppercase tracking-[0.25em] text-muted-foreground sm:inline-flex">
@@ -125,29 +126,31 @@ function LobbyView() {
               <span className="font-mono text-xs text-muted-foreground">·</span>
             </div>
 
-            <h1 className="text-display text-[15vw] font-bold neon-text-white sm:text-[12vw] lg:text-[10rem]">
-              POLICE
+            <h1 className="text-display text-[9vw] font-bold neon-text-white sm:text-[7vw] lg:text-6xl">
+              RUNG CHUÔNG
               <br />
-              <span className="text-accent neon-text-cyan font-light italic">Kahoot</span>
+              <span className="text-accent neon-text-cyan font-light italic">VÀNG</span>
             </h1>
 
             <p className="mt-8 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
-              Realtime quiz battle — phòng chống lừa đảo trực tuyến.
+              Realtime quiz battle — kiểm tra kiến thức an toàn mạng.
               <br className="hidden md:block" />
-              <span className="font-semibold text-foreground">Quét QR · nhập PIN · trả lời nhanh ăn điểm cao.</span>
+              <span className="font-semibold text-foreground">Quét QR · nhập PIN · trả lời đúng để sống sót.</span>
             </p>
           </FadeIn>
 
-          {/* PIN block (only with ?pin) */}
+          {/* PIN block (only with ?pin) — dominant on projector */}
           {pin && (
             <FadeIn
               isMounted={isMounted}
               y={20}
               delay={0.5}
-              className="mt-10 flex flex-col items-center gap-1"
+              className="mt-8 flex flex-col items-center gap-2"
             >
               <span className="text-xs uppercase tracking-[0.3em] text-muted-foreground">Game PIN</span>
-              <span className="pin-display text-7xl font-bold text-accent neon-text-cyan">{pin}</span>
+              <span className="pin-display font-bold text-accent neon-text-cyan text-[18vw] sm:text-[14vw] lg:text-[12rem] leading-none">
+                {formatPin(pin)}
+              </span>
             </FadeIn>
           )}
 

@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { Backdrop } from '@/components/game/Backdrop'
 import { Button } from '@/components/ui/button'
 import { PoliceEmblem } from '@/components/game/PoliceEmblem'
-import { ChongLuaDaoMark } from '@/components/game/ChongLuaDao'
 import { Users, MonitorPlay, ShieldCheck, Zap } from 'lucide-react'
 
 export default function HomePage() {
@@ -15,62 +14,13 @@ export default function HomePage() {
 
   return (
     <Backdrop>
-      {/* ── Center Header — top center ── */}
+      {/* ── Header — police emblem only ── */}
       <header className="relative z-20 w-full bg-transparent px-4 py-4 md:px-8">
-        <div className="mx-auto grid max-w-7xl grid-cols-3 items-center">
-          {/* Left spacer to balance the grid layout */}
-          <div className="flex justify-start" />
-
-          {/* Center: Main Branding */}
-          <div className="flex flex-col items-center text-center gap-2">
-            {/* Primary brand row — Police (host) */}
-            <div className="flex flex-col items-center text-center gap-2">
-              <PoliceEmblem
-                className="h-16 w-auto object-contain"
-                style={{ filter: 'drop-shadow(0 0 14px rgba(255,213,74,0.4))' }}
-              />
-              <div className="flex flex-col leading-tight">
-                <span className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--foreground)] max-w-lg leading-normal">
-                  Cục An Ninh Mạng và Phòng, Chống Tội Phạm Sử Dụng Công Nghệ Cao
-                </span>
-              </div>
-            </div>
-
-            {/* Divider with "phối hợp" label */}
-            <div className="flex items-center gap-3 w-full max-w-xs mt-1">
-              <div className="h-px flex-1 bg-gradient-to-r from-transparent to-[rgba(0,212,255,0.2)]" />
-              <span className="text-[8px] uppercase tracking-[0.2em] text-[var(--muted-foreground)] opacity-50">
-                phối hợp
-              </span>
-              <div className="h-px flex-1 bg-gradient-to-l from-transparent to-[rgba(0,212,255,0.2)]" />
-            </div>
-
-            {/* Secondary brand — ChongLuaDao */}
-            <div className="flex items-center gap-2 opacity-80">
-              <ChongLuaDaoMark className="h-4.5 w-4.5" />
-              <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: '#22b36c' }}>
-                Chống Lừa Đảo
-              </span>
-              <span className="text-[9px] text-[var(--muted-foreground)] font-mono opacity-50">chongluadao.vn</span>
-            </div>
-          </div>
-
-          {/* Right: Decorative Vietnam Flag Star Badge in cyber box */}
-          <div className="flex justify-end">
-            <div className="cyber-header-control size-8 p-1 hover:opacity-90 md:size-10 md:p-1.5" aria-hidden="true">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 64 64"
-                className="h-full w-full rounded-full"
-              >
-                <circle cx={32} cy={32} r={30} fill="#f42f4c" />
-                <path
-                  fill="#ffe62e"
-                  d="m32 39 9.9 7-3.7-11.4 9.8-7.4H35.8L32 16l-3.7 11.2H16l9.8 7.4L22.1 46z"
-                />
-              </svg>
-            </div>
-          </div>
+        <div className="mx-auto flex max-w-7xl items-center justify-center">
+          <PoliceEmblem
+            className="h-14 w-auto object-contain md:h-16"
+            style={{ filter: 'drop-shadow(0 0 14px rgba(255,213,74,0.4))' }}
+          />
         </div>
       </header>
 
@@ -93,12 +43,12 @@ export default function HomePage() {
             {/* Tag Badge */}
             <div className="inline-flex items-center gap-2 bg-[rgba(0,191,255,0.08)] border border-[rgba(0,191,255,0.22)] text-[var(--primary)] px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-[0.16em] mb-6">
               <ShieldCheck className="size-4 text-[var(--primary)]" />
-              Chống Lừa Đảo Trực Tuyến
+              An Toàn Mạng
             </div>
 
             {/* Giant Cyber Title */}
             <h1 className="cyber-title tech-render-title text-4xl font-extrabold tracking-wider text-balance leading-[1.1] md:text-6xl max-w-3xl mb-4">
-              POLICE <span className="text-[var(--primary)] text-glow-real italic">KAHOOT</span>
+              RUNG CHUÔNG <span className="text-[var(--primary)] text-glow-real italic">VÀNG</span>
             </h1>
 
             {/* Description */}

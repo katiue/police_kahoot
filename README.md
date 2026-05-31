@@ -1,6 +1,6 @@
-# Police Kahoot — Realtime Quiz
+# Rung Chuông Vàng — Realtime Quiz
 
-Realtime Kahoot-style quiz for events. Host loads a quiz (JSON), opens a room (PIN + QR), players join on their phones and answer live. Server-authoritative scoring (speed + accuracy), live leaderboard.
+Realtime Kahoot-style elimination quiz for events ("Rung Chuông Vàng" — internal codename: Police Kahoot). Host loads a quiz (JSON), opens a room (PIN + QR), players join on their phones and answer live. Server-authoritative timing + correctness; last player(s) standing win.
 
 Theme: **Chống Lừa Đảo** cybersecurity (dark navy + neon cyan, Space Grotesk) — design reused from CLD-minigame.
 
@@ -64,25 +64,25 @@ node scripts/smoke.mjs
     {
       "id": "q1",
       "text": "Question text?",
-      "timeLimitSec": 20,
-      "points": 1000,
+      "correctAnswerId": 1,
       "answers": [
-        { "id": 1, "text": "Correct one", "correct": true },
-        { "id": 2, "text": "Wrong", "correct": false }
+        { "id": 1, "text": "Correct one" },
+        { "id": 2, "text": "Wrong" }
       ]
     }
   ]
 }
 ```
 
-- `timeLimitSec` default 20, `points` default 1000, `id` auto-generated if omitted.
-- Each question needs ≥2 answers and at least one `"correct": true`.
+- `id` auto-generated if omitted; `timeLimitSec` uses server default (20s).
+- Each question needs ≥2 answers and a `correctAnswerId` matching one answer `id`.
 - Sample at `public/quizzes/sample.json`.
 
-## Scoring
+## Elimination rules
 
-`points = correct ? round(base * (1 - 0.5 * responseMs / timeLimitMs)) : 0`
-Correct + instant ≈ full `points`; correct + last second ≈ half; wrong/no-answer = 0. Computed server-side from the server clock (anti-cheat).
+- Wrong or no-answer = player eliminated (becomes spectator).
+- Game ends when active player count ≤ `minPlayersToEnd` (host-configured, default 1).
+- Server is source of truth for timing + correctness (anti-cheat).
 
 ## Architecture map
 
