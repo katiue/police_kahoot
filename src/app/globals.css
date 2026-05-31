@@ -75,9 +75,9 @@
 }
 
 @theme inline {
-  --font-sans: var(--font-be-vietnam);
-  --font-mono: var(--font-be-vietnam);
-  --font-display: var(--font-space-grotesk);
+  --font-sans: var(--font-sans), "Space Grotesk", system-ui, sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", "Menlo", monospace;
+  --font-display: var(--font-sans), "Space Grotesk", system-ui, sans-serif;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -511,7 +511,7 @@
   }
 
   .cyber-title {
-    font-family: var(--font-space-grotesk);
+    font-family: var(--font-sans), "Space Grotesk", system-ui, sans-serif;
     font-weight: 700;
     letter-spacing: 0;
     text-transform: uppercase;
@@ -1024,8 +1024,20 @@
   .cyber-chip,
   .tech-start-wrap,
   .tech-start-button::after,
-  .tech-screen-celebration::after {
-    animation: none;
+  .tech-screen-celebration::after,
+  .animate-marquee,
+  .animate-scan-line,
+  .animate-avatar-pulse,
+  .animate-pulse-glow,
+  .animate-gradient-x,
+  .animate-correct-flash,
+  .animate-eliminated-out,
+  .cyber-circuit-path-glow-fast,
+  .cyber-circuit-path-glow-slow,
+  .cyber-circuit-path-glow-medium,
+  .cyber-circuit-node-glow,
+  .cyber-shield-watermark {
+    animation: none !important;
   }
 
   .tech-screen-boot,
@@ -1065,7 +1077,8 @@
 
 .pin-display {
   font-family: ui-monospace, "SFMono-Regular", monospace;
-  letter-spacing: 0.35em;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
 }
 
 @keyframes avatar-pulse {

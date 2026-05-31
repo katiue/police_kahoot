@@ -27,7 +27,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="font-sans antialiased" suppressHydrationWarning>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} disableTransitionOnChange>
           {children}
-          <Toaster richColors position="top-center" theme="dark" />
+          <Toaster richColors position="bottom-center" theme="dark" />
         </ThemeProvider>
       </body>
     </html>
