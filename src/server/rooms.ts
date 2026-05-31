@@ -22,6 +22,9 @@ interface Player {
   socketId: string | null
   connected: boolean
   eliminated: boolean
+  joinedAt: number
+  eliminatedAtQuestion: number | null
+  eliminatedReason: 'wrong' | 'timeout' | null
 }
 
 interface Response {
@@ -47,11 +50,35 @@ interface Room {
   timer: NodeJS.Timeout | null
   hostSocketId: string | null
   createdAt: number
+  lastExport: RoomExport | null
   /**
    * Game ends when active (non-eliminated) players count is <= this value.
    * Default 1 = last player standing wins.
    */
   minPlayersToEnd: number
+}
+
+export interface RoomSummary {
+  pin: string
+  quizTitle: string
+  status: GameStatus
+  players: number
+  totalQuestions: number
+}
+
+export interface RoomExportRow {
+  nickname: string
+  survivedUntilQuestion: number
+  eliminatedReason: 'wrong' | 'timeout' | 'winner' | 'not_eliminated'
+  joinedAt: string
+}
+
+export interface RoomExport {
+  pin: string
+  quizTitle: string
+  status: GameStatus
+  endedAt: string
+  rows: RoomExportRow[]
 }
 
 function genPin(existing: Set<string>, fixed?: string): string {
@@ -102,6 +129,8 @@ export class RoomManager {
    * always safe.
    */
   createRoom(quiz: Quiz, minPlayersToEnd = 1, fixedPin?: string): string {
+    for (const room of this.rooms.values()) this.clearTimer(room)
+    this.rooms.clear()
     const pin = genPin(new Set(this.rooms.keys()), fixedPin)
     const existing = this.rooms.get(pin)
     if (existing) {
@@ -123,6 +152,7 @@ export class RoomManager {
       timer: null,
       hostSocketId: null,
       createdAt: Date.now(),
+      lastExport: null,
       minPlayersToEnd: Math.max(1, Math.round(minPlayersToEnd)),
     })
     return pin
@@ -143,7 +173,11 @@ export class RoomManager {
     room.questionEndsAt = 0
     room.responses = new Map()
     room.lastResult = null
-    for (const p of room.players.values()) p.eliminated = false
+    for (const p of room.players.values()) {
+      p.eliminated = false
+      p.eliminatedAtQuestion = null
+      p.eliminatedReason = null
+    }
     this.broadcastLobby(room)
     return true
   }
@@ -151,6 +185,19 @@ export class RoomManager {
   /** First active room PIN, used by /api/active-room when running in single-room mode. */
   firstRoomPin(): string | null {
     for (const pin of this.rooms.keys()) return pin
+    return null
+  }
+
+  firstRoomSummary(): RoomSummary | null {
+    for (const room of this.rooms.values()) {
+      return {
+        pin: room.pin,
+        quizTitle: room.quiz.title,
+        status: room.status,
+        players: room.players.size,
+        totalQuestions: room.quiz.questions.length,
+      }
+    }
     return null
   }
 
@@ -249,6 +296,9 @@ export class RoomManager {
       socketId,
       connected: true,
       eliminated: false,
+      joinedAt: Date.now(),
+      eliminatedAtQuestion: null,
+      eliminatedReason: null,
     })
     this.broadcastLobby(room)
     return { ok: true, playerId: id }
@@ -300,8 +350,18 @@ export class RoomManager {
     if (!room) return
     this.clearTimer(room)
     room.status = 'ended'
+    room.lastExport = this.buildExport(room)
     const { survivors, eliminated } = this.getPlayerSummary(room)
     this.io.to(room.pin).emit('game:over', { survivors, eliminated })
+  }
+
+  exportRoom(pin: string): RoomExport | null {
+    const room = this.rooms.get(pin)
+    if (!room) return null
+    if (room.lastExport) return room.lastExport
+    if (room.status !== 'ended') return null
+    room.lastExport = this.buildExport(room)
+    return room.lastExport
   }
 
   submitAnswer(
@@ -397,6 +457,8 @@ export class RoomManager {
       const correct = r?.correct === true
       if (!correct) {
         p.eliminated = true
+        p.eliminatedAtQuestion = room.questionIndex
+        p.eliminatedReason = r ? 'wrong' : 'timeout'
         eliminatedThisRound.push(p.id)
         // Notify the eliminated player directly
         if (p.socketId) {
@@ -473,6 +535,27 @@ export class RoomManager {
       nickname: p.nickname,
       connected: p.connected,
       eliminated: p.eliminated,
+    }
+  }
+
+  private buildExport(room: Room): RoomExport {
+    const survivedFallback = Math.max(room.questionIndex + 1, 0)
+    return {
+      pin: room.pin,
+      quizTitle: room.quiz.title,
+      status: room.status,
+      endedAt: new Date().toISOString(),
+      rows: [...room.players.values()].map((p) => ({
+        nickname: p.nickname,
+        survivedUntilQuestion:
+          p.eliminatedAtQuestion === null ? survivedFallback : p.eliminatedAtQuestion + 1,
+        eliminatedReason: p.eliminated
+          ? p.eliminatedReason ?? 'not_eliminated'
+          : room.status === 'ended'
+          ? 'winner'
+          : 'not_eliminated',
+        joinedAt: new Date(p.joinedAt).toISOString(),
+      })),
     }
   }
 
