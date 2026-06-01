@@ -105,7 +105,7 @@ function shuffled<T>(items: T[]): T[] {
   const copy = [...items]
   for (let i = copy.length - 1; i > 0; i -= 1) {
     const j = Math.floor(Math.random() * (i + 1))
-    ;[copy[i], copy[j]] = [copy[j], copy[i]]
+      ;[copy[i], copy[j]] = [copy[j], copy[i]]
   }
   return copy
 }
@@ -122,7 +122,7 @@ function randomizeQuiz(quiz: Quiz, randomizeQuestions = true, randomizeAnswers =
 
 export class RoomManager {
   private rooms = new Map<string, Room>()
-  constructor(private io: IO) {}
+  constructor(private io: IO) { }
 
   // ── lifecycle ────────────────────────────────────────────────
   /**
@@ -583,8 +583,8 @@ export class RoomManager {
         eliminatedReason: p.eliminated
           ? p.eliminatedReason ?? 'not_eliminated'
           : room.status === 'ended'
-          ? 'winner'
-          : 'not_eliminated',
+            ? 'winner'
+            : 'not_eliminated',
         joinedAt: new Date(p.joinedAt).toISOString(),
       })),
     }

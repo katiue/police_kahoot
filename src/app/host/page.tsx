@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { HostAuthCard, HOST_LOGIN_STORAGE_KEY } from '@/components/auth/HostAuthCard'
 import { getSocket } from '@/lib/socket-client'
 import { parseQuiz } from '@/lib/quiz'
+import type { Quiz, QuizDifficulty, QuizQuestion } from '@/types/events'
 import {
   AlertTriangle,
   ArrowLeft,
@@ -32,6 +33,97 @@ interface QuizOption {
   error?: string
 }
 
+const EVENT_QUESTIONSET_ID = '__event_questionset__'
+const DIFFICULTIES: QuizDifficulty[] = ['easy', 'medium', 'hard']
+
+function shuffle<T>(items: T[]): T[] {
+  const copy = [...items]
+  for (let i = copy.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[copy[i], copy[j]] = [copy[j], copy[i]]
+  }
+  return copy
+}
+
+function slotsFromWeights(
+  total: number,
+  weights: Array<{ difficulty: QuizDifficulty; weight: number }>
+): QuizDifficulty[] {
+  const base = weights.map((entry, index) => {
+    const exact = total * entry.weight
+    return {
+      ...entry,
+      index,
+      count: Math.floor(exact),
+      remainder: exact - Math.floor(exact),
+    }
+  })
+  let assigned = base.reduce((sum, entry) => sum + entry.count, 0)
+  const byRemainder = [...base].sort(
+    (a, b) => b.remainder - a.remainder || a.index - b.index
+  )
+
+  for (const entry of byRemainder) {
+    if (assigned >= total) break
+    entry.count += 1
+    assigned += 1
+  }
+
+  return shuffle(base.flatMap((entry) => Array(entry.count).fill(entry.difficulty)))
+}
+
+function buildDifficultyRampDeck(questions: QuizQuestion[]): QuizQuestion[] {
+  const pools = DIFFICULTIES.reduce(
+    (acc, difficulty) => {
+      acc[difficulty] = shuffle(questions.filter((question) => question.difficulty === difficulty))
+      return acc
+    },
+    {} as Record<QuizDifficulty, QuizQuestion[]>
+  )
+
+  const deck: QuizQuestion[] = []
+  const remainingCount = () => DIFFICULTIES.reduce((sum, difficulty) => sum + pools[difficulty].length, 0)
+  const fallbackByDifficulty: Record<QuizDifficulty, QuizDifficulty[]> = {
+    easy: ['easy', 'medium', 'hard'],
+    medium: ['medium', 'easy', 'hard'],
+    hard: ['hard', 'medium', 'easy'],
+  }
+  const take = (difficulty: QuizDifficulty) => {
+    for (const candidate of fallbackByDifficulty[difficulty]) {
+      const question = pools[candidate].pop()
+      if (question) return question
+    }
+    return null
+  }
+  const appendPhase = (
+    size: number,
+    weights: Array<{ difficulty: QuizDifficulty; weight: number }>
+  ) => {
+    const phaseSize = Math.min(size, remainingCount())
+    for (const difficulty of slotsFromWeights(phaseSize, weights)) {
+      const question = take(difficulty)
+      if (question) deck.push(question)
+    }
+  }
+
+  appendPhase(5, [{ difficulty: 'easy', weight: 1 }])
+  appendPhase(10, [
+    { difficulty: 'easy', weight: 0.4 },
+    { difficulty: 'medium', weight: 0.6 },
+  ])
+  appendPhase(10, [
+    { difficulty: 'easy', weight: 0.2 },
+    { difficulty: 'medium', weight: 0.5 },
+    { difficulty: 'hard', weight: 0.3 },
+  ])
+  appendPhase(remainingCount(), [
+    { difficulty: 'hard', weight: 0.7 },
+    { difficulty: 'medium', weight: 0.3 },
+  ])
+
+  return deck
+}
+
 export default function HostCreatePage() {
   const router = useRouter()
   const [busy, setBusy] = useState(false)
@@ -47,6 +139,8 @@ export default function HostCreatePage() {
   const [authError, setAuthError] = useState('')
   const [quizzes, setQuizzes] = useState<QuizOption[]>([])
   const [selectedQuiz, setSelectedQuiz] = useState('')
+  const [loadingQuestionSet, setLoadingQuestionSet] = useState(false)
+  const [eventQuestionSet, setEventQuestionSet] = useState<Quiz | null>(null)
 
   useEffect(() => {
     const saved = sessionStorage.getItem(HOST_LOGIN_STORAGE_KEY) ?? ''
@@ -81,15 +175,71 @@ export default function HostCreatePage() {
       .finally(() => setCheckingActive(false))
   }
 
-  function loadQuizzes() {
+  function loadQuizzes(showToast = false) {
+    setLoadingQuestionSet(true)
     fetch('/api/quizzes', { cache: 'no-store' })
       .then((r) => r.json())
       .then((d: { quizzes?: QuizOption[] }) => {
-        const valid = (d.quizzes ?? []).filter((q) => !q.error)
-        setQuizzes(d.quizzes ?? [])
-        if (!selectedQuiz && valid[0]) setSelectedQuiz(valid[0].file)
+        const eventQuizzes = (d.quizzes ?? []).filter((q) => q.file !== 'sample.json')
+        const valid = eventQuizzes.filter((q) => !q.error)
+        setQuizzes(eventQuizzes)
+        if (!valid.some((q) => q.file === selectedQuiz)) {
+          setSelectedQuiz(valid[0]?.file ?? '')
+        }
       })
-      .catch(() => toast.error('Không tải được danh sách quiz'))
+      .then(() => {
+        if (showToast) toast.success('Đã load event questionset')
+      })
+      .catch(() => toast.error('Không tải được event questionset'))
+      .finally(() => setLoadingQuestionSet(false))
+  }
+
+  async function loadEventQuestionSet() {
+    setLoadingQuestionSet(true)
+    try {
+      const listRes = await fetch('/api/quizzes', { cache: 'no-store' })
+      if (!listRes.ok) throw new Error(`Không tải được danh sách quiz (${listRes.status})`)
+      const data = (await listRes.json()) as { quizzes?: QuizOption[] }
+      const eventQuizzes = (data.quizzes ?? []).filter((q) => q.file !== 'sample.json' && !q.error)
+      if (eventQuizzes.length === 0) throw new Error('Không có event questionset hợp lệ')
+
+      const parsed = await Promise.all(
+        eventQuizzes.map(async (meta) => {
+          const quizRes = await fetch(`/quizzes/${meta.file}`, { cache: 'no-store' })
+          if (!quizRes.ok) throw new Error(`Không tải được ${meta.file}`)
+          return { meta, quiz: parseQuiz(await quizRes.json()) }
+        })
+      )
+
+      const questions = parsed.flatMap(({ meta, quiz }) => {
+        const prefix = meta.file.replace(/\.json$/i, '')
+        return quiz.questions.map((question) => ({
+          ...question,
+          id: `${prefix}:${question.id}`,
+        }))
+      })
+
+      const merged: Quiz = {
+        title: 'Event Questionset - Police Quiz 2026',
+        questions: buildDifficultyRampDeck(questions),
+      }
+      const mergedOption: QuizOption = {
+        file: EVENT_QUESTIONSET_ID,
+        title: merged.title,
+        questionCount: merged.questions.length,
+      }
+
+      setEventQuestionSet(merged)
+      setQuizzes([mergedOption, ...eventQuizzes])
+      setSelectedQuiz(EVENT_QUESTIONSET_ID)
+      toast.success(
+        `Đã gộp ${eventQuizzes.length} question set thành ${merged.questions.length} câu theo difficulty ramp`
+      )
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Không tải được event questionset')
+    } finally {
+      setLoadingQuestionSet(false)
+    }
   }
 
   function authenticate() {
@@ -112,6 +262,26 @@ export default function HostCreatePage() {
 
   async function create() {
     const chosen = quizzes.find((q) => q.file === selectedQuiz)
+    if (selectedQuiz === EVENT_QUESTIONSET_ID) {
+      if (!eventQuestionSet) return toast.error('Bấm Load event questionset trước')
+      setBusy(true)
+      getSocket().emit('host:create', { quiz: eventQuestionSet, minPlayersToEnd, loginKey }, (res) => {
+        setBusy(false)
+        if (res.ok && res.pin) {
+          sessionStorage.setItem(HOST_LOGIN_STORAGE_KEY, loginKey)
+          router.push(`/host/${res.pin}`)
+        } else {
+          if (res.error === 'Invalid login key') {
+            sessionStorage.removeItem(HOST_LOGIN_STORAGE_KEY)
+            setAuthOk(false)
+            setAuthError('LOGIN_KEY không đúng')
+            return
+          }
+          toast.error(res.error ?? 'Tạo phòng thất bại')
+        }
+      })
+      return
+    }
     if (!chosen) return toast.error('Chọn một quiz hợp lệ trước')
     setBusy(true)
     try {
@@ -196,6 +366,16 @@ export default function HostCreatePage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={loadEventQuestionSet}
+              disabled={!authOk || loadingQuestionSet}
+              className="gap-2 self-start"
+            >
+              <FileJson className="size-4" />
+              {loadingQuestionSet ? 'Loading event questionset...' : 'Load event questionset'}
+            </Button>
             <select
               value={selectedQuiz}
               onChange={(e) => setSelectedQuiz(e.target.value)}
@@ -214,7 +394,10 @@ export default function HostCreatePage() {
             </select>
             {selected && (
               <div className="rounded-lg border border-border/60 bg-card/40 px-3 py-2 text-xs text-muted-foreground">
-                File: <span className="font-mono text-accent">{selected.file}</span>
+                {selected.file === EVENT_QUESTIONSET_ID ? 'Merged questionset' : 'File'}:{' '}
+                <span className="font-mono text-accent">
+                  {selected.file === EVENT_QUESTIONSET_ID ? `${selected.questionCount} câu từ tất cả event quiz` : selected.file}
+                </span>
               </div>
             )}
           </CardContent>
