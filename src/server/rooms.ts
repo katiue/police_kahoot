@@ -537,8 +537,14 @@ export class RoomManager {
 
     // Check if game should auto-end
     if (this.shouldEndGame(room)) {
-      // Small delay so clients can render the result screen first
-      setTimeout(() => this.endGame(room), 3000)
+      // Small delay so clients can render the result screen first.
+      // Store on room.timer so reset/next/new-question can cancel it, and
+      // re-check status on fire so a reset (→ lobby) within the delay wins.
+      this.clearTimer(room)
+      room.timer = setTimeout(() => {
+        room.timer = null
+        if (room.status === 'result') this.endGame(room)
+      }, 3000)
     }
   }
 
