@@ -21,15 +21,22 @@ export function LobbyHero({
   const formattedPin = formatPin(pin)
   return (
     <div className="flex flex-col items-center gap-8">
-      <div className="flex items-center gap-3.5 mb-2">
-        <PoliceEmblem
-          className="h-16 w-16 shrink-0"
-          style={{ filter: 'drop-shadow(0 0 10px rgba(200,150,12,0.55))' }}
-        />
-        <div className="flex flex-col justify-center leading-tight">
-          <span className="text-sm font-bold uppercase tracking-[0.18em] text-[var(--foreground)]">CỤC AN NINH MẠNG</span>
-          <span className="text-[9.5px] uppercase tracking-[0.12em] text-[var(--muted-foreground)] opacity-85">BỘ CÔNG AN</span>
-        </div>
+      <div className="flex flex-col items-center gap-2 text-center mb-2">
+        <a
+          href="https://bocongan.gov.vn/"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Cục An Ninh Mạng và Phòng, Chống Tội Phạm Sử Dụng Công Nghệ Cao"
+          className="inline-flex"
+        >
+          <PoliceEmblem
+            className="h-16 w-16 shrink-0"
+            style={{ filter: 'drop-shadow(0 0 10px rgba(200,150,12,0.55))' }}
+          />
+        </a>
+        <p className="whitespace-pre-line text-center text-[0.6rem] font-medium leading-snug tracking-[0.08em] text-white">
+          {`CỤC AN NINH MẠNG VÀ PHÒNG, CHỐNG\nTỘI PHẠM SỬ DỤNG CÔNG NGHỆ CAO`}
+        </p>
       </div>
 
       <div className="flex flex-col items-center gap-2">

@@ -161,14 +161,19 @@ function ProjectorView() {
       {/* Top bar */}
       <header className="relative z-10 border-b border-[rgba(0,191,255,0.15)] bg-transparent backdrop-blur-sm">
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-8 py-3">
-          <div className="flex items-center gap-3">
-            <PoliceEmblem className="h-9 w-9 shrink-0" />
-            <div className="flex flex-col leading-tight">
-              <span className="text-[10px] font-medium uppercase tracking-[0.25em] text-muted-foreground">
-                Cục An Ninh Mạng
-              </span>
-              <span className="text-sm font-semibold tracking-tight">Rung Chuông Vàng · v1</span>
-            </div>
+          <div className="flex flex-col items-center gap-1.5 text-center">
+            <a
+              href="https://bocongan.gov.vn/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Cục An Ninh Mạng và Phòng, Chống Tội Phạm Sử Dụng Công Nghệ Cao"
+              className="inline-flex"
+            >
+              <PoliceEmblem className="h-9 w-9 shrink-0" />
+            </a>
+            <p className="whitespace-pre-line text-center text-[0.48rem] font-medium leading-snug tracking-[0.08em] text-white">
+              {`CỤC AN NINH MẠNG VÀ PHÒNG, CHỐNG\nTỘI PHẠM SỬ DỤNG CÔNG NGHỆ CAO`}
+            </p>
           </div>
           {pin && (
             <span className="hidden items-center gap-2 text-[10px] font-medium uppercase tracking-[0.25em] text-muted-foreground sm:inline-flex">

@@ -147,12 +147,22 @@ export default function PlayRoomPage({ params }: { params: Promise<{ pin: string
       {/* ── Header ─────────────────────────────────────── */}
       <header className="relative z-10 border-b border-[rgba(0,191,255,0.15)] bg-transparent backdrop-blur-sm">
         {/* Logo strip centered */}
-        <div className="flex items-center justify-center gap-2 px-5 py-2">
-          <PoliceEmblem
-            className="h-7 w-7 shrink-0"
-            style={{ filter: 'drop-shadow(0 0 6px rgba(200,150,12,0.5))' }}
-          />
-          <span className="text-[9px] font-bold uppercase tracking-[0.16em] text-[var(--foreground)]">Cục An Ninh Mạng</span>
+        <div className="flex flex-col items-center gap-1 px-5 py-2 text-center">
+          <a
+            href="https://bocongan.gov.vn/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Cục An Ninh Mạng và Phòng, Chống Tội Phạm Sử Dụng Công Nghệ Cao"
+            className="inline-flex"
+          >
+            <PoliceEmblem
+              className="h-7 w-7 shrink-0"
+              style={{ filter: 'drop-shadow(0 0 6px rgba(200,150,12,0.5))' }}
+            />
+          </a>
+          <p className="whitespace-pre-line text-center text-[0.4rem] font-medium leading-snug tracking-[0.08em] text-white">
+            {`CỤC AN NINH MẠNG VÀ PHÒNG, CHỐNG\nTỘI PHẠM SỬ DỤNG CÔNG NGHỆ CAO`}
+          </p>
         </div>
         {/* Player status row */}
         <div className="flex items-center justify-between border-t border-[rgba(0,212,255,0.1)] px-5 py-1.5">
