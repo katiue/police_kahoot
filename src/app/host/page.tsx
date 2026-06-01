@@ -265,7 +265,7 @@ export default function HostCreatePage() {
     if (selectedQuiz === EVENT_QUESTIONSET_ID) {
       if (!eventQuestionSet) return toast.error('Bấm Load event questionset trước')
       setBusy(true)
-      getSocket().emit('host:create', { quiz: eventQuestionSet, minPlayersToEnd, loginKey }, (res) => {
+      getSocket().emit('host:create', { quiz: eventQuestionSet, minPlayersToEnd, maxPlayers, timeLimitSec, randomizeQuestions, randomizeAnswers, loginKey }, (res) => {
         setBusy(false)
         if (res.ok && res.pin) {
           sessionStorage.setItem(HOST_LOGIN_STORAGE_KEY, loginKey)

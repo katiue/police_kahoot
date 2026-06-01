@@ -152,8 +152,14 @@ export class RoomManager {
       this.rooms.delete(pin)
     }
     const minPlayersToEnd = options.minPlayersToEnd ?? 1
-    const maxPlayers = options.maxPlayers ?? 100
-    const timeLimitSec = options.timeLimitSec !== undefined ? options.timeLimitSec : null
+    const maxPlayers =
+      typeof options.maxPlayers === 'number' && options.maxPlayers >= 1
+        ? Math.round(options.maxPlayers)
+        : 100
+    const timeLimitSec =
+      typeof options.timeLimitSec === 'number' && options.timeLimitSec > 0
+        ? Math.round(options.timeLimitSec)
+        : null
     const randomizeQuestions = options.randomizeQuestions !== false
     const randomizeAnswers = options.randomizeAnswers !== false
 
@@ -531,8 +537,14 @@ export class RoomManager {
 
     // Check if game should auto-end
     if (this.shouldEndGame(room)) {
-      // Small delay so clients can render the result screen first
-      setTimeout(() => this.endGame(room), 3000)
+      // Small delay so clients can render the result screen first.
+      // Store on room.timer so reset/next/new-question can cancel it, and
+      // re-check status on fire so a reset (→ lobby) within the delay wins.
+      this.clearTimer(room)
+      room.timer = setTimeout(() => {
+        room.timer = null
+        if (room.status === 'result') this.endGame(room)
+      }, 3000)
     }
   }
 
