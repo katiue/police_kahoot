@@ -80,7 +80,7 @@ async function maybeAutoCreateRoom(manager: ReturnType<typeof registerSocketHand
     const quiz = parseQuiz(JSON.parse(raw))
     const fixedPin = process.env.EVENT_PIN?.trim() || undefined
     const minWinners = parseInt(process.env.EVENT_MIN_WINNERS ?? '1', 10) || 1
-    const pin = manager.createRoom(quiz, minWinners, fixedPin)
+    const pin = manager.createRoom(quiz, { minPlayersToEnd: minWinners }, fixedPin)
     // eslint-disable-next-line no-console
     console.log(`▶ event room ready  PIN=${pin}  quiz="${quiz.title}"  minWinners=${minWinners}`)
     return pin

@@ -64,7 +64,15 @@ export interface ClientToServerEvents {
     ack: (res: { ok: boolean; error?: string }) => void
   ) => void
   'host:create': (
-    payload: { quiz: Quiz; minPlayersToEnd?: number; loginKey?: string },
+    payload: {
+      quiz: Quiz
+      minPlayersToEnd?: number
+      maxPlayers?: number
+      timeLimitSec?: number | null
+      randomizeQuestions?: boolean
+      randomizeAnswers?: boolean
+      loginKey?: string
+    },
     ack: (res: { ok: boolean; pin?: string; error?: string }) => void
   ) => void
   'host:join': (
@@ -116,6 +124,10 @@ export interface HostSnapshot {
   questionIndex: number
   totalQuestions: number
   minPlayersToEnd: number
+  maxPlayers?: number
+  timeLimitSec?: number | null
+  randomizeQuestions?: boolean
+  randomizeAnswers?: boolean
   /** Present when status === 'question'. */
   question?: PublicQuestion
   /** Present when status === 'result'. */
@@ -133,6 +145,10 @@ export interface ProjectorSnapshot {
   questionIndex: number
   totalQuestions: number
   minPlayersToEnd: number
+  maxPlayers?: number
+  timeLimitSec?: number | null
+  randomizeQuestions?: boolean
+  randomizeAnswers?: boolean
   /** Present when status === 'question'. */
   question?: PublicQuestion
   /** Present when status === 'result'. */

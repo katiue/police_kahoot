@@ -71,7 +71,7 @@ export function parseQuiz(raw: unknown): Quiz {
     return {
       id: typeof qo.id === 'string' ? qo.id : `q${qi + 1}`,
       text,
-      timeLimitSec: 20, // internal default — not read from JSON
+      timeLimitSec: 60, // internal default — not read from JSON
       correctAnswerId,
       answers,
     }

@@ -18,6 +18,11 @@ import {
   MonitorPlay,
   Rocket,
   Users,
+  Clock,
+  Settings,
+  Shuffle,
+  ShieldAlert,
+  ListOrdered,
 } from 'lucide-react'
 
 interface QuizOption {
@@ -32,6 +37,10 @@ export default function HostCreatePage() {
   const [busy, setBusy] = useState(false)
   const [checkingActive, setCheckingActive] = useState(false)
   const [minPlayersToEnd, setMinPlayersToEnd] = useState(1)
+  const [maxPlayers, setMaxPlayers] = useState(100)
+  const [timeLimitSec, setTimeLimitSec] = useState<number | null>(null)
+  const [randomizeQuestions, setRandomizeQuestions] = useState(true)
+  const [randomizeAnswers, setRandomizeAnswers] = useState(true)
   const [loginKey, setLoginKey] = useState('')
   const [authOk, setAuthOk] = useState(false)
   const [authBusy, setAuthBusy] = useState(true)
@@ -110,7 +119,15 @@ export default function HostCreatePage() {
       if (!quizRes.ok) throw new Error(`Không tải được quiz (${quizRes.status})`)
       const quiz = parseQuiz(await quizRes.json())
       const socket = getSocket()
-      socket.emit('host:create', { quiz, minPlayersToEnd, loginKey }, (res) => {
+      socket.emit('host:create', {
+        quiz,
+        minPlayersToEnd,
+        maxPlayers,
+        timeLimitSec,
+        randomizeQuestions,
+        randomizeAnswers,
+        loginKey,
+      }, (res) => {
         setBusy(false)
         if (res.ok && res.pin) {
           sessionStorage.setItem(HOST_LOGIN_STORAGE_KEY, loginKey)
@@ -205,33 +222,126 @@ export default function HostCreatePage() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Users className="size-5 text-accent" /> Cài đặt trận đấu
+            <CardTitle className="flex items-center gap-2 text-accent neon-text-cyan">
+              <Settings className="size-5" /> Cài đặt trận đấu
             </CardTitle>
           </CardHeader>
-          <CardContent className="flex flex-col gap-3">
-            <label className="flex flex-col gap-1.5">
-              <span className="text-sm font-semibold">
-                Kết thúc khi còn lại <span className="text-accent">{minPlayersToEnd}</span> người chiến thắng
-              </span>
-              <input
-                id="min-players"
-                type="number"
-                min={1}
-                max={100}
-                value={minPlayersToEnd}
-                onChange={(e) =>
-                  setMinPlayersToEnd(Math.min(100, Math.max(1, parseInt(e.target.value, 10) || 1)))
-                }
-                className="w-28 rounded-lg border border-border bg-input/60 px-3 py-2 text-sm font-mono text-foreground outline-none focus:border-accent/60"
-              />
-              {minPlayersToEnd > 10 && (
-                <span className="inline-flex items-center gap-1.5 text-[11px] text-amber-400">
-                  <AlertTriangle className="size-3.5" />
-                  Ngưỡng cao: đảm bảo số người tham gia lớn hơn ngưỡng này.
-                </span>
-              )}
-            </label>
+          <CardContent className="flex flex-col gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Left Column: Number adjustments */}
+              <div className="flex flex-col gap-5">
+                <label className="flex flex-col gap-1.5">
+                  <span className="text-sm font-semibold flex items-center gap-1.5 text-foreground/90">
+                    <Users className="size-4 text-accent" />
+                    Số đặc vụ tối đa
+                  </span>
+                  <input
+                    id="max-players"
+                    type="number"
+                    min={1}
+                    max={200}
+                    value={maxPlayers}
+                    onChange={(e) =>
+                      setMaxPlayers(Math.min(200, Math.max(1, parseInt(e.target.value, 10) || 1)))
+                    }
+                    className="w-full rounded-lg border border-border bg-input/60 px-3 py-2 text-sm font-mono text-foreground outline-none focus:border-accent/60 transition-colors"
+                  />
+                  <span className="text-[10px] text-muted-foreground">
+                    Giới hạn số đặc vụ được phép tham gia phòng (Tối đa 200).
+                  </span>
+                </label>
+
+                <label className="flex flex-col gap-1.5">
+                  <span className="text-sm font-semibold flex items-center gap-1.5 text-foreground/90">
+                    <Clock className="size-4 text-accent" />
+                    Thời gian trả lời mỗi câu
+                  </span>
+                  <select
+                    value={timeLimitSec === null ? '' : timeLimitSec}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setTimeLimitSec(val === '' ? null : parseInt(val, 10));
+                    }}
+                    className="h-10 w-full rounded-lg border border-border bg-input/60 px-3 text-sm font-semibold text-foreground outline-none focus:border-accent/60 transition-colors cursor-pointer"
+                  >
+                    <option value="">Mặc định (Từ quiz hoặc 20s)</option>
+                    <option value="5">5 giây (Siêu tốc)</option>
+                    <option value="10">10 giây</option>
+                    <option value="15">15 giây</option>
+                    <option value="20">20 giây (Khuyên dùng)</option>
+                    <option value="30">30 giây</option>
+                    <option value="45">45 giây</option>
+                    <option value="60">60 giây</option>
+                  </select>
+                  <span className="text-[10px] text-muted-foreground">
+                    Thời gian đếm ngược của mỗi câu hỏi (Ghi đè cấu hình mặc định).
+                  </span>
+                </label>
+              </div>
+
+              {/* Right Column: Toggles and ends threshold */}
+              <div className="flex flex-col gap-5">
+                <label className="flex flex-col gap-1.5">
+                  <span className="text-sm font-semibold flex items-center gap-1.5 text-foreground/90">
+                    <ShieldAlert className="size-4 text-accent" />
+                    Kết thúc khi còn lại đặc vụ
+                  </span>
+                  <div className="flex items-center gap-3">
+                    <input
+                      id="min-players"
+                      type="number"
+                      min={1}
+                      max={100}
+                      value={minPlayersToEnd}
+                      onChange={(e) =>
+                        setMinPlayersToEnd(Math.min(100, Math.max(1, parseInt(e.target.value, 10) || 1)))
+                      }
+                      className="w-24 rounded-lg border border-border bg-input/60 px-3 py-2 text-sm font-mono text-foreground outline-none focus:border-accent/60 transition-colors"
+                    />
+                    <span className="text-xs text-accent font-semibold font-mono">
+                      (Top {minPlayersToEnd} chiến thắng)
+                    </span>
+                  </div>
+                  {minPlayersToEnd > 10 && (
+                    <span className="inline-flex items-center gap-1 text-[10px] text-amber-400">
+                      <AlertTriangle className="size-3.5" />
+                      Ngưỡng cao: cần đảm bảo số đặc vụ lớn hơn ngưỡng này.
+                    </span>
+                  )}
+                  <span className="text-[10px] text-muted-foreground">
+                    Trận đấu tự động dừng khi số đặc vụ chưa bị loại chạm ngưỡng này.
+                  </span>
+                </label>
+
+                <div className="flex flex-col gap-3 mt-1">
+                  <label className="flex items-center gap-2.5 cursor-pointer group">
+                    <input
+                      type="checkbox"
+                      checked={randomizeQuestions}
+                      onChange={(e) => setRandomizeQuestions(e.target.checked)}
+                      className="size-4 rounded border-border bg-input/60 text-accent focus:ring-0 focus:ring-offset-0 outline-none accent-accent cursor-pointer"
+                    />
+                    <span className="text-xs font-semibold text-foreground/95 group-hover:text-accent transition-colors flex items-center gap-1.5">
+                      <Shuffle className="size-3.5" />
+                      Tráo ngẫu nhiên câu hỏi
+                    </span>
+                  </label>
+
+                  <label className="flex items-center gap-2.5 cursor-pointer group">
+                    <input
+                      type="checkbox"
+                      checked={randomizeAnswers}
+                      onChange={(e) => setRandomizeAnswers(e.target.checked)}
+                      className="size-4 rounded border-border bg-input/60 text-accent focus:ring-0 focus:ring-offset-0 outline-none accent-accent cursor-pointer"
+                    />
+                    <span className="text-xs font-semibold text-foreground/95 group-hover:text-accent transition-colors flex items-center gap-1.5">
+                      <ListOrdered className="size-3.5" />
+                      Tráo ngẫu nhiên đáp án
+                    </span>
+                  </label>
+                </div>
+              </div>
+            </div>
           </CardContent>
         </Card>
 

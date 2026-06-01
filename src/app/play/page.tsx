@@ -121,7 +121,7 @@ function JoinForm() {
         </div>
 
         {/* Icon swatches */}
-        <div className="flex gap-1.5">
+        <div className="flex flex-wrap justify-center gap-1.5 max-w-sm">
           {AVATAR_ICONS.map((IconFn, idx) => {
             const activeColor =
               AVATAR_COLORS[

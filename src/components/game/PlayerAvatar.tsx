@@ -95,6 +95,89 @@ export const AVATAR_ICONS = [
       <path d="M12 20a8 8 0 0 0 8-8" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
     </svg>
   ),
+  // Crosshair / Target
+  (color: string) => (
+    <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
+      <circle cx="12" cy="12" r="8" stroke={color} strokeWidth="1.5" strokeDasharray="3 3"/>
+      <circle cx="12" cy="12" r="3" fill={color} fillOpacity="0.2" stroke={color} strokeWidth="1.5"/>
+      <line x1="12" y1="1" x2="12" y2="5" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+      <line x1="12" y1="19" x2="12" y2="23" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+      <line x1="1" y1="12" x2="5" y2="12" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+      <line x1="19" y1="12" x2="23" y2="12" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+    </svg>
+  ),
+  // Flashlight / Torch
+  (color: string) => (
+    <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
+      <path d="M18 3H6c-.55 0-1 .45-1 1v4c0 .35.18.66.45.85l3.55 2.5V19c0 1.1.9 2 2 2h2c1.1 0 2-.9 2-2v-8.65l3.55-2.5c.27-.19.45-.5.45-.85V4c0-.55-.45-1-1-1Z" fill={color} fillOpacity="0.25" stroke={color} strokeWidth="1.5"/>
+      <line x1="9" y1="7" x2="15" y2="7" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+      <circle cx="12" cy="15" r="1.5" fill={color}/>
+    </svg>
+  ),
+  // Megaphone / Siren Alert
+  (color: string) => (
+    <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
+      <path d="M3 17v-6c0-1.1.9-2 2-2h3l7-5v16l-7-5H5c-1.1 0-2-.9-2-2Z" fill={color} fillOpacity="0.25" stroke={color} strokeWidth="1.5" strokeLinejoin="round"/>
+      <path d="M19 8c1.5 1.5 1.5 4.5 0 6M21 5c2.5 2.5 2.5 7.5 0 10" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+      <path d="M11 14l-2 5.5a1 1 0 0 1-1.8-.6L8.5 14" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  ),
+  // Handcuffs
+  (color: string) => (
+    <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
+      <circle cx="7" cy="14" r="4.5" fill={color} fillOpacity="0.2" stroke={color} strokeWidth="1.5"/>
+      <circle cx="17" cy="14" r="4.5" fill={color} fillOpacity="0.2" stroke={color} strokeWidth="1.5"/>
+      <path d="M10.5 11.5s2-2 3.5 0" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+      <rect x="5" y="8" width="4" height="2" rx="0.5" fill={color}/>
+      <rect x="15" y="8" width="4" height="2" rx="0.5" fill={color}/>
+    </svg>
+  ),
+  // Police Car / Cruiser
+  (color: string) => (
+    <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
+      <path d="M19 10h-2L15.3 7.3a1.5 1.5 0 0 0-1.2-.6H9.9a1.5 1.5 0 0 0-1.2.6L6.7 10H5a3 3 0 0 0-3 3v4a1 1 0 0 0 1 1h1a2.5 2.5 0 0 0 5 0h6a2.5 2.5 0 0 0 5 0h1a1 1 0 0 0 1-1v-4a3 3 0 0 0-3-3Z" fill={color} fillOpacity="0.2" stroke={color} strokeWidth="1.5" strokeLinejoin="round"/>
+      <circle cx="6" cy="18" r="1.5" fill={color}/>
+      <circle cx="18" cy="18" r="1.5" fill={color}/>
+      <path d="M11 6.7V5a1 1 0 0 1 2 0v1.7" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+    </svg>
+  ),
+  // Star Badge / Sheriff Star
+  (color: string) => (
+    <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
+      <path d="M12 2l2.6 5.3 5.8.9-4.2 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.2-4.1 5.8-.9L12 2Z" fill={color} fillOpacity="0.25" stroke={color} strokeWidth="1.5" strokeLinejoin="round"/>
+      <circle cx="12" cy="12" r="2" fill={color}/>
+    </svg>
+  ),
+  // Flame / Fire
+  (color: string) => (
+    <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
+      <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1.5-3.5C8 11.5 7 13 7 14.5a1.5 1.5 0 0 0 1.5 1.5Z" fill={color}/>
+      <path d="M17.66 11.2c-.37-.89-.96-1.68-1.58-2.4C14.73 7 13.5 5 13.5 3c0 0-3 2.5-3 6.5 0 1.63.77 3.2 2.03 4.25a4.5 4.5 0 0 0 6.64-.8c.4-.73.4-1.75-.51-2.75Z" fill={color} fillOpacity="0.25" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  ),
+  // Trophy / Crown
+  (color: string) => (
+    <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
+      <path d="M6 9H4.5A2.5 2.5 0 0 1 2 6.5V6a1 1 0 0 1 1-1h3m12 4h1.5A2.5 2.5 0 0 0 22 6.5V6a1 1 0 0 0-1-1h-3M6 5v5c0 3.3 2.7 6 6 6s6-2.7 6-6V5H6Z" fill={color} fillOpacity="0.2" stroke={color} strokeWidth="1.5" strokeLinejoin="round"/>
+      <path d="M12 16v4M8 20h8" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  ),
+  // Heart / Life
+  (color: string) => (
+    <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
+      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35Z" fill={color} fillOpacity="0.25" stroke={color} strokeWidth="1.5" strokeLinejoin="round"/>
+    </svg>
+  ),
+  // Skull
+  (color: string) => (
+    <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
+      <path d="M12 2a7 7 0 0 0-7 7v4c0 1.63.75 3.08 2 4v3a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-3c1.25-.92 2-2.37 2-4V9a7 7 0 0 0-7-7Z" fill={color} fillOpacity="0.2" stroke={color} strokeWidth="1.5" strokeLinejoin="round"/>
+      <circle cx="9.5" cy="9.5" r="1.5" fill={color}/>
+      <circle cx="14.5" cy="9.5" r="1.5" fill={color}/>
+      <line x1="12" y1="14" x2="12" y2="17" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+      <line x1="10" y1="17" x2="14" y2="17" stroke={color} strokeWidth="1.5" strokeLinecap="round"/>
+    </svg>
+  ),
 ]
 
 export const AVATAR_COLORS = [

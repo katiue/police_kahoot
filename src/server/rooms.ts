@@ -56,6 +56,10 @@ interface Room {
    * Default 1 = last player standing wins.
    */
   minPlayersToEnd: number
+  maxPlayers: number
+  timeLimitSec: number | null
+  randomizeQuestions: boolean
+  randomizeAnswers: boolean
 }
 
 export interface RoomSummary {
@@ -106,12 +110,12 @@ function shuffled<T>(items: T[]): T[] {
   return copy
 }
 
-function randomizeQuiz(quiz: Quiz): Quiz {
+function randomizeQuiz(quiz: Quiz, randomizeQuestions = true, randomizeAnswers = true): Quiz {
   return {
     ...quiz,
-    questions: shuffled(quiz.questions).map((question) => ({
+    questions: (randomizeQuestions ? shuffled(quiz.questions) : quiz.questions).map((question) => ({
       ...question,
-      answers: shuffled(question.answers),
+      answers: randomizeAnswers ? shuffled(question.answers) : question.answers,
     })),
   }
 }
@@ -128,7 +132,17 @@ export class RoomManager {
    * old one). Boot-time auto-create runs only once per process, so this is
    * always safe.
    */
-  createRoom(quiz: Quiz, minPlayersToEnd = 1, fixedPin?: string): string {
+  createRoom(
+    quiz: Quiz,
+    options: {
+      minPlayersToEnd?: number
+      maxPlayers?: number
+      timeLimitSec?: number | null
+      randomizeQuestions?: boolean
+      randomizeAnswers?: boolean
+    } = {},
+    fixedPin?: string
+  ): string {
     for (const room of this.rooms.values()) this.clearTimer(room)
     this.rooms.clear()
     const pin = genPin(new Set(this.rooms.keys()), fixedPin)
@@ -137,7 +151,13 @@ export class RoomManager {
       this.clearTimer(existing)
       this.rooms.delete(pin)
     }
-    const randomizedQuiz = randomizeQuiz(quiz)
+    const minPlayersToEnd = options.minPlayersToEnd ?? 1
+    const maxPlayers = options.maxPlayers ?? 100
+    const timeLimitSec = options.timeLimitSec !== undefined ? options.timeLimitSec : null
+    const randomizeQuestions = options.randomizeQuestions !== false
+    const randomizeAnswers = options.randomizeAnswers !== false
+
+    const randomizedQuiz = randomizeQuiz(quiz, randomizeQuestions, randomizeAnswers)
     this.rooms.set(pin, {
       pin,
       sourceQuiz: quiz,
@@ -154,6 +174,10 @@ export class RoomManager {
       createdAt: Date.now(),
       lastExport: null,
       minPlayersToEnd: Math.max(1, Math.round(minPlayersToEnd)),
+      maxPlayers,
+      timeLimitSec,
+      randomizeQuestions,
+      randomizeAnswers,
     })
     return pin
   }
@@ -166,7 +190,7 @@ export class RoomManager {
     const room = this.rooms.get(pin)
     if (!room) return false
     this.clearTimer(room)
-    room.quiz = randomizeQuiz(room.sourceQuiz)
+    room.quiz = randomizeQuiz(room.sourceQuiz, room.randomizeQuestions, room.randomizeAnswers)
     room.status = 'lobby'
     room.questionIndex = -1
     room.questionStartedAt = 0
@@ -213,6 +237,10 @@ export class RoomManager {
       questionIndex: room.questionIndex,
       totalQuestions: room.quiz.questions.length,
       minPlayersToEnd: room.minPlayersToEnd,
+      maxPlayers: room.maxPlayers,
+      timeLimitSec: room.timeLimitSec,
+      randomizeQuestions: room.randomizeQuestions,
+      randomizeAnswers: room.randomizeAnswers,
     }
     if (room.status === 'question' && room.questionIndex >= 0) {
       const q = room.quiz.questions[room.questionIndex]
@@ -280,6 +308,9 @@ export class RoomManager {
 
     if (room.status !== 'lobby') {
       return { ok: false, error: 'Game already started' }
+    }
+    if (room.players.size >= room.maxPlayers) {
+      return { ok: false, error: `Phòng đã đạt giới hạn tối đa ${room.maxPlayers} người chơi` }
     }
     const check = checkNickname(nickname)
     if (!check.ok) return { ok: false, error: check.reason ?? 'Nickname invalid' }
@@ -421,7 +452,7 @@ export class RoomManager {
     room.lastResult = null
 
     const q = room.quiz.questions[index]
-    const timeLimitSec = q.timeLimitSec ?? DEFAULT_TIME_LIMIT_SEC
+    const timeLimitSec = room.timeLimitSec ?? q.timeLimitSec ?? DEFAULT_TIME_LIMIT_SEC
     const now = Date.now()
     room.questionStartedAt = now
     room.questionEndsAt = now + timeLimitSec * 1000

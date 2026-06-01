@@ -24,14 +24,20 @@ export function registerSocketHandlers(io: IO): RoomManager {
     })
 
     // ── Host: create room ──
-    socket.on('host:create', ({ quiz, minPlayersToEnd, loginKey }, ack) => {
+    socket.on('host:create', ({ quiz, minPlayersToEnd, maxPlayers, timeLimitSec, randomizeQuestions, randomizeAnswers, loginKey }, ack) => {
       try {
         if (!isAuthorized(loginKey)) {
           ack({ ok: false, error: 'Invalid login key' })
           return
         }
         const parsed = parseQuiz(quiz)
-        const pin = manager.createRoom(parsed, minPlayersToEnd ?? 1)
+        const pin = manager.createRoom(parsed, {
+          minPlayersToEnd,
+          maxPlayers,
+          timeLimitSec,
+          randomizeQuestions,
+          randomizeAnswers,
+        })
         ack({ ok: true, pin })
       } catch (e) {
         ack({ ok: false, error: e instanceof Error ? e.message : 'Invalid quiz' })
@@ -100,7 +106,7 @@ export function registerSocketHandlers(io: IO): RoomManager {
             total: room.quiz.questions.length,
             text: q.text,
             answers: q.answers.map((a) => ({ id: a.id, text: a.text })),
-            timeLimitSec: q.timeLimitSec,
+            timeLimitSec: room.timeLimitSec ?? q.timeLimitSec,
             endsAt: room.questionEndsAt,
           })
         }
