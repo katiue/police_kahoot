@@ -152,8 +152,14 @@ export class RoomManager {
       this.rooms.delete(pin)
     }
     const minPlayersToEnd = options.minPlayersToEnd ?? 1
-    const maxPlayers = options.maxPlayers ?? 100
-    const timeLimitSec = options.timeLimitSec !== undefined ? options.timeLimitSec : null
+    const maxPlayers =
+      typeof options.maxPlayers === 'number' && options.maxPlayers >= 1
+        ? Math.round(options.maxPlayers)
+        : 100
+    const timeLimitSec =
+      typeof options.timeLimitSec === 'number' && options.timeLimitSec > 0
+        ? Math.round(options.timeLimitSec)
+        : null
     const randomizeQuestions = options.randomizeQuestions !== false
     const randomizeAnswers = options.randomizeAnswers !== false
 
