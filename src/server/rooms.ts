@@ -109,7 +109,7 @@ function shuffled<T>(items: T[]): T[] {
 function randomizeQuiz(quiz: Quiz): Quiz {
   return {
     ...quiz,
-    questions: shuffled(quiz.questions).map((question) => ({
+    questions: quiz.questions.map((question) => ({
       ...question,
       answers: shuffled(question.answers),
     })),

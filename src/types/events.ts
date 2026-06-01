@@ -4,6 +4,7 @@
 // ─────────────────────────────────────────────────────────────
 
 export type GameStatus = 'lobby' | 'question' | 'result' | 'ended'
+export type QuizDifficulty = 'easy' | 'medium' | 'hard'
 
 /**
  * Quiz as loaded from JSON.
@@ -17,6 +18,7 @@ export interface QuizAnswer {
 export interface QuizQuestion {
   id: string
   text: string
+  difficulty: QuizDifficulty
   /** Internal default: 20s — not exposed in quiz JSON */
   timeLimitSec: number
   /** Which answer id is correct */

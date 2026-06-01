@@ -1,4 +1,4 @@
-import type { Quiz, QuizQuestion } from '@/types/events'
+import type { Quiz, QuizDifficulty, QuizQuestion } from '@/types/events'
 
 /**
  * Validate + normalize a parsed JSON object into a Quiz.
@@ -24,6 +24,10 @@ import type { Quiz, QuizQuestion } from '@/types/events'
  * - No "points" or "timeLimitSec" in JSON — server uses defaults (20s per question).
  * - No per-answer "correct" flag — use correctAnswerId instead.
  */
+function parseDifficulty(value: unknown): QuizDifficulty {
+  return value === 'easy' || value === 'medium' || value === 'hard' ? value : 'medium'
+}
+
 export function parseQuiz(raw: unknown): Quiz {
   if (typeof raw !== 'object' || raw === null) {
     throw new Error('Quiz file must be a JSON object')
@@ -71,6 +75,7 @@ export function parseQuiz(raw: unknown): Quiz {
     return {
       id: typeof qo.id === 'string' ? qo.id : `q${qi + 1}`,
       text,
+      difficulty: parseDifficulty(qo.difficulty),
       timeLimitSec: 20, // internal default — not read from JSON
       correctAnswerId,
       answers,

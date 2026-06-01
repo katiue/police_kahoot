@@ -13,6 +13,7 @@ const quiz = {
     {
       id: 'q1',
       text: '2+2?',
+      difficulty: 'easy',
       correctAnswerId: 1,
       answers: [
         { id: 1, text: '4' },
