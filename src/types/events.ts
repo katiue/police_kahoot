@@ -3,7 +3,7 @@
 // Single source of truth so both sides agree on payloads.
 // ─────────────────────────────────────────────────────────────
 
-export type GameStatus = 'lobby' | 'question' | 'result' | 'ended'
+export type GameStatus = 'lobby' | 'question' | 'result' | 'kahoot' | 'ended'
 export type QuizDifficulty = 'easy' | 'medium' | 'hard'
 
 /**
@@ -39,6 +39,12 @@ export interface PublicQuestion {
   timeLimitSec: number
   /** Absolute server time (epoch ms) when the question closes. */
   endsAt: number
+  /** Present only during Kahoot speed-round questions. */
+  kahootRound?: {
+    /** 1-based index within the 5 kahoot questions */
+    questionIndex: number
+    totalQuestions: number
+  }
 }
 
 export interface PlayerView {
@@ -46,6 +52,18 @@ export interface PlayerView {
   nickname: string
   connected: boolean
   eliminated: boolean
+  /** Cumulative score across the whole game */
+  score: number
+}
+
+/** Entry in the live leaderboard broadcast */
+export interface LeaderboardEntry {
+  rank: number
+  id: string
+  nickname: string
+  score: number
+  /** Score change from the last question (positive = gained points) */
+  delta: number
 }
 
 export interface QuestionResult {
@@ -53,10 +71,10 @@ export interface QuestionResult {
   correctAnswerId: number
   /** answerId -> count of players who picked it */
   counts: Record<number, number>
-  /** Ids of players eliminated this round */
+  /** Ids of players eliminated this round (empty during kahoot mode) */
   eliminatedIds: string[]
   /** Per-recipient personal result (filled before emit to each socket). */
-  you?: { answered: boolean; correct: boolean; eliminated: boolean }
+  you?: { answered: boolean; correct: boolean; eliminated: boolean; pointsEarned?: number }
 }
 
 // ── Client → Server events ──────────────────────────────────────
@@ -74,6 +92,8 @@ export interface ClientToServerEvents {
       randomizeQuestions?: boolean
       randomizeAnswers?: boolean
       loginKey?: string
+      /** Players ≤ this number triggers the Kahoot speed-round. 0 = disabled. */
+      kahootThreshold?: number
     },
     ack: (res: { ok: boolean; pin?: string; error?: string }) => void
   ) => void
@@ -115,6 +135,14 @@ export interface ServerToClientEvents {
   'answer:ack': (payload: { questionIndex: number; received: boolean }) => void
   'player:eliminated': (payload: { reason: 'wrong' | 'timeout' }) => void
   'error:msg': (payload: { message: string }) => void
+  /** Fired when active players drop to/below kahootThreshold — signals mode switch */
+  'kahoot:start': (payload: {
+    threshold: number
+    survivors: PlayerView[]
+    leaderboard: LeaderboardEntry[]
+  }) => void
+  /** Live top-10 after each question result */
+  'leaderboard:update': (payload: { entries: LeaderboardEntry[] }) => void
 }
 
 /** State snapshot a host receives on (re)join. */
@@ -130,6 +158,9 @@ export interface HostSnapshot {
   timeLimitSec?: number | null
   randomizeQuestions?: boolean
   randomizeAnswers?: boolean
+  kahootThreshold?: number
+  kahootMode?: boolean
+  leaderboard?: LeaderboardEntry[]
   /** Present when status === 'question'. */
   question?: PublicQuestion
   /** Present when status === 'result'. */
@@ -151,6 +182,9 @@ export interface ProjectorSnapshot {
   timeLimitSec?: number | null
   randomizeQuestions?: boolean
   randomizeAnswers?: boolean
+  kahootThreshold?: number
+  kahootMode?: boolean
+  leaderboard?: LeaderboardEntry[]
   /** Present when status === 'question'. */
   question?: PublicQuestion
   /** Present when status === 'result'. */

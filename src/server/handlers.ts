@@ -24,7 +24,7 @@ export function registerSocketHandlers(io: IO): RoomManager {
     })
 
     // ── Host: create room ──
-    socket.on('host:create', ({ quiz, minPlayersToEnd, maxPlayers, timeLimitSec, randomizeQuestions, randomizeAnswers, loginKey }, ack) => {
+    socket.on('host:create', ({ quiz, minPlayersToEnd, maxPlayers, timeLimitSec, randomizeQuestions, randomizeAnswers, loginKey, kahootThreshold }, ack) => {
       try {
         if (!isAuthorized(loginKey)) {
           ack({ ok: false, error: 'Invalid login key' })
@@ -37,6 +37,7 @@ export function registerSocketHandlers(io: IO): RoomManager {
           timeLimitSec,
           randomizeQuestions,
           randomizeAnswers,
+          kahootThreshold,
         })
         ack({ ok: true, pin })
       } catch (e) {

@@ -24,6 +24,7 @@ import {
   Shuffle,
   ShieldAlert,
   ListOrdered,
+  Zap,
 } from 'lucide-react'
 
 interface QuizOption {
@@ -133,6 +134,7 @@ export default function HostCreatePage() {
   const [timeLimitSec, setTimeLimitSec] = useState<number | null>(null)
   const [randomizeQuestions, setRandomizeQuestions] = useState(true)
   const [randomizeAnswers, setRandomizeAnswers] = useState(true)
+  const [kahootThreshold, setKahootThreshold] = useState(10)
   const [loginKey, setLoginKey] = useState('')
   const [authOk, setAuthOk] = useState(false)
   const [authBusy, setAuthBusy] = useState(true)
@@ -265,7 +267,7 @@ export default function HostCreatePage() {
     if (selectedQuiz === EVENT_QUESTIONSET_ID) {
       if (!eventQuestionSet) return toast.error('Bấm Load event questionset trước')
       setBusy(true)
-      getSocket().emit('host:create', { quiz: eventQuestionSet, minPlayersToEnd, maxPlayers, timeLimitSec, randomizeQuestions, randomizeAnswers, loginKey }, (res) => {
+      getSocket().emit('host:create', { quiz: eventQuestionSet, minPlayersToEnd, maxPlayers, timeLimitSec, randomizeQuestions, randomizeAnswers, loginKey, kahootThreshold }, (res) => {
         setBusy(false)
         if (res.ok && res.pin) {
           sessionStorage.setItem(HOST_LOGIN_STORAGE_KEY, loginKey)
@@ -297,6 +299,7 @@ export default function HostCreatePage() {
         randomizeQuestions,
         randomizeAnswers,
         loginKey,
+        kahootThreshold,
       }, (res) => {
         setBusy(false)
         if (res.ok && res.pin) {
@@ -462,37 +465,31 @@ export default function HostCreatePage() {
                 </label>
               </div>
 
-              {/* Right Column: Toggles and ends threshold */}
+              {/* Right Column: Kahoot threshold + randomize toggles */}
               <div className="flex flex-col gap-5">
                 <label className="flex flex-col gap-1.5">
                   <span className="text-sm font-semibold flex items-center gap-1.5 text-foreground/90">
-                    <ShieldAlert className="size-4 text-accent" />
-                    Kết thúc khi còn lại đặc vụ
+                    <Zap className="size-4 text-yellow-400" />
+                    Vào vòng Kahoot khi còn ≤ N đặc vụ
                   </span>
                   <div className="flex items-center gap-3">
                     <input
-                      id="min-players"
+                      id="kahoot-threshold"
                       type="number"
-                      min={1}
+                      min={0}
                       max={100}
-                      value={minPlayersToEnd}
+                      value={kahootThreshold}
                       onChange={(e) =>
-                        setMinPlayersToEnd(Math.min(100, Math.max(1, parseInt(e.target.value, 10) || 1)))
+                        setKahootThreshold(Math.min(100, Math.max(0, parseInt(e.target.value, 10) || 0)))
                       }
-                      className="w-24 rounded-lg border border-border bg-input/60 px-3 py-2 text-sm font-mono text-foreground outline-none focus:border-accent/60 transition-colors"
+                      className="w-24 rounded-lg border border-yellow-400/30 bg-input/60 px-3 py-2 text-sm font-mono text-foreground outline-none focus:border-yellow-400/60 transition-colors"
                     />
-                    <span className="text-xs text-accent font-semibold font-mono">
-                      (Top {minPlayersToEnd} chiến thắng)
+                    <span className="text-xs text-yellow-400 font-semibold font-mono">
+                      {kahootThreshold === 0 ? '(Tắt — loại dần đến hết)' : `(Top ${kahootThreshold} → speed round)`}
                     </span>
                   </div>
-                  {minPlayersToEnd > 10 && (
-                    <span className="inline-flex items-center gap-1 text-[10px] text-amber-400">
-                      <AlertTriangle className="size-3.5" />
-                      Ngưỡng cao: cần đảm bảo số đặc vụ lớn hơn ngưỡng này.
-                    </span>
-                  )}
                   <span className="text-[10px] text-muted-foreground">
-                    Trận đấu tự động dừng khi số đặc vụ chưa bị loại chạm ngưỡng này.
+                    Khi còn ≤ N đặc vụ chưa bị loại, trận tự chuyển sang 5 câu Kahoot tốc độ rồi kết thúc. Đặt 0 để loại dần đến người cuối.
                   </span>
                 </label>
 

@@ -3,11 +3,13 @@ import type {
   ClientToServerEvents,
   ServerToClientEvents,
   Quiz,
+  QuizQuestion,
   GameStatus,
   PlayerView,
   PublicQuestion,
   ProjectorSnapshot,
   QuestionResult,
+  LeaderboardEntry,
 } from '@/types/events'
 import { checkNickname } from '@/lib/nickname'
 
@@ -15,6 +17,12 @@ type IO = Server<ClientToServerEvents, ServerToClientEvents>
 
 /** Internal default question time limit (seconds). Not exposed in quiz JSON. */
 const DEFAULT_TIME_LIMIT_SEC = 20
+
+/** Number of questions in the Kahoot speed-round */
+const KAHOOT_QUESTION_COUNT = 5
+
+/** Max points for a perfectly-timed correct answer */
+const KAHOOT_BASE_POINTS = 1000
 
 interface Player {
   id: string
@@ -25,11 +33,17 @@ interface Player {
   joinedAt: number
   eliminatedAtQuestion: number | null
   eliminatedReason: 'wrong' | 'timeout' | null
+  /** Cumulative score across the whole game */
+  score: number
+  /** Score snapshot before the last question (for delta calculation) */
+  scoreBefore: number
 }
 
 interface Response {
   answerId: number
   correct: boolean
+  /** Server-measured ms from question start to submission */
+  responseMs: number
 }
 
 interface Room {
@@ -47,6 +61,8 @@ interface Room {
   responses: Map<string, Response>
   /** Cached result for projector resync (only present while status === 'result'). */
   lastResult: QuestionResult | null
+  /** Cached leaderboard for resync */
+  lastLeaderboard: LeaderboardEntry[] | null
   timer: NodeJS.Timeout | null
   hostSocketId: string | null
   createdAt: number
@@ -60,6 +76,17 @@ interface Room {
   timeLimitSec: number | null
   randomizeQuestions: boolean
   randomizeAnswers: boolean
+  /**
+   * When active players drop to <= this threshold, switch to Kahoot speed-round.
+   * 0 = disabled.
+   */
+  kahootThreshold: number
+  /** Whether the Kahoot speed-round is currently active */
+  kahootMode: boolean
+  /** Pre-picked questions for the Kahoot round */
+  kahootPool: QuizQuestion[]
+  /** Current index within kahootPool (0-based) */
+  kahootQuestionIndex: number
 }
 
 export interface RoomSummary {
@@ -75,6 +102,8 @@ export interface RoomExportRow {
   survivedUntilQuestion: number
   eliminatedReason: 'wrong' | 'timeout' | 'winner' | 'not_eliminated'
   joinedAt: string
+  finalScore: number
+  finalRank: number
 }
 
 export interface RoomExport {
@@ -105,7 +134,7 @@ function shuffled<T>(items: T[]): T[] {
   const copy = [...items]
   for (let i = copy.length - 1; i > 0; i -= 1) {
     const j = Math.floor(Math.random() * (i + 1))
-      ;[copy[i], copy[j]] = [copy[j], copy[i]]
+    ;[copy[i], copy[j]] = [copy[j], copy[i]]
   }
   return copy
 }
@@ -118,6 +147,26 @@ function randomizeQuiz(quiz: Quiz, randomizeQuestions = true, randomizeAnswers =
       answers: randomizeAnswers ? shuffled(question.answers) : question.answers,
     })),
   }
+}
+
+/**
+ * Pick N unique questions for the Kahoot pool.
+ * Prefers questions NOT already in the main quiz shuffle to maximize variety,
+ * but falls back to any question if the pool is small.
+ */
+function pickKahootPool(quiz: Quiz, count: number): QuizQuestion[] {
+  const all = shuffled(quiz.questions)
+  return all.slice(0, Math.min(count, all.length))
+}
+
+/**
+ * Speed-scoring formula.
+ * Correct + instant → ~1000pts. Correct + last moment → ~500pts. Wrong → 0.
+ */
+function computePoints(correct: boolean, responseMs: number, timeLimitMs: number): number {
+  if (!correct) return 0
+  const ratio = Math.min(1, Math.max(0, responseMs / timeLimitMs))
+  return Math.round(KAHOOT_BASE_POINTS * (1 - 0.5 * ratio))
 }
 
 export class RoomManager {
@@ -140,6 +189,7 @@ export class RoomManager {
       timeLimitSec?: number | null
       randomizeQuestions?: boolean
       randomizeAnswers?: boolean
+      kahootThreshold?: number
     } = {},
     fixedPin?: string
   ): string {
@@ -162,8 +212,14 @@ export class RoomManager {
         : null
     const randomizeQuestions = options.randomizeQuestions !== false
     const randomizeAnswers = options.randomizeAnswers !== false
+    const kahootThreshold =
+      typeof options.kahootThreshold === 'number' && options.kahootThreshold >= 0
+        ? Math.round(options.kahootThreshold)
+        : 10
 
     const randomizedQuiz = randomizeQuiz(quiz, randomizeQuestions, randomizeAnswers)
+    const kahootPool = pickKahootPool(quiz, KAHOOT_QUESTION_COUNT)
+
     this.rooms.set(pin, {
       pin,
       sourceQuiz: quiz,
@@ -175,6 +231,7 @@ export class RoomManager {
       questionEndsAt: 0,
       responses: new Map(),
       lastResult: null,
+      lastLeaderboard: null,
       timer: null,
       hostSocketId: null,
       createdAt: Date.now(),
@@ -184,29 +241,39 @@ export class RoomManager {
       timeLimitSec,
       randomizeQuestions,
       randomizeAnswers,
+      kahootThreshold,
+      kahootMode: false,
+      kahootPool,
+      kahootQuestionIndex: -1,
     })
     return pin
   }
 
   /**
    * Reset a room back to lobby state with a fresh shuffle. Players keep their
-   * slots but lose eliminated status. Use for "Trận mới" between event rounds.
+   * slots but lose eliminated status and scores. Use for "Trận mới" between event rounds.
    */
   resetRoom(pin: string): boolean {
     const room = this.rooms.get(pin)
     if (!room) return false
     this.clearTimer(room)
     room.quiz = randomizeQuiz(room.sourceQuiz, room.randomizeQuestions, room.randomizeAnswers)
+    room.kahootPool = pickKahootPool(room.sourceQuiz, KAHOOT_QUESTION_COUNT)
     room.status = 'lobby'
     room.questionIndex = -1
     room.questionStartedAt = 0
     room.questionEndsAt = 0
     room.responses = new Map()
     room.lastResult = null
+    room.lastLeaderboard = null
+    room.kahootMode = false
+    room.kahootQuestionIndex = -1
     for (const p of room.players.values()) {
       p.eliminated = false
       p.eliminatedAtQuestion = null
       p.eliminatedReason = null
+      p.score = 0
+      p.scoreBefore = 0
     }
     this.broadcastLobby(room)
     return true
@@ -247,17 +314,12 @@ export class RoomManager {
       timeLimitSec: room.timeLimitSec,
       randomizeQuestions: room.randomizeQuestions,
       randomizeAnswers: room.randomizeAnswers,
+      kahootThreshold: room.kahootThreshold,
+      kahootMode: room.kahootMode,
+      leaderboard: room.lastLeaderboard ?? undefined,
     }
     if (room.status === 'question' && room.questionIndex >= 0) {
-      const q = room.quiz.questions[room.questionIndex]
-      snap.question = {
-        index: room.questionIndex,
-        total: room.quiz.questions.length,
-        text: q.text,
-        answers: q.answers.map((a) => ({ id: a.id, text: a.text })),
-        timeLimitSec: q.timeLimitSec,
-        endsAt: room.questionEndsAt,
-      }
+      snap.question = this.buildPublicQuestion(room)
     } else if (room.status === 'result' && room.lastResult) {
       snap.result = room.lastResult
     } else if (room.status === 'ended') {
@@ -336,6 +398,8 @@ export class RoomManager {
       joinedAt: Date.now(),
       eliminatedAtQuestion: null,
       eliminatedReason: null,
+      score: 0,
+      scoreBefore: 0,
     })
     this.broadcastLobby(room)
     return { ok: true, playerId: id }
@@ -358,8 +422,6 @@ export class RoomManager {
   startGame(pin: string): void {
     const room = this.rooms.get(pin)
     if (!room || room.status !== 'lobby') return
-    // Solo-test allowed: 0 players is valid. The auto-end check in
-    // shouldEndGame() will still fire after the first question if no one survives.
     this.askQuestion(room, 0)
   }
 
@@ -368,7 +430,25 @@ export class RoomManager {
     if (!room) return
     if (room.status !== 'result') return
 
-    // Check if threshold already met before moving on
+    // ── Kahoot mode progression ──
+    if (room.kahootMode) {
+      const nextKahootIdx = room.kahootQuestionIndex + 1
+      if (nextKahootIdx >= room.kahootPool.length) {
+        this.endGame(room)
+      } else {
+        this.askKahootQuestion(room, nextKahootIdx)
+      }
+      return
+    }
+
+    // ── Normal elimination mode ──
+    // If kahoot threshold has been reached, start the Kahoot round
+    if (this.shouldStartKahoot(room)) {
+      this.startKahootMode(room)
+      return
+    }
+
+    // Check if game should end due to min players threshold
     if (this.shouldEndGame(room)) {
       this.endGame(room)
       return
@@ -389,6 +469,8 @@ export class RoomManager {
     room.status = 'ended'
     room.lastExport = this.buildExport(room)
     const { survivors, eliminated } = this.getPlayerSummary(room)
+    // Final leaderboard emit
+    this.emitLeaderboard(room)
     this.io.to(room.pin).emit('game:over', { survivors, eliminated })
   }
 
@@ -410,46 +492,78 @@ export class RoomManager {
     const room = this.rooms.get(pin)
     if (!room) return { ok: false, error: 'Room not found' }
     if (room.status !== 'question') return { ok: false, error: 'No active question' }
-    if (questionIndex !== room.questionIndex) return { ok: false, error: 'Stale question' }
+
+    // In normal mode, use questionIndex; in kahoot mode, use kahootQuestionIndex
+    const expectedIndex = room.kahootMode ? room.kahootQuestionIndex : room.questionIndex
+    if (questionIndex !== expectedIndex) return { ok: false, error: 'Stale question' }
 
     const player = room.players.get(playerId)
     if (!player) return { ok: false, error: 'Unknown player' }
-    // Eliminated players (spectators) cannot answer
-    if (player.eliminated) return { ok: false, error: 'You have been eliminated' }
+    // Eliminated players (spectators) cannot answer in normal mode
+    // In kahoot mode everyone plays
+    if (!room.kahootMode && player.eliminated) return { ok: false, error: 'You have been eliminated' }
     if (room.responses.has(playerId)) return { ok: false, error: 'Already answered' }
 
     const now = Date.now()
     if (now > room.questionEndsAt) return { ok: false, error: 'Time up' }
 
-    const q = room.quiz.questions[questionIndex]
+    const q = room.kahootMode
+      ? room.kahootPool[room.kahootQuestionIndex]
+      : room.quiz.questions[questionIndex]
     const chosen = q.answers.find((a) => a.id === answerId)
     if (!chosen) return { ok: false, error: 'Invalid answer' }
 
     const correct = chosen.id === q.correctAnswerId
-    room.responses.set(playerId, { answerId, correct })
+    const responseMs = now - room.questionStartedAt
+    room.responses.set(playerId, { answerId, correct, responseMs })
 
     // Live answered/total counter for projector + host control panel.
-    const activeConnected = [...room.players.values()].filter(
-      (p) => !p.eliminated && p.connected
+    const eligiblePlayers = [...room.players.values()].filter(
+      (p) => (room.kahootMode || !p.eliminated) && p.connected
     )
-    const activeConnectedIds = new Set(activeConnected.map((p) => p.id))
+    const eligibleIds = new Set(eligiblePlayers.map((p) => p.id))
     const connectedResponseCount = [...room.responses.keys()].filter((id) =>
-      activeConnectedIds.has(id)
+      eligibleIds.has(id)
     ).length
     this.io.to(room.pin).emit('question:progress', {
-      questionIndex: room.questionIndex,
+      questionIndex: expectedIndex,
       answered: connectedResponseCount,
-      total: activeConnected.length,
+      total: eligiblePlayers.length,
     })
 
-    // close early if every active (non-eliminated) connected player has answered
-    if (connectedResponseCount >= activeConnected.length && activeConnected.length > 0) {
+    // close early if every eligible connected player has answered
+    if (connectedResponseCount >= eligiblePlayers.length && eligiblePlayers.length > 0) {
       this.closeQuestion(room)
     }
     return { ok: true }
   }
 
   // ── internals ────────────────────────────────────────────────
+
+  private buildPublicQuestion(room: Room): PublicQuestion {
+    const isKahoot = room.kahootMode
+    const q = isKahoot
+      ? room.kahootPool[room.kahootQuestionIndex]
+      : room.quiz.questions[room.questionIndex]
+
+    return {
+      index: isKahoot ? room.kahootQuestionIndex : room.questionIndex,
+      total: isKahoot ? room.kahootPool.length : room.quiz.questions.length,
+      text: q.text,
+      answers: q.answers.map((a) => ({ id: a.id, text: a.text })),
+      timeLimitSec: room.timeLimitSec ?? q.timeLimitSec ?? DEFAULT_TIME_LIMIT_SEC,
+      endsAt: room.questionEndsAt,
+      ...(isKahoot
+        ? {
+            kahootRound: {
+              questionIndex: room.kahootQuestionIndex + 1,
+              totalQuestions: room.kahootPool.length,
+            },
+          }
+        : {}),
+    }
+  }
+
   private askQuestion(room: Room, index: number): void {
     this.clearTimer(room)
     room.questionIndex = index
@@ -463,14 +577,32 @@ export class RoomManager {
     room.questionStartedAt = now
     room.questionEndsAt = now + timeLimitSec * 1000
 
-    const payload: PublicQuestion = {
-      index,
-      total: room.quiz.questions.length,
-      text: q.text,
-      answers: q.answers.map((a) => ({ id: a.id, text: a.text })),
-      timeLimitSec,
-      endsAt: room.questionEndsAt,
-    }
+    // Snapshot scores before this question for delta calculation
+    for (const p of room.players.values()) p.scoreBefore = p.score
+
+    const payload = this.buildPublicQuestion(room)
+    this.io.to(room.pin).emit('game:question', payload)
+
+    room.timer = setTimeout(() => this.closeQuestion(room), timeLimitSec * 1000 + 200)
+  }
+
+  private askKahootQuestion(room: Room, index: number): void {
+    this.clearTimer(room)
+    room.kahootQuestionIndex = index
+    room.status = 'question'
+    room.responses = new Map()
+    room.lastResult = null
+
+    const q = room.kahootPool[index]
+    const timeLimitSec = room.timeLimitSec ?? q.timeLimitSec ?? DEFAULT_TIME_LIMIT_SEC
+    const now = Date.now()
+    room.questionStartedAt = now
+    room.questionEndsAt = now + timeLimitSec * 1000
+
+    // Snapshot scores before this question for delta calculation
+    for (const p of room.players.values()) p.scoreBefore = p.score
+
+    const payload = this.buildPublicQuestion(room)
     this.io.to(room.pin).emit('game:question', payload)
 
     room.timer = setTimeout(() => this.closeQuestion(room), timeLimitSec * 1000 + 200)
@@ -481,32 +613,57 @@ export class RoomManager {
     this.clearTimer(room)
     room.status = 'result'
 
-    const q = room.quiz.questions[room.questionIndex]
+    const isKahoot = room.kahootMode
+    const q = isKahoot
+      ? room.kahootPool[room.kahootQuestionIndex]
+      : room.quiz.questions[room.questionIndex]
+
+    const timeLimitMs = (room.timeLimitSec ?? q.timeLimitSec ?? DEFAULT_TIME_LIMIT_SEC) * 1000
+
     const counts: Record<number, number> = {}
     for (const a of q.answers) counts[a.id] = 0
     for (const r of room.responses.values()) counts[r.answerId] = (counts[r.answerId] ?? 0) + 1
 
-    // Eliminate players who answered wrong OR didn't answer (timed out)
+    // ── Score all players who answered ──
+    for (const [pid, resp] of room.responses) {
+      const player = room.players.get(pid)
+      if (!player) continue
+      const pts = computePoints(resp.correct, resp.responseMs, timeLimitMs)
+      player.score += pts
+    }
+
     const eliminatedThisRound: string[] = []
-    for (const p of room.players.values()) {
-      if (p.eliminated) continue // already out
-      const r = room.responses.get(p.id)
-      const correct = r?.correct === true
-      if (!correct) {
-        p.eliminated = true
-        p.eliminatedAtQuestion = room.questionIndex
-        p.eliminatedReason = r ? 'wrong' : 'timeout'
-        eliminatedThisRound.push(p.id)
-        // Notify the eliminated player directly
-        if (p.socketId) {
-          const reason = r ? 'wrong' : 'timeout'
-          this.io.to(p.socketId).emit('player:eliminated', { reason })
+
+    if (!isKahoot) {
+      // ── Check Kahoot threshold BEFORE eliminating ──
+      // If we're already at or below the threshold going into this result,
+      // skip elimination entirely — these players survive into the speed round.
+      const activeBeforeElim = [...room.players.values()].filter((p) => !p.eliminated).length
+      const kahootWillStart = room.kahootThreshold > 0 && activeBeforeElim <= room.kahootThreshold
+
+      if (!kahootWillStart) {
+        // ── Elimination logic (normal mode only) ──
+        for (const p of room.players.values()) {
+          if (p.eliminated) continue
+          const r = room.responses.get(p.id)
+          const correct = r?.correct === true
+          if (!correct) {
+            p.eliminated = true
+            p.eliminatedAtQuestion = room.questionIndex
+            p.eliminatedReason = r ? 'wrong' : 'timeout'
+            eliminatedThisRound.push(p.id)
+            if (p.socketId) {
+              const reason = r ? 'wrong' : 'timeout'
+              this.io.to(p.socketId).emit('player:eliminated', { reason })
+            }
+          }
         }
       }
     }
 
+    const questionIdx = isKahoot ? room.kahootQuestionIndex : room.questionIndex
     const base: QuestionResult = {
-      questionIndex: room.questionIndex,
+      questionIndex: questionIdx,
       correctAnswerId: q.correctAnswerId,
       counts,
       eliminatedIds: eliminatedThisRound,
@@ -517,29 +674,48 @@ export class RoomManager {
     if (room.hostSocketId) {
       this.io.to(room.hostSocketId).emit('question:result', base)
     }
-    // each player gets a personalized copy
+    // each player gets a personalized copy with points earned
     for (const p of room.players.values()) {
       if (!p.socketId) continue
       const r = room.responses.get(p.id)
       const wasEliminated = eliminatedThisRound.includes(p.id)
+      const pointsEarned = p.score - p.scoreBefore
       this.io.to(p.socketId).emit('question:result', {
         ...base,
         you: {
           answered: !!r,
           correct: r?.correct === true,
           eliminated: wasEliminated,
+          pointsEarned,
         },
       })
     }
 
-    // Broadcast updated player list (with new eliminated flags)
+    // Broadcast updated player list (with new eliminated flags + scores)
     this.broadcastLobby(room)
 
-    // Check if game should auto-end
-    if (this.shouldEndGame(room)) {
-      // Small delay so clients can render the result screen first.
-      // Store on room.timer so reset/next/new-question can cancel it, and
-      // re-check status on fire so a reset (→ lobby) within the delay wins.
+    // Emit live leaderboard
+    this.emitLeaderboard(room)
+
+    if (isKahoot) {
+      // Kahoot mode: auto-end after all questions (or host clicks next)
+      const isLastKahoot = room.kahootQuestionIndex >= room.kahootPool.length - 1
+      if (isLastKahoot) {
+        this.clearTimer(room)
+        room.timer = setTimeout(() => {
+          room.timer = null
+          if (room.status === 'result') this.endGame(room)
+        }, 4000)
+      }
+      return
+    }
+
+    // Normal mode: check if Kahoot threshold is now met
+    if (this.shouldStartKahoot(room)) {
+      // Don't auto-start — host needs to see result first, then click "Next"
+      // But emit the kahoot:start announcement now so screens can prepare
+      this.announceKahootUpcoming(room)
+    } else if (this.shouldEndGame(room)) {
       this.clearTimer(room)
       room.timer = setTimeout(() => {
         room.timer = null
@@ -548,10 +724,51 @@ export class RoomManager {
     }
   }
 
-  /** Returns true if the active player count means game should end. */
+  /** Returns true if the active player count means game should end in normal mode.
+   * When a Kahoot threshold is set, the game never auto-ends in elimination mode —
+   * shouldStartKahoot() is the only exit path. */
   private shouldEndGame(room: Room): boolean {
+    if (room.kahootMode) return false
+    // If Kahoot is enabled, never auto-end during elimination — let Kahoot handle it
+    if (room.kahootThreshold > 0) return false
     const active = [...room.players.values()].filter((p) => !p.eliminated).length
     return active <= room.minPlayersToEnd
+  }
+
+  /**
+   * Returns true when the Kahoot speed-round should trigger next.
+   * Fires when active players <= kahootThreshold, regardless of minPlayersToEnd.
+   */
+  private shouldStartKahoot(room: Room): boolean {
+    if (room.kahootMode) return false
+    if (room.kahootThreshold <= 0) return false
+    const active = [...room.players.values()].filter((p) => !p.eliminated).length
+    return active <= room.kahootThreshold
+  }
+
+  /**
+   * Emit the kahoot:start announcement while still on the result screen.
+   * The actual mode switch happens when the host presses "Next".
+   */
+  private announceKahootUpcoming(room: Room): void {
+    const survivors = [...room.players.values()]
+      .filter((p) => !p.eliminated)
+      .map((p) => this.toPlayerView(p))
+    const leaderboard = this.buildLeaderboard(room)
+    this.io.to(room.pin).emit('kahoot:start', {
+      threshold: room.kahootThreshold,
+      survivors,
+      leaderboard,
+    })
+  }
+
+  /** Start Kahoot speed-round mode. Called when host clicks "Next" after threshold is reached. */
+  private startKahootMode(room: Room): void {
+    room.kahootMode = true
+    room.kahootQuestionIndex = -1
+    // Refresh the kahoot pool with fresh random picks
+    room.kahootPool = pickKahootPool(room.sourceQuiz, KAHOOT_QUESTION_COUNT)
+    this.askKahootQuestion(room, 0)
   }
 
   private clearTimer(room: Room): void {
@@ -561,9 +778,37 @@ export class RoomManager {
     }
   }
 
+  /** Build a sorted top-10 leaderboard from current scores. */
+  private buildLeaderboard(room: Room): LeaderboardEntry[] {
+    const sorted = [...room.players.values()]
+      .sort((a, b) => b.score - a.score || a.joinedAt - b.joinedAt)
+      .slice(0, 10)
+
+    return sorted.map((p, i) => ({
+      rank: i + 1,
+      id: p.id,
+      nickname: p.nickname,
+      score: p.score,
+      delta: p.score - p.scoreBefore,
+    }))
+  }
+
+  /** Emit the top-10 leaderboard to everyone in the room. */
+  private emitLeaderboard(room: Room): void {
+    const entries = this.buildLeaderboard(room)
+    room.lastLeaderboard = entries
+    this.io.to(room.pin).emit('leaderboard:update', { entries })
+  }
+
   getPlayerSummary(room: Room): { survivors: PlayerView[]; eliminated: PlayerView[] } {
     const survivors: PlayerView[] = []
     const eliminated: PlayerView[] = []
+    // In kahoot mode, everyone who played is a "survivor" — rank by score
+    if (room.kahootMode) {
+      const ranked = [...room.players.values()].sort((a, b) => b.score - a.score)
+      for (const p of ranked) survivors.push(this.toPlayerView(p))
+      return { survivors, eliminated }
+    }
     for (const p of room.players.values()) {
       const view = this.toPlayerView(p)
       if (p.eliminated) eliminated.push(view)
@@ -578,17 +823,19 @@ export class RoomManager {
       nickname: p.nickname,
       connected: p.connected,
       eliminated: p.eliminated,
+      score: p.score,
     }
   }
 
   private buildExport(room: Room): RoomExport {
     const survivedFallback = Math.max(room.questionIndex + 1, 0)
+    const sorted = [...room.players.values()].sort((a, b) => b.score - a.score)
     return {
       pin: room.pin,
       quizTitle: room.quiz.title,
       status: room.status,
       endedAt: new Date().toISOString(),
-      rows: [...room.players.values()].map((p) => ({
+      rows: sorted.map((p, i) => ({
         nickname: p.nickname,
         survivedUntilQuestion:
           p.eliminatedAtQuestion === null ? survivedFallback : p.eliminatedAtQuestion + 1,
@@ -598,6 +845,8 @@ export class RoomManager {
             ? 'winner'
             : 'not_eliminated',
         joinedAt: new Date(p.joinedAt).toISOString(),
+        finalScore: p.score,
+        finalRank: i + 1,
       })),
     }
   }
