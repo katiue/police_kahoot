@@ -361,8 +361,8 @@ export class RoomManager {
     playerId?: string
   ): { ok: boolean; playerId?: string; error?: string } {
     const room = this.rooms.get(pin)
-    if (!room) return { ok: false, error: 'Room not found' }
-    if (room.status === 'ended') return { ok: false, error: 'Game already ended' }
+    if (!room) return { ok: false, error: 'Không tìm thấy phòng' }
+    if (room.status === 'ended') return { ok: false, error: 'Trò chơi đã kết thúc' }
 
     // reconnect path
     if (playerId && room.players.has(playerId)) {
@@ -375,18 +375,18 @@ export class RoomManager {
     }
 
     if (room.status !== 'lobby') {
-      return { ok: false, error: 'Game already started' }
+      return { ok: false, error: 'Trò chơi đã bắt đầu' }
     }
     if (room.players.size >= room.maxPlayers) {
       return { ok: false, error: `Phòng đã đạt giới hạn tối đa ${room.maxPlayers} người chơi` }
     }
     const check = checkNickname(nickname)
-    if (!check.ok) return { ok: false, error: check.reason ?? 'Nickname invalid' }
+    if (!check.ok) return { ok: false, error: check.reason ?? 'Biệt danh không hợp lệ' }
     const clean = check.cleaned
     const taken = [...room.players.values()].some(
       (p) => p.nickname.toLowerCase() === clean.toLowerCase()
     )
-    if (taken) return { ok: false, error: 'Nickname taken' }
+    if (taken) return { ok: false, error: 'Biệt danh đã được sử dụng' }
 
     const id = genId()
     room.players.set(id, {
@@ -496,27 +496,27 @@ export class RoomManager {
     answerId: number
   ): { ok: boolean; error?: string } {
     const room = this.rooms.get(pin)
-    if (!room) return { ok: false, error: 'Room not found' }
-    if (room.status !== 'question') return { ok: false, error: 'No active question' }
+    if (!room) return { ok: false, error: 'Không tìm thấy phòng' }
+    if (room.status !== 'question') return { ok: false, error: 'Không có câu hỏi nào đang hoạt động' }
 
     // In normal mode, use questionIndex; in kahoot mode, use kahootQuestionIndex
     const expectedIndex = room.kahootMode ? room.kahootQuestionIndex : room.questionIndex
-    if (questionIndex !== expectedIndex) return { ok: false, error: 'Stale question' }
+    if (questionIndex !== expectedIndex) return { ok: false, error: 'Câu hỏi đã cũ' }
 
     const player = room.players.get(playerId)
-    if (!player) return { ok: false, error: 'Unknown player' }
+    if (!player) return { ok: false, error: 'Người chơi không xác định' }
     // Eliminated players cannot answer in any mode
-    if (player.eliminated) return { ok: false, error: 'You have been eliminated' }
-    if (room.responses.has(playerId)) return { ok: false, error: 'Already answered' }
+    if (player.eliminated) return { ok: false, error: 'Bạn đã bị loại' }
+    if (room.responses.has(playerId)) return { ok: false, error: 'Đã trả lời câu hỏi này rồi' }
 
     const now = Date.now()
-    if (now > room.questionEndsAt) return { ok: false, error: 'Time up' }
+    if (now > room.questionEndsAt) return { ok: false, error: 'Hết giờ' }
 
     const q = room.kahootMode
       ? room.kahootPool[room.kahootQuestionIndex]
       : room.quiz.questions[questionIndex]
     const chosen = q.answers.find((a) => a.id === answerId)
-    if (!chosen) return { ok: false, error: 'Invalid answer' }
+    if (!chosen) return { ok: false, error: 'Câu trả lời không hợp lệ' }
 
     const correct = chosen.id === q.correctAnswerId
     const responseMs = now - room.questionStartedAt

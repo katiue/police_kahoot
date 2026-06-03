@@ -30,31 +30,31 @@ function parseDifficulty(value: unknown): QuizDifficulty {
 
 export function parseQuiz(raw: unknown): Quiz {
   if (typeof raw !== 'object' || raw === null) {
-    throw new Error('Quiz file must be a JSON object')
+    throw new Error('File bộ câu hỏi phải là đối tượng JSON')
   }
   const obj = raw as Record<string, unknown>
-  const title = typeof obj.title === 'string' && obj.title.trim() ? obj.title.trim() : 'Untitled Quiz'
+  const title = typeof obj.title === 'string' && obj.title.trim() ? obj.title.trim() : 'Bộ câu hỏi chưa đặt tên'
 
   if (!Array.isArray(obj.questions) || obj.questions.length === 0) {
-    throw new Error('Quiz must have a non-empty "questions" array')
+    throw new Error('Bộ câu hỏi phải chứa mảng "questions" và không được để trống')
   }
 
   const questions: QuizQuestion[] = obj.questions.map((q, qi) => {
     if (typeof q !== 'object' || q === null) {
-      throw new Error(`Question #${qi + 1} is not an object`)
+      throw new Error(`Câu hỏi #${qi + 1} không phải là đối tượng`)
     }
     const qo = q as Record<string, unknown>
     const text = typeof qo.text === 'string' ? qo.text.trim() : ''
-    if (!text) throw new Error(`Question #${qi + 1} missing "text"`)
+    if (!text) throw new Error(`Câu hỏi #${qi + 1} thiếu trường "text"`)
 
     if (!Array.isArray(qo.answers) || qo.answers.length < 2) {
-      throw new Error(`Question #${qi + 1} needs at least 2 answers`)
+      throw new Error(`Câu hỏi #${qi + 1} phải có ít nhất 2 đáp án`)
     }
 
     const answers = qo.answers.map((a, ai) => {
       const ao = (a ?? {}) as Record<string, unknown>
       const atext = typeof ao.text === 'string' ? ao.text.trim() : ''
-      if (!atext) throw new Error(`Question #${qi + 1} answer #${ai + 1} missing "text"`)
+      if (!atext) throw new Error(`Câu hỏi #${qi + 1} đáp án #${ai + 1} thiếu trường "text"`)
       return {
         id: typeof ao.id === 'number' ? ao.id : ai + 1,
         text: atext,
@@ -64,11 +64,11 @@ export function parseQuiz(raw: unknown): Quiz {
     // Validate correctAnswerId
     const correctAnswerId = qo.correctAnswerId
     if (typeof correctAnswerId !== 'number') {
-      throw new Error(`Question #${qi + 1} missing "correctAnswerId" (must be a number matching one answer id)`)
+      throw new Error(`Câu hỏi #${qi + 1} thiếu "correctAnswerId" (phải là số khớp với id của một đáp án)`)
     }
     if (!answers.some((a) => a.id === correctAnswerId)) {
       throw new Error(
-        `Question #${qi + 1} "correctAnswerId" (${correctAnswerId}) does not match any answer id`
+        `Câu hỏi #${qi + 1} "correctAnswerId" (${correctAnswerId}) không khớp với bất kỳ id đáp án nào`
       )
     }
 

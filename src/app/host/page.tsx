@@ -190,9 +190,9 @@ export default function HostCreatePage() {
         }
       })
       .then(() => {
-        if (showToast) toast.success('Đã load event questionset')
+        if (showToast) toast.success('Đã tải bộ câu hỏi sự kiện')
       })
-      .catch(() => toast.error('Không tải được event questionset'))
+      .catch(() => toast.error('Không tải được bộ câu hỏi sự kiện'))
       .finally(() => setLoadingQuestionSet(false))
   }
 
@@ -222,7 +222,7 @@ export default function HostCreatePage() {
       })
 
       const merged: Quiz = {
-        title: 'Event Questionset - Police Quiz 2026',
+        title: 'Bộ câu hỏi sự kiện - Police Quiz 2026',
         questions: buildDifficultyRampDeck(questions),
       }
       const mergedOption: QuizOption = {
@@ -235,10 +235,10 @@ export default function HostCreatePage() {
       setQuizzes([mergedOption, ...eventQuizzes])
       setSelectedQuiz(EVENT_QUESTIONSET_ID)
       toast.success(
-        `Đã gộp ${eventQuizzes.length} question set thành ${merged.questions.length} câu theo difficulty ramp`
+        `Đã gộp ${eventQuizzes.length} bộ câu hỏi thành ${merged.questions.length} câu theo thang độ khó`
       )
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : 'Không tải được event questionset')
+      toast.error(e instanceof Error ? e.message : 'Không tải được bộ câu hỏi sự kiện')
     } finally {
       setLoadingQuestionSet(false)
     }
@@ -265,7 +265,7 @@ export default function HostCreatePage() {
   async function create() {
     const chosen = quizzes.find((q) => q.file === selectedQuiz)
     if (selectedQuiz === EVENT_QUESTIONSET_ID) {
-      if (!eventQuestionSet) return toast.error('Bấm Load event questionset trước')
+      if (!eventQuestionSet) return toast.error('Bấm Tải bộ câu hỏi sự kiện trước')
       setBusy(true)
       getSocket().emit('host:create', { quiz: eventQuestionSet, minPlayersToEnd, maxPlayers, timeLimitSec, randomizeQuestions, randomizeAnswers, loginKey, kahootThreshold }, (res) => {
         setBusy(false)
@@ -348,7 +348,7 @@ export default function HostCreatePage() {
           <Link href="/host/check">
             <Button variant="outline" size="sm" className="gap-2">
               <ClipboardCheck className="size-4" />
-              Checklist
+              Danh sách kiểm tra
             </Button>
           </Link>
         </div>
@@ -358,7 +358,7 @@ export default function HostCreatePage() {
             Tạo <span className="text-accent neon-text-cyan">phòng</span>
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            Single-room mode: nếu đã có phòng active, host sẽ được chuyển thẳng vào phòng đó.
+            Chế độ phòng đơn (Single-room): nếu đã có phòng đang hoạt động, host sẽ được chuyển thẳng vào phòng đó.
           </p>
         </div>
 
@@ -377,7 +377,7 @@ export default function HostCreatePage() {
               className="gap-2 self-start"
             >
               <FileJson className="size-4" />
-              {loadingQuestionSet ? 'Loading event questionset...' : 'Load event questionset'}
+              {loadingQuestionSet ? 'Đang tải bộ câu hỏi sự kiện...' : 'Tải bộ câu hỏi sự kiện'}
             </Button>
             <select
               value={selectedQuiz}
@@ -397,7 +397,7 @@ export default function HostCreatePage() {
             </select>
             {selected && (
               <div className="rounded-lg border border-border/60 bg-card/40 px-3 py-2 text-xs text-muted-foreground">
-                {selected.file === EVENT_QUESTIONSET_ID ? 'Merged questionset' : 'File'}:{' '}
+                {selected.file === EVENT_QUESTIONSET_ID ? 'Bộ câu hỏi đã gộp' : 'Tệp tin'}:{' '}
                 <span className="font-mono text-accent">
                   {selected.file === EVENT_QUESTIONSET_ID ? `${selected.questionCount} câu từ tất cả event quiz` : selected.file}
                 </span>
@@ -532,7 +532,7 @@ export default function HostCreatePage() {
           className="gap-2"
         >
           <Rocket className="size-5" />
-          {checkingActive ? 'Đang kiểm tra phòng active...' : busy ? 'Đang tạo...' : 'Tạo phòng'}
+          {checkingActive ? 'Đang kiểm tra phòng đang hoạt động...' : busy ? 'Đang tạo...' : 'Tạo phòng'}
         </Button>
 
         <a
@@ -542,7 +542,7 @@ export default function HostCreatePage() {
           className="inline-flex items-center justify-center gap-2 text-xs uppercase tracking-widest text-muted-foreground underline-offset-4 transition-colors hover:text-accent hover:underline"
         >
           <MonitorPlay className="size-4" />
-          Mở projector auto-detect
+          Mở projector tự động phát hiện
         </a>
       </main>
     </Backdrop>

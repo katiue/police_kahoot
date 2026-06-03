@@ -46,7 +46,7 @@ function KahootSplash({ threshold, onDone }: { threshold: number; onDone: () => 
           transition={{ delay: 0.2 }}
           className="text-[10px] uppercase tracking-[0.4em] text-yellow-400/70"
         >
-          Speed Round
+          Vòng Tốc độ
         </motion.p>
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
@@ -289,14 +289,14 @@ export default function PlayRoomPage({ params }: { params: Promise<{ pin: string
             <PlayerAvatar nickname={nickname} size="xs" pulse={!isEliminated || kahootMode} eliminated={isEliminated && !kahootMode} iconIndex={customIconIndex} colorIndex={customColorIndex} />
             <span className="font-semibold text-xs">{nickname}</span>
             {myScore > 0 && (
-              <span className="font-mono text-[10px] text-yellow-400">{myScore.toLocaleString()}pt</span>
+              <span className="font-mono text-[10px] text-yellow-400">{myScore.toLocaleString()} điểm</span>
             )}
           </div>
           <div className="flex items-center gap-2">
             {kahootMode && (
               <span className="flex items-center gap-1 rounded-full border border-yellow-400/30 bg-yellow-400/10 px-2 py-0.5 text-[10px] font-bold text-yellow-400">
                 <Zap className="size-2.5" />
-                Speed
+                Tốc độ
               </span>
             )}
             {isEliminated && !kahootMode && status !== 'ended' && (
@@ -328,7 +328,7 @@ export default function PlayRoomPage({ params }: { params: Promise<{ pin: string
               <span className="hud-corner-bl" aria-hidden />
               <Hourglass className="size-8 text-[var(--cyan-accent)] animate-pulse" />
               <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--muted-foreground)]">
-                Game PIN
+                Mã PIN
               </p>
               <span className="pin-display text-4xl font-bold text-[var(--cyan-accent)] neon-text-cyan">
                 {formatPin(pin)}
@@ -356,7 +356,7 @@ export default function PlayRoomPage({ params }: { params: Promise<{ pin: string
                   <span className="hud-corner-bl" aria-hidden />
                   <Hourglass className="size-8 text-[var(--cyan-accent)] animate-pulse" />
                   <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--muted-foreground)]">
-                    Game PIN
+                    Mã PIN
                   </p>
                   <span className="pin-display text-4xl font-bold text-[var(--cyan-accent)] neon-text-cyan">
                     {pin}
@@ -491,12 +491,12 @@ export default function PlayRoomPage({ params }: { params: Promise<{ pin: string
                       <p className="text-2xl font-black uppercase text-yellow-300">Chính xác!</p>
                       {lastPointsEarned && (
                         <p className="mt-2 text-3xl font-black text-yellow-400">
-                          +{lastPointsEarned.toLocaleString()} pts
+                          +{lastPointsEarned.toLocaleString()} điểm
                         </p>
                       )}
                       {myRank && (
                         <p className="mt-2 text-sm font-semibold text-yellow-400/70">
-                          Hạng #{myRank} · {myScore.toLocaleString()} pts tổng
+                          Hạng #{myRank} · {myScore.toLocaleString()} điểm tổng
                         </p>
                       )}
                     </motion.div>
@@ -511,10 +511,10 @@ export default function PlayRoomPage({ params }: { params: Promise<{ pin: string
                       <p className="text-2xl font-bold text-slate-300">
                         {result.you?.answered ? 'Sai rồi' : 'Hết giờ'}
                       </p>
-                      <p className="mt-2 text-sm text-slate-400/70">+0 pts</p>
+                      <p className="mt-2 text-sm text-slate-400/70">+0 điểm</p>
                       {myRank && (
                         <p className="mt-2 text-sm font-semibold text-white/40">
-                          Hạng #{myRank} · {myScore.toLocaleString()} pts tổng
+                          Hạng #{myRank} · {myScore.toLocaleString()} điểm tổng
                         </p>
                       )}
                     </motion.div>
@@ -614,19 +614,19 @@ export default function PlayRoomPage({ params }: { params: Promise<{ pin: string
                         #{myFinalEntry.rank}
                       </p>
                       <p className="mt-1 text-lg font-bold text-yellow-400/70">
-                        {myFinalEntry.score.toLocaleString()} pts
+                        {myFinalEntry.score.toLocaleString()} điểm
                       </p>
                       <p className="mt-2 text-sm text-white/50">
                         {myFinalEntry.rank === 1
                           ? '🥇 Vô địch! Xuất sắc!'
                           : myFinalEntry.rank <= 3
-                          ? '🏅 Top 3 — Rất tốt!'
-                          : `Hạng ${myFinalEntry.rank} trên ${allPlayers.length} người`}
+                            ? '🏅 Top 3 — Rất tốt!'
+                            : `Hạng ${myFinalEntry.rank} trên ${allPlayers.length} người`}
                       </p>
                     </motion.div>
                   ) : (
                     <div className="rounded-2xl border border-white/10 bg-white/5 px-8 py-6">
-                      <p className="text-xl font-bold text-white/60">Điểm của bạn: {myScore.toLocaleString()} pts</p>
+                      <p className="text-xl font-bold text-white/60">Điểm của bạn: {myScore.toLocaleString()} điểm</p>
                     </div>
                   )
                 ) : isSurvivor ? (

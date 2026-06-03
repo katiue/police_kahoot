@@ -45,7 +45,7 @@ export function LobbyHero({
           {joinUrl.replace(/^https?:\/\//, '') || 'localhost:3000/play'}
         </p>
         <div className="mt-2 flex flex-col items-center">
-          <span className="text-xs uppercase tracking-widest text-[var(--muted-foreground)]">Game PIN</span>
+          <span className="text-xs uppercase tracking-widest text-[var(--muted-foreground)]">Mã PIN</span>
           <span className="pin-display text-7xl font-bold text-[var(--accent)] neon-text-cyan">{formattedPin}</span>
         </div>
       </div>

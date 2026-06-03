@@ -20,14 +20,14 @@ export function registerSocketHandlers(io: IO): RoomManager {
 
   io.on('connection', (socket: Sock) => {
     socket.on('host:auth', ({ loginKey }, ack) => {
-      ack(isAuthorized(loginKey) ? { ok: true } : { ok: false, error: 'Invalid login key' })
+      ack(isAuthorized(loginKey) ? { ok: true } : { ok: false, error: 'Mã đăng nhập không đúng' })
     })
 
     // ── Host: create room ──
     socket.on('host:create', ({ quiz, minPlayersToEnd, maxPlayers, timeLimitSec, randomizeQuestions, randomizeAnswers, loginKey, kahootThreshold }, ack) => {
       try {
         if (!isAuthorized(loginKey)) {
-          ack({ ok: false, error: 'Invalid login key' })
+          ack({ ok: false, error: 'Mã đăng nhập không đúng' })
           return
         }
         const parsed = parseQuiz(quiz)
@@ -41,18 +41,18 @@ export function registerSocketHandlers(io: IO): RoomManager {
         })
         ack({ ok: true, pin })
       } catch (e) {
-        ack({ ok: false, error: e instanceof Error ? e.message : 'Invalid quiz' })
+        ack({ ok: false, error: e instanceof Error ? e.message : 'Quiz không hợp lệ' })
       }
     })
 
     // ── Host: join room channel ──
     socket.on('host:join', ({ pin, loginKey }, ack) => {
-      if (!isAuthorized(loginKey)) return ack({ ok: false, error: 'Invalid login key' })
+      if (!isAuthorized(loginKey)) return ack({ ok: false, error: 'Mã đăng nhập không đúng' })
       const room = manager.setHost(pin, socket.id)
-      if (!room) return ack({ ok: false, error: 'Room not found' })
+      if (!room) return ack({ ok: false, error: 'Không tìm thấy phòng' })
       socket.join(pin)
       const snapshot = manager.hostSnapshot(pin) as HostSnapshot | null
-      if (!snapshot) return ack({ ok: false, error: 'Room not found' })
+      if (!snapshot) return ack({ ok: false, error: 'Không tìm thấy phòng' })
       ack({ ok: true, state: snapshot })
     })
 
@@ -78,15 +78,15 @@ export function registerSocketHandlers(io: IO): RoomManager {
       manager.endGame(pin)
     })
     socket.on('host:reset', ({ pin, loginKey }, ack) => {
-      if (!isAuthorized(loginKey)) return ack?.({ ok: false, error: 'Invalid login key' })
+      if (!isAuthorized(loginKey)) return ack?.({ ok: false, error: 'Mã đăng nhập không đúng' })
       const ok = manager.resetRoom(pin)
-      ack?.({ ok, error: ok ? undefined : 'Room not found' })
+      ack?.({ ok, error: ok ? undefined : 'Không tìm thấy phòng' })
     })
 
     // ── Projector: read-only audience view ──
     socket.on('projector:join', ({ pin }, ack) => {
       const snap = manager.projectorSnapshot(pin)
-      if (!snap) return ack({ ok: false, error: 'Room not found' })
+      if (!snap) return ack({ ok: false, error: 'Không tìm thấy phòng' })
       socket.join(pin)
       ack({ ok: true, state: snap })
     })
@@ -117,7 +117,7 @@ export function registerSocketHandlers(io: IO): RoomManager {
     // ── Player: submit answer ──
     socket.on('player:answer', ({ pin, questionIndex, answerId }, ack) => {
       const pid = manager.findPlayerIdBySocket(pin, socket.id)
-      if (!pid) return ack({ ok: false, error: 'Not in room' })
+      if (!pid) return ack({ ok: false, error: 'Không ở trong phòng' })
       const res = manager.submitAnswer(pin, pid, questionIndex, answerId)
       ack(res)
       socket.emit('answer:ack', { questionIndex, received: res.ok })

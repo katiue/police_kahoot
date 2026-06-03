@@ -156,13 +156,13 @@ export default function HostCheckPage() {
             <ArrowLeft className="size-3.5" /> Host
           </Link>
           <Button variant="outline" size="sm" onClick={refresh}>
-            Refresh
+            Làm mới
           </Button>
         </div>
 
         <div>
           <h1 className="text-display text-4xl font-bold">
-            Pre-event <span className="text-accent neon-text-cyan">checklist</span>
+            Checklist <span className="text-accent neon-text-cyan">trước sự kiện</span>
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
             Chạy trang này trước event 15 phút để kiểm tra room, socket, link projector và player.
@@ -177,20 +177,20 @@ export default function HostCheckPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <CheckRow ok={socketOk} label="Socket" value={socketOk ? 'connected' : 'disconnected'} />
-            <CheckRow ok={!!room} label="Room" value={room ? `PIN ${formatPin(room.pin)}` : 'chưa có room'} />
+            <CheckRow ok={socketOk} label="Cổng kết nối (Socket)" value={socketOk ? 'đã kết nối' : 'mất kết nối'} />
+            <CheckRow ok={!!room} label="Phòng" value={room ? `PIN ${formatPin(room.pin)}` : 'chưa có phòng'} />
             <CheckRow
               ok={!!room?.quizTitle}
-              label="Quiz loaded"
+              label="Bộ câu hỏi đã tải"
               value={room ? `${room.quizTitle} · ${room.totalQuestions} câu` : `${validQuizzes.length} quiz sẵn sàng`}
             />
-            <CheckRow ok={!!projectorUrl} label="Projector URL" value={projectorUrl || 'tạo phòng trước'} />
-            <CheckRow ok={!!playerUrl} label="Player URL" value={playerUrl || 'tạo phòng trước'} />
-            <CheckRow ok={authOk} label="LOGIN_KEY" value={authOk ? 'validated' : 'not validated'} />
+            <CheckRow ok={!!projectorUrl} label="Đường dẫn Projector" value={projectorUrl || 'tạo phòng trước'} />
+            <CheckRow ok={!!playerUrl} label="Đường dẫn Người chơi" value={playerUrl || 'tạo phòng trước'} />
+            <CheckRow ok={authOk} label="MÃ ĐĂNG NHẬP" value={authOk ? 'đã xác thực' : 'chưa xác thực'} />
             <CheckRow
               ok={!!projectorUrl && !!playerUrl}
-              label="MC display test"
-              value={projectorUrl ? 'open projector + scan QR' : 'chờ room'}
+              label="Kiểm tra màn hình MC"
+              value={projectorUrl ? 'mở projector + quét mã QR' : 'chờ phòng'}
             />
           </CardContent>
         </Card>
@@ -226,17 +226,17 @@ export default function HostCheckPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <KeyRound className="size-5 text-accent" />
-              Event summary
+              Tóm tắt sự kiện
             </CardTitle>
           </CardHeader>
           <CardContent className="text-sm text-muted-foreground">
             {room ? (
               <p>
-                Room <span className="font-mono text-accent">{formatPin(room.pin)}</span> đang ở trạng thái{' '}
-                <span className="text-foreground">{room.status}</span>, có {room.players} người chơi đã join.
+                Phòng <span className="font-mono text-accent">{formatPin(room.pin)}</span> đang ở trạng thái{' '}
+                <span className="text-foreground">{room.status}</span>, có {room.players} người chơi đã tham gia.
               </p>
             ) : (
-              <p>Chưa có active room. Quay lại /host để chọn quiz và tạo phòng trước khi mở cửa cho player.</p>
+              <p>Chưa có phòng đang hoạt động. Quay lại /host để chọn quiz và tạo phòng trước khi mở cửa cho người chơi.</p>
             )}
           </CardContent>
         </Card>

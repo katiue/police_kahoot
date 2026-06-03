@@ -39,8 +39,8 @@ node scripts/smoke.mjs
 
 | Route | Who | Purpose |
 |---|---|---|
-| `/` | all | Landing — pick Host or Player |
-| `/host` | host | Load quiz JSON / sample → create room |
+| `/` | all | Landing — contains "Tham gia trò chơi" button (directs to player join) |
+| `/host` | host | Direct access only — Load quiz JSON / sample → create room |
 | `/host/[pin]` | host | Lobby + game control (start, next, end) |
 | `/play` | player | Enter PIN + nickname (QR deep-links here with `?pin=`) |
 | `/play/[pin]` | player | Live play screen (answer, result, rank) |
@@ -48,10 +48,10 @@ node scripts/smoke.mjs
 
 ## Flow
 
-1. Open `/` → **Tôi là Host** → `/host`.
+1. Host navigates directly to `/host` to create a room.
 2. Click **Dùng quiz mẫu** (or upload JSON) → **Tạo phòng** → lands on `/host/<PIN>` lobby.
 3. (Optional) Open **`/lobby?pin=<PIN>`** on a projector — animated standby screen showing the PIN + join QR. Link available from the host lobby.
-4. Players open `/play` (or scan the QR), enter PIN + nickname.
+4. Players open `/` (click **Tham gia trò chơi** to redirect to `/play`) or scan the QR, enter PIN + nickname.
 5. Host clicks **Bắt đầu**. Each question: players tap an answer; server scores by correctness + speed.
 6. Host advances with **Câu tiếp theo**; final screen shows the leaderboard.
 

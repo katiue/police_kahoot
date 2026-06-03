@@ -69,34 +69,12 @@ export default function HomePage() {
               Trò chơi kiểm tra kiến thức an toàn mạng theo thể thức loại trực tiếp — hệ thống thực chiến đến khi còn người cuối cùng đứng vững.
             </p>
 
-            {/* Feature Chips */}
-            <div className="tech-chip-rack flex flex-wrap justify-center gap-3 mb-10">
-              <div className="cyber-chip text-xs font-semibold uppercase tracking-wider">
-                <Zap className="size-3.5" />
-                Realtime
-              </div>
-              <div className="cyber-chip text-xs font-semibold uppercase tracking-wider">
-                <Users className="size-3.5" />
-                Nhiều người chơi
-              </div>
-              <div className="cyber-chip text-xs font-semibold uppercase tracking-wider">
-                <ShieldCheck className="size-3.5" />
-                Loại trực tiếp
-              </div>
-            </div>
-
-            {/* Glowing Buttons Side-by-side */}
-            <div className="tech-start-wrap flex flex-col sm:flex-row gap-4 justify-center w-full max-w-md">
-              <Link href="/host" className="flex-1">
-                <Button size="lg" className="tech-start-button w-full h-12 uppercase font-bold tracking-wider text-sm gap-2">
-                  <MonitorPlay className="size-4" />
-                  Tôi là Host
-                </Button>
-              </Link>
-              <Link href="/play" className="flex-1">
+            {/* Glowing Button */}
+            <div className="tech-start-wrap flex justify-center w-full max-w-sm">
+              <Link href="/play" className="w-full">
                 <Button size="lg" variant="accent" className="tech-start-button w-full h-12 uppercase font-bold tracking-wider text-sm gap-2 bg-[var(--accent)] text-[var(--accent-foreground)] shadow-[0_0_24px_rgba(127,219,255,0.25)] hover:bg-[var(--accent)]/90">
                   <Users className="size-4" />
-                  Tôi là Người chơi
+                  Tham gia trò chơi
                 </Button>
               </Link>
             </div>

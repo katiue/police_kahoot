@@ -27,17 +27,16 @@ export interface NicknameCheck {
   reason?: string
 }
 
-/** Normalize + validate. `cleaned` is the trimmed/capped form if `ok` is true. */
 export function checkNickname(raw: unknown): NicknameCheck {
   if (typeof raw !== 'string') {
-    return { ok: false, cleaned: '', reason: 'Nickname required' }
+    return { ok: false, cleaned: '', reason: 'Vui lòng nhập biệt danh' }
   }
   const cleaned = raw.trim().slice(0, 20)
   if (!cleaned) {
-    return { ok: false, cleaned: '', reason: 'Nickname required' }
+    return { ok: false, cleaned: '', reason: 'Vui lòng nhập biệt danh' }
   }
   if (cleaned.length < 2) {
-    return { ok: false, cleaned, reason: 'Nickname too short' }
+    return { ok: false, cleaned, reason: 'Biệt danh quá ngắn' }
   }
   const lower = cleaned.toLowerCase().replace(/[\s._\-]+/g, '')
   for (const bad of DENY_PARTS) {

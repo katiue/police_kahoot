@@ -32,7 +32,7 @@ export function HostAuthCard({
           <div className="mb-2 flex size-12 items-center justify-center rounded-xl border border-accent/30 bg-accent/10 text-accent">
             <ShieldCheck className="size-6" />
           </div>
-          <CardTitle className="text-display text-2xl font-bold">Host Login</CardTitle>
+          <CardTitle className="text-display text-2xl font-bold">Đăng nhập Host</CardTitle>
           <p className="text-sm text-muted-foreground">
             Nhập LOGIN_KEY để truy cập màn hình điều khiển.
           </p>
@@ -41,7 +41,7 @@ export function HostAuthCard({
           <form onSubmit={submit} className="flex flex-col gap-4">
             <label className="flex flex-col gap-2">
               <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-                Login key
+                Mã đăng nhập
               </span>
               <input
                 value={loginKey}
@@ -55,7 +55,7 @@ export function HostAuthCard({
             {error && <p className="text-sm font-semibold text-red-400">{error}</p>}
             <Button type="submit" size="lg" className="w-full gap-2" disabled={busy || !loginKey}>
               <KeyRound className="size-4" />
-              {busy ? 'Đang xác thực...' : 'Authenticate'}
+              {busy ? 'Đang xác thực...' : 'Xác thực'}
             </Button>
           </form>
         </CardContent>
