@@ -549,7 +549,8 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
                     )}
                   </div>
 
-                  <PlayerStatus players={players} />
+                  {/* Normal mode: player grid. Kahoot: sidebar handles ranking */}
+                  {!kahootMode && <PlayerStatus players={players} />}
                 </motion.div>
               )}
 
@@ -563,6 +564,31 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
                   transition={{ duration: 0.45, ease: [0.32, 0.72, 0, 1] }}
                   className="flex flex-1 flex-col gap-6"
                 >
+                  {/* ── Kahoot: Next button pinned to top ── */}
+                  {kahootMode && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.35, ease: [0.32, 0.72, 0, 1] }}
+                      className="flex items-center justify-between gap-4"
+                    >
+                      <span className="flex items-center gap-2 rounded-full border border-yellow-400/30 bg-yellow-400/10 px-3 py-1 text-xs font-bold text-yellow-400">
+                        <Zap className="size-3" />
+                        Kahoot {question.kahootRound?.questionIndex ?? 0}/{question.kahootRound?.totalQuestions ?? 5} — Kết quả
+                      </span>
+                      <Button
+                        size="lg"
+                        onClick={() =>
+                          isLast ? setConfirmAction('end') : getSocket().emit('host:next', { pin, loginKey })
+                        }
+                        className="gap-2 border-yellow-400/40 bg-yellow-400/10 text-yellow-300 hover:bg-yellow-400/20"
+                      >
+                        {isLast ? <Square className="size-4" /> : <Zap className="size-4" />}
+                        {isLast ? 'Kết thúc' : 'Câu tiếp'}
+                      </Button>
+                    </motion.div>
+                  )}
+
                   <h2 className="text-display text-center text-2xl font-bold">{question.text}</h2>
 
                   <AnswerGrid
@@ -573,26 +599,67 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
                   />
 
                   {kahootMode ? (
-                    /* Kahoot mode — show score summary, no elimination list */
+                    /* Kahoot mode — compact podium + answer stat, sidebar handles full ranking */
                     <motion.div
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.2, duration: 0.4 }}
-                      className="rounded-xl border border-yellow-400/25 bg-yellow-400/6 px-5 py-4"
+                      className="flex flex-col gap-3"
                     >
-                      <p className="mb-3 text-sm font-bold text-yellow-400 flex items-center gap-1.5">
-                        <Zap className="size-4" />
-                        Câu Kahoot {(question.kahootRound?.questionIndex ?? 0)}/{question.kahootRound?.totalQuestions ?? 5} — Đang cộng điểm tốc độ
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        {activePlayers.slice(0, 20).map((p) => (
-                          <div key={p.id} className="flex items-center gap-1.5 rounded-full border border-yellow-400/20 bg-yellow-400/8 px-2.5 py-1">
-                            <PlayerAvatar nickname={p.nickname} size="xs" pulse />
-                            <span className="text-xs font-bold text-yellow-300">{p.nickname}</span>
-                            <span className="text-[10px] font-mono text-yellow-400/70">{p.score.toLocaleString()}pt</span>
+                      {/* Answer stat bar */}
+                      {(() => {
+                        const totalAnswers = Object.values(result.counts).reduce((s, n) => s + n, 0)
+                        const correctCount = result.counts[result.correctAnswerId] ?? 0
+                        const wrongCount = totalAnswers - correctCount
+                        return (
+                          <div className="flex items-center gap-3 rounded-xl border border-white/8 bg-white/4 px-4 py-3">
+                            <div className="flex flex-1 items-center gap-2">
+                              <span className="size-2 rounded-full bg-emerald-400 shrink-0" />
+                              <span className="text-xs font-semibold text-emerald-400">{correctCount} đúng</span>
+                            </div>
+                            <div className="h-1.5 flex-[3] overflow-hidden rounded-full bg-white/10">
+                              <motion.div
+                                initial={{ width: 0 }}
+                                animate={{ width: totalAnswers > 0 ? `${(correctCount / totalAnswers) * 100}%` : '0%' }}
+                                transition={{ duration: 0.6, ease: [0.32, 0.72, 0, 1] }}
+                                className="h-full rounded-full bg-emerald-400"
+                              />
+                            </div>
+                            <div className="flex flex-1 items-center justify-end gap-2">
+                              <span className="text-xs font-semibold text-red-400">{wrongCount} sai</span>
+                              <span className="size-2 rounded-full bg-red-400 shrink-0" />
+                            </div>
                           </div>
-                        ))}
-                      </div>
+                        )
+                      })()}
+
+                      {/* Top-3 podium */}
+                      {leaderboard.length > 0 && (
+                        <div className="grid grid-cols-3 gap-3">
+                          {leaderboard.slice(0, 3).map((entry, i) => {
+                            const medals = ['text-yellow-300', 'text-slate-300', 'text-amber-400']
+                            const borders = ['border-yellow-400/30 bg-yellow-400/8', 'border-slate-300/20 bg-slate-300/5', 'border-amber-600/25 bg-amber-600/6']
+                            const labels = ['🥇', '🥈', '🥉']
+                            return (
+                              <motion.div
+                                key={entry.id}
+                                initial={{ scale: 0.88, opacity: 0, y: 10 }}
+                                animate={{ scale: 1, opacity: 1, y: 0 }}
+                                transition={{ delay: 0.1 + i * 0.07, type: 'spring', stiffness: 380, damping: 26 }}
+                                className={`flex flex-col items-center gap-1.5 rounded-xl border px-3 py-3 ${borders[i]}`}
+                              >
+                                <span className="text-xl">{labels[i]}</span>
+                                <PlayerAvatar nickname={entry.nickname} size="sm" pulse={i === 0} />
+                                <span className={`text-[11px] font-bold truncate w-full text-center ${medals[i]}`}>{entry.nickname}</span>
+                                <span className="font-mono text-[11px] text-white/60">{entry.score.toLocaleString()}</span>
+                                {entry.delta > 0 && (
+                                  <span className="rounded-full bg-emerald-400/15 px-2 py-0.5 text-[10px] font-bold text-emerald-400">+{entry.delta.toLocaleString()}</span>
+                                )}
+                              </motion.div>
+                            )
+                          })}
+                        </div>
+                      )}
                     </motion.div>
                   ) : (
                     /* Normal mode — elimination / survivor columns */
@@ -663,18 +730,21 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
                     </div>
                   )}
 
-                  <div className="flex justify-center">
-                    <Button
-                      size="xl"
-                      onClick={() =>
-                        isLast ? setConfirmAction('end') : getSocket().emit('host:next', { pin, loginKey })
-                      }
-                      className={cn('gap-2', kahootMode && 'border-yellow-400/40 bg-yellow-400/10 text-yellow-300 hover:bg-yellow-400/20')}
-                    >
-                      {isLast ? <Square className="size-5" /> : kahootMode ? <Zap className="size-5" /> : <SkipForward className="size-5" />}
-                      {isLast ? 'Kết thúc' : kahootMode ? 'Câu Kahoot tiếp' : 'Câu tiếp theo'}
-                    </Button>
-                  </div>
+                  {/* Normal mode next button — bottom */}
+                  {!kahootMode && (
+                    <div className="flex justify-center">
+                      <Button
+                        size="xl"
+                        onClick={() =>
+                          isLast ? setConfirmAction('end') : getSocket().emit('host:next', { pin, loginKey })
+                        }
+                        className="gap-2"
+                      >
+                        {isLast ? <Square className="size-5" /> : <SkipForward className="size-5" />}
+                        {isLast ? 'Kết thúc' : 'Câu tiếp theo'}
+                      </Button>
+                    </div>
+                  )}
                 </motion.div>
               )}
 

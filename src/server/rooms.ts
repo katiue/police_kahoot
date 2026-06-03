@@ -505,9 +505,8 @@ export class RoomManager {
 
     const player = room.players.get(playerId)
     if (!player) return { ok: false, error: 'Unknown player' }
-    // Eliminated players (spectators) cannot answer in normal mode
-    // In kahoot mode everyone plays
-    if (!room.kahootMode && player.eliminated) return { ok: false, error: 'You have been eliminated' }
+    // Eliminated players cannot answer in any mode
+    if (player.eliminated) return { ok: false, error: 'You have been eliminated' }
     if (room.responses.has(playerId)) return { ok: false, error: 'Already answered' }
 
     const now = Date.now()
@@ -525,7 +524,7 @@ export class RoomManager {
 
     // Live answered/total counter for projector + host control panel.
     const eligiblePlayers = [...room.players.values()].filter(
-      (p) => (room.kahootMode || !p.eliminated) && p.connected
+      (p) => !p.eliminated && p.connected
     )
     const eligibleIds = new Set(eligiblePlayers.map((p) => p.id))
     const connectedResponseCount = [...room.responses.keys()].filter((id) =>
