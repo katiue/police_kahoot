@@ -422,7 +422,13 @@ export class RoomManager {
   startGame(pin: string): void {
     const room = this.rooms.get(pin)
     if (!room || room.status !== 'lobby') return
-    this.askQuestion(room, 0)
+    // If player count is already at or below the Kahoot threshold at game start,
+    // skip straight into the speed-round — no elimination question should run first.
+    if (this.shouldStartKahoot(room)) {
+      this.startKahootMode(room)
+    } else {
+      this.askQuestion(room, 0)
+    }
   }
 
   nextQuestion(pin: string): void {
@@ -624,27 +630,35 @@ export class RoomManager {
     for (const a of q.answers) counts[a.id] = 0
     for (const r of room.responses.values()) counts[r.answerId] = (counts[r.answerId] ?? 0) + 1
 
-    // ── Score all players who answered ──
-    for (const [pid, resp] of room.responses) {
-      const player = room.players.get(pid)
-      if (!player) continue
-      const pts = computePoints(resp.correct, resp.responseMs, timeLimitMs)
-      player.score += pts
+    // ── Score all players who answered (Kahoot speed-round only) ──
+    if (isKahoot) {
+      for (const [pid, resp] of room.responses) {
+        const player = room.players.get(pid)
+        if (!player) continue
+        const pts = computePoints(resp.correct, resp.responseMs, timeLimitMs)
+        player.score += pts
+      }
     }
 
     const eliminatedThisRound: string[] = []
 
     if (!isKahoot) {
-      // ── Check Kahoot threshold BEFORE eliminating ──
-      // If we're already at or below the threshold going into this result,
-      // skip elimination entirely — these players survive into the speed round.
-      const activeBeforeElim = [...room.players.values()].filter((p) => !p.eliminated).length
-      const kahootWillStart = room.kahootThreshold > 0 && activeBeforeElim <= room.kahootThreshold
+      // Get the currently active players before this question's elimination
+      const activePlayers = [...room.players.values()].filter((p) => !p.eliminated)
 
-      if (!kahootWillStart) {
-        // ── Elimination logic (normal mode only) ──
-        for (const p of room.players.values()) {
-          if (p.eliminated) continue
+      // Count potential survivors: active players who answered correctly
+      const survivorsCount = activePlayers.filter((p) => {
+        const r = room.responses.get(p.id)
+        return r?.correct === true
+      }).length
+
+      // If all currently active players would be eliminated (leaving 0 survivors),
+      // we do not count that elimination and keep everyone alive.
+      if (survivorsCount === 0 && activePlayers.length > 0) {
+        // Edge case: skip elimination entirely this round to avoid 0 survivors
+      } else {
+        // Normal elimination logic
+        for (const p of activePlayers) {
           const r = room.responses.get(p.id)
           const correct = r?.correct === true
           if (!correct) {
