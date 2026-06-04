@@ -1,4 +1,4 @@
-import { createServer, type ServerResponse } from 'node:http'
+import { createServer, type IncomingMessage, type ServerResponse } from 'node:http'
 import { readFile, readdir } from 'node:fs/promises'
 import path from 'node:path'
 import { loadEnvConfig } from '@next/env'
@@ -24,6 +24,13 @@ function sendJson(res: ServerResponse, status: number, body: unknown) {
   res.setHeader('Content-Type', 'application/json')
   res.setHeader('Cache-Control', 'no-store')
   res.end(JSON.stringify(body))
+}
+
+function isAuthorizedRequest(req: IncomingMessage): boolean {
+  const expected = process.env.LOGIN_KEY
+  if (!expected) return true
+  const loginKey = req.headers['x-login-key']
+  return typeof loginKey === 'string' && loginKey === expected
 }
 
 function csvEscape(value: string | number): string {
@@ -95,6 +102,10 @@ app.prepare().then(async () => {
   const httpServer = createServer(async (req, res) => {
     const url = new URL(req.url ?? '/', `http://${req.headers.host ?? 'localhost'}`)
     if (url.pathname === '/api/active-room' && req.method === 'GET') {
+      if (!isAuthorizedRequest(req)) {
+        sendJson(res, 401, { error: 'Unauthorized' })
+        return
+      }
       const room = manager.firstRoomSummary()
       sendJson(res, 200, { pin: room?.pin ?? null, room })
       return

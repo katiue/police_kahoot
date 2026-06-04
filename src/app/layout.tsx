@@ -17,8 +17,8 @@ const spaceGrotesk = localFont({
 })
 
 export const metadata: Metadata = {
-  title: 'Rung Chuông Vàng',
-  description: 'Mini Game Rung Chuông Vàng',
+  title: 'SINH VIÊN THỜI ĐẠI SỐ',
+  description: 'Mini Game SINH VIÊN THỜI ĐẠI SỐ',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

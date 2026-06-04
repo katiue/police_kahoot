@@ -561,7 +561,7 @@ export default function PlayRoomPage({ params }: { params: Promise<{ pin: string
                     />
                     <p className="text-xs text-[var(--muted-foreground)] mt-2">Chờ host sang câu tiếp…</p>
                   </>
-                ) : (
+                ) : result.you?.correct ? (
                   /* ── Normal mode: correct ── */
                   <>
                     <motion.div
@@ -577,6 +577,29 @@ export default function PlayRoomPage({ params }: { params: Promise<{ pin: string
                     <p className="text-3xl font-bold text-emerald-400 tracking-tight">Chính xác!</p>
                     <p className="text-sm text-[var(--muted-foreground)]">Bạn tiếp tục vào vòng sau.</p>
                     <p className="text-xs text-[var(--muted-foreground)] opacity-60">Chờ host sang câu tiếp…</p>
+                  </>
+                ) : (
+                  /* ── Normal mode: no correct answer, but the room kept everyone alive ── */
+                  <>
+                    <motion.div
+                      initial={{ scale: 0.9, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ type: 'spring', stiffness: 350, damping: 22 }}
+                      className="w-full rounded-2xl border border-amber-400/30 bg-amber-400/8 px-8 py-7"
+                    >
+                      <XCircle className="mx-auto mb-3 size-14 text-amber-300" />
+                      <p className="text-2xl font-bold text-amber-300">
+                        {result.you?.answered ? 'Chưa chính xác' : 'Hết giờ'}
+                      </p>
+                      <p className="mt-2 text-sm text-amber-100/70">
+                        {result.you?.answered
+                          ? 'Bạn đã trả lời sai.'
+                          : 'Bạn chưa chọn đáp án nên không được tính đúng.'}
+                      </p>
+                    </motion.div>
+                    <p className="text-sm text-[var(--muted-foreground)]">
+                      Vòng chơi vẫn tiếp tục, chờ host sang câu tiếp.
+                    </p>
                   </>
                 )}
               </motion.div>

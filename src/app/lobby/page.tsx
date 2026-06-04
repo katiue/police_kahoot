@@ -9,22 +9,23 @@ import { AnswerGrid } from '@/components/game/AnswerGrid'
 import { PlayerAvatar } from '@/components/game/PlayerAvatar'
 import { PlayerCount } from '@/components/game/PlayerCount'
 import { ErrorBoundary } from '@/components/game/ErrorBoundary'
+import { HostAuthCard, HOST_LOGIN_STORAGE_KEY } from '@/components/auth/HostAuthCard'
 import { getSocket } from '@/lib/socket-client'
-import { formatPin } from '@/lib/utils'
 import type {
     GameStatus,
     PlayerView,
     ProjectorSnapshot,
     PublicQuestion,
     QuestionResult,
+    LeaderboardEntry,
 } from '@/types/events'
-import { Trophy, Users, ShieldOff } from 'lucide-react'
+import { Trophy, Users, ShieldOff, Zap } from 'lucide-react'
 
 const MARQUEE_ITEMS = [
     'CỤC AN NINH MẠNG',
     'ANTI-SCAM',
     'DIGITAL TRUST',
-    'RUNG CHUÔNG VÀNG',
+    'SINH VIÊN THỜI ĐẠI SỐ',
     'EVENT EDITION',
     'ONLINE SAFETY',
     'CYBER AWARENESS',
@@ -45,19 +46,61 @@ function ProjectorView() {
     const [result, setResult] = useState<QuestionResult | null>(null)
     const [survivors, setSurvivors] = useState<PlayerView[]>([])
     const [eliminated, setEliminated] = useState<PlayerView[]>([])
+    const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([])
+    const [kahootMode, setKahootMode] = useState(false)
     const [progress, setProgress] = useState({ answered: 0, total: 0 })
     const [connectionLost, setConnectionLost] = useState(false)
     const [isMounted, setIsMounted] = useState(false)
+    const [authOk, setAuthOk] = useState(false)
+    const [authBusy, setAuthBusy] = useState(true)
+    const [authError, setAuthError] = useState('')
+    const [loginKey, setLoginKey] = useState('')
     const subscribedPin = useRef<string>('')
 
-    // Resolve PIN: URL param first, else /api/active-room
     useEffect(() => {
         setIsMounted(true)
+        setJoinUrl(`${window.location.origin}/play`)
+        const saved = sessionStorage.getItem(HOST_LOGIN_STORAGE_KEY) ?? ''
+        setLoginKey(saved)
+        getSocket().emit('host:auth', { loginKey: saved }, (res) => {
+            setAuthBusy(false)
+            if (res.ok) {
+                sessionStorage.setItem(HOST_LOGIN_STORAGE_KEY, saved)
+                setAuthOk(true)
+            } else {
+                if (saved) sessionStorage.removeItem(HOST_LOGIN_STORAGE_KEY)
+                setAuthOk(false)
+            }
+        })
+    }, [])
+
+    function authenticate() {
+        setAuthBusy(true)
+        setAuthError('')
+        getSocket().emit('host:auth', { loginKey }, (res) => {
+            setAuthBusy(false)
+            if (res.ok) {
+                sessionStorage.setItem(HOST_LOGIN_STORAGE_KEY, loginKey)
+                setAuthOk(true)
+            } else {
+                sessionStorage.removeItem(HOST_LOGIN_STORAGE_KEY)
+                setAuthOk(false)
+                setAuthError('LOGIN_KEY không đúng')
+            }
+        })
+    }
+
+    // Resolve PIN after projector auth: URL param first, else /api/active-room.
+    useEffect(() => {
+        if (!authOk) return
         if (urlPin) {
             setPin(urlPin)
             return
         }
-        fetch('/api/active-room', { cache: 'no-store' })
+        fetch('/api/active-room', {
+            cache: 'no-store',
+            headers: { 'x-login-key': sessionStorage.getItem(HOST_LOGIN_STORAGE_KEY) ?? loginKey },
+        })
             .then((r) => r.json())
             .then((d: { pin?: string | null }) => {
                 if (d?.pin) setPin(String(d.pin).toUpperCase())
@@ -65,21 +108,16 @@ function ProjectorView() {
             .catch(() => {
                 /* no-op — projector keeps showing standby until a PIN resolves */
             })
-    }, [urlPin])
-
-    // Build the player join URL when we have a PIN
-    useEffect(() => {
-        if (pin) setJoinUrl(`${window.location.origin}/play?pin=${pin}`)
-    }, [pin])
+    }, [authOk, loginKey, urlPin])
 
     // Subscribe to the room as a projector and follow events
     useEffect(() => {
-        if (!pin) return
+        if (!pin || !authOk) return
         const socket = getSocket()
 
         const subscribe = () => {
             subscribedPin.current = pin
-            socket.emit('projector:join', { pin }, (res) => {
+            socket.emit('projector:join', { pin, loginKey: sessionStorage.getItem(HOST_LOGIN_STORAGE_KEY) ?? loginKey }, (res) => {
                 if (!res.ok || !res.state) return
                 applySnapshot(res.state)
             })
@@ -88,6 +126,8 @@ function ProjectorView() {
         const applySnapshot = (snap: ProjectorSnapshot) => {
             setStatus(snap.status)
             setPlayers(snap.players)
+            setKahootMode(snap.kahootMode ?? false)
+            setLeaderboard(snap.leaderboard ?? [])
             setProgress({ answered: 0, total: snap.players.filter((p) => !p.eliminated).length })
             if (snap.question) setQuestion(snap.question)
             if (snap.result) setResult(snap.result)
@@ -109,6 +149,7 @@ function ProjectorView() {
         const onQuestion = (q: PublicQuestion) => {
             setQuestion(q)
             setResult(null)
+            setKahootMode(!!q.kahootRound)
             setProgress({ answered: 0, total: players.filter((p) => !p.eliminated).length })
             setStatus('question')
         }
@@ -124,6 +165,9 @@ function ProjectorView() {
             setEliminated(o.eliminated)
             setStatus('ended')
         }
+        const onLeaderboard = (p: { entries: LeaderboardEntry[] }) => {
+            setLeaderboard(p.entries)
+        }
 
         if (socket.connected) subscribe()
         socket.on('connect', onConnect)
@@ -132,6 +176,7 @@ function ProjectorView() {
         socket.on('game:question', onQuestion)
         socket.on('question:progress', onProgress)
         socket.on('question:result', onResult)
+        socket.on('leaderboard:update', onLeaderboard)
         socket.on('game:over', onOver)
 
         return () => {
@@ -141,20 +186,34 @@ function ProjectorView() {
             socket.off('game:question', onQuestion)
             socket.off('question:progress', onProgress)
             socket.off('question:result', onResult)
+            socket.off('leaderboard:update', onLeaderboard)
             socket.off('game:over', onOver)
         }
         // We deliberately don't depend on `players` here — the handler reads from
         // the latest closure each event tick; depending on it would re-subscribe
         // on every player join and break the room subscription.
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [pin])
+    }, [authOk, loginKey, pin])
 
     const activePlayers = players.filter((p) => !p.eliminated)
     const visibleLobby = players.slice(0, LOBBY_AVATAR_CAP)
     const hiddenLobby = players.length - visibleLobby.length
+    const topLeaders = leaderboard.slice(0, 3)
 
     return (
         <div className="lobby-root fixed inset-0 flex select-none flex-col overflow-hidden bg-background text-foreground">
+            {!authOk && (
+                <HostAuthCard
+                    loginKey={loginKey}
+                    busy={authBusy}
+                    error={authError}
+                    onChange={(value) => {
+                        setLoginKey(value)
+                        setAuthError('')
+                    }}
+                    onSubmit={authenticate}
+                />
+            )}
             <div className="bg-glow pointer-events-none absolute inset-0 z-0" />
             <div className="grid-bg pointer-events-none absolute inset-0 z-0 opacity-80" />
 
@@ -175,14 +234,14 @@ function ProjectorView() {
                             {`CỤC AN NINH MẠNG VÀ PHÒNG, CHỐNG\nTỘI PHẠM SỬ DỤNG CÔNG NGHỆ CAO`}
                         </p>
                     </div>
-                    {pin && (
+                    {authOk && pin && (
                         <span className="hidden items-center gap-2 text-[10px] font-medium uppercase tracking-[0.25em] text-muted-foreground sm:inline-flex">
                             <motion.span
                                 className="size-1.5 rounded-full bg-accent"
                                 animate={{ opacity: [0.3, 1, 0.3] }}
                                 transition={{ duration: 1.6, repeat: Infinity }}
                             />
-                            Projector · PIN {formatPin(pin)}
+                            Projector online
                         </span>
                     )}
                 </div>
@@ -225,7 +284,7 @@ function ProjectorView() {
                     ))}
 
                 <AnimatePresence mode="wait">
-                    {/* ── Lobby: PIN + QR + player roster ── */}
+                    {/* ── Lobby: QR + player roster ── */}
                     {status === 'lobby' && (
                         <motion.div
                             key="lobby"
@@ -236,25 +295,24 @@ function ProjectorView() {
                             className="relative z-10 flex flex-1 flex-col items-center justify-center gap-6 px-8 text-center"
                         >
                             <p className="text-[11px] uppercase tracking-[0.3em] text-muted-foreground">
-                                Quét QR · nhập PIN · trả lời đúng để sống sót
+                                Quét QR · nhập passcode đã nhận · trả lời đúng để sống sót
                             </p>
                             <h1 className="text-display text-[6vw] font-bold neon-text-white leading-none">
-                                RUNG CHUÔNG{' '}
-                                <span className="text-accent neon-text-cyan font-light italic">VÀNG</span>
+                                SINH VIÊN{' '}
+                                <span className="text-accent neon-text-cyan font-light italic">THỜI ĐẠI SỐ</span>
                             </h1>
 
                             {pin ? (
                                 <div className="flex flex-col items-center gap-4">
-                                    <span className="text-xs uppercase tracking-[0.3em] text-muted-foreground">Game PIN</span>
-                                    <span className="pin-display font-bold text-accent neon-text-cyan text-[14vw] sm:text-[12vw] lg:text-[10rem] leading-none">
-                                        {formatPin(pin)}
-                                    </span>
                                     {joinUrl && (
                                         <div className="flex items-center gap-6">
                                             <QrPanel joinUrl={joinUrl} size={180} />
                                             <div className="text-left">
                                                 <p className="text-xs uppercase tracking-widest text-muted-foreground">Vào chơi tại</p>
                                                 <p className="text-display text-2xl font-bold">{joinUrl.replace(/^https?:\/\//, '')}</p>
+                                                <p className="mt-2 max-w-sm text-sm text-muted-foreground">
+                                                    Nhập passcode ban tổ chức đã gửi trước để vào phòng.
+                                                </p>
                                             </div>
                                         </div>
                                     )}
@@ -319,7 +377,7 @@ function ProjectorView() {
                         </motion.div>
                     )}
 
-                    {/* ── Result: reveal + survivors ── */}
+                    {/* ── Result: reveal + audience scoreboard ── */}
                     {status === 'result' && result && question && (
                         <motion.div
                             key={`r-${result.questionIndex}`}
@@ -329,27 +387,112 @@ function ProjectorView() {
                             transition={{ duration: 0.45, ease: [0.32, 0.72, 0, 1] }}
                             className="relative z-10 flex flex-1 flex-col gap-6 px-12 py-8"
                         >
+                            <div className="flex items-center justify-between gap-4">
+                                <span className="inline-flex items-center gap-2 rounded-full border border-yellow-400/30 bg-yellow-400/10 px-4 py-1.5 text-sm font-bold text-yellow-300">
+                                    {question.kahootRound || kahootMode ? (
+                                        <>
+                                            <Zap className="size-4" />
+                                            Kahoot {question.kahootRound?.questionIndex ?? result.questionIndex + 1}/
+                                            {question.kahootRound?.totalQuestions ?? 5} - Kết quả
+                                        </>
+                                    ) : (
+                                        <>Kết quả câu {question.index + 1}</>
+                                    )}
+                                </span>
+                                <span className="text-xs font-semibold uppercase tracking-[0.25em] text-muted-foreground">
+                                    Đáp án đã được công bố
+                                </span>
+                            </div>
+
                             <h2 className="text-display text-center text-[2.6vw] font-bold leading-tight">
                                 {question.text}
                             </h2>
+
                             <AnswerGrid
                                 answers={question.answers}
                                 mode="reveal"
                                 correctId={result.correctAnswerId}
                                 counts={result.counts}
                             />
-                            <div className="flex items-center justify-center gap-12 pt-2 text-sm">
-                                <span className="flex items-center gap-2 text-emerald-400 font-bold">
-                                    <span className="size-2 rounded-full bg-emerald-400" />
-                                    {activePlayers.length} còn lại
-                                </span>
-                                {result.eliminatedIds.length > 0 && (
-                                    <span className="flex items-center gap-2 text-red-400">
-                                        <ShieldOff className="size-4" />
-                                        {result.eliminatedIds.length} bị loại
-                                    </span>
-                                )}
-                            </div>
+
+                            {(() => {
+                                const totalAnswers = Object.values(result.counts).reduce((sum, count) => sum + count, 0)
+                                const correctCount = result.counts[result.correctAnswerId] ?? 0
+                                const wrongCount = totalAnswers - correctCount
+                                const correctPct = totalAnswers > 0 ? (correctCount / totalAnswers) * 100 : 0
+                                const showKahootPodium = (question.kahootRound || kahootMode) && topLeaders.length > 0
+
+                                return (
+                                    <div className="flex flex-col gap-5">
+                                        <div className="flex items-center gap-4 rounded-xl border border-white/10 bg-white/5 px-5 py-4">
+                                            <div className="flex min-w-24 items-center gap-2 text-emerald-400">
+                                                <span className="size-2 rounded-full bg-emerald-400" />
+                                                <span className="text-sm font-bold">{correctCount} đúng</span>
+                                            </div>
+                                            <div className="h-2 flex-1 overflow-hidden rounded-full bg-white/10">
+                                                <motion.div
+                                                    initial={{ width: 0 }}
+                                                    animate={{ width: `${correctPct}%` }}
+                                                    transition={{ duration: 0.65, ease: [0.32, 0.72, 0, 1] }}
+                                                    className="h-full rounded-full bg-emerald-400"
+                                                />
+                                            </div>
+                                            <div className="flex min-w-24 items-center justify-end gap-2 text-red-400">
+                                                <span className="text-sm font-bold">{wrongCount} sai</span>
+                                                <span className="size-2 rounded-full bg-red-400" />
+                                            </div>
+                                        </div>
+
+                                        {showKahootPodium ? (
+                                            <div className="grid gap-3 md:grid-cols-3">
+                                                {topLeaders.map((entry, index) => (
+                                                    <motion.div
+                                                        key={entry.id}
+                                                        initial={{ opacity: 0, y: 14, scale: 0.94 }}
+                                                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                                                        transition={{ delay: index * 0.08, type: 'spring', stiffness: 360, damping: 28 }}
+                                                        className={[
+                                                            'flex min-h-36 flex-col items-center justify-center gap-2 rounded-xl border px-4 py-4 text-center',
+                                                            index === 0
+                                                                ? 'border-yellow-400/35 bg-yellow-400/10'
+                                                                : index === 1
+                                                                    ? 'border-slate-300/25 bg-slate-300/8'
+                                                                    : 'border-amber-500/25 bg-amber-500/8',
+                                                        ].join(' ')}
+                                                    >
+                                                        <span className="text-xs font-bold uppercase tracking-[0.22em] text-muted-foreground">
+                                                            Hạng {entry.rank}
+                                                        </span>
+                                                        <PlayerAvatar nickname={entry.nickname} size={index === 0 ? 'lg' : 'md'} pulse={index === 0} />
+                                                        <span className={index === 0 ? 'font-bold text-yellow-300' : 'font-bold text-white'}>
+                                                            {entry.nickname}
+                                                        </span>
+                                                        <span className="font-mono text-sm text-white/70">{entry.score.toLocaleString()} pts</span>
+                                                        {entry.delta > 0 && (
+                                                            <span className="rounded-full bg-emerald-400/15 px-3 py-1 text-xs font-bold text-emerald-400">
+                                                                +{entry.delta.toLocaleString()}
+                                                            </span>
+                                                        )}
+                                                    </motion.div>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <div className="flex items-center justify-center gap-12 text-sm">
+                                                <span className="flex items-center gap-2 text-emerald-400 font-bold">
+                                                    <span className="size-2 rounded-full bg-emerald-400" />
+                                                    {activePlayers.length} còn lại
+                                                </span>
+                                                {result.eliminatedIds.length > 0 && (
+                                                    <span className="flex items-center gap-2 text-red-400">
+                                                        <ShieldOff className="size-4" />
+                                                        {result.eliminatedIds.length} bị loại
+                                                    </span>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
+                                )
+                            })()}
                         </motion.div>
                     )}
 

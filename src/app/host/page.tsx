@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { HostAuthCard, HOST_LOGIN_STORAGE_KEY } from '@/components/auth/HostAuthCard'
 import { getSocket } from '@/lib/socket-client'
 import { parseQuiz } from '@/lib/quiz'
-import type { Quiz, QuizDifficulty, QuizQuestion } from '@/types/events'
+import type { QuestionOrderMode, Quiz } from '@/types/events'
 import {
   AlertTriangle,
   ArrowLeft,
@@ -35,95 +35,6 @@ interface QuizOption {
 }
 
 const EVENT_QUESTIONSET_ID = '__event_questionset__'
-const DIFFICULTIES: QuizDifficulty[] = ['easy', 'medium', 'hard']
-
-function shuffle<T>(items: T[]): T[] {
-  const copy = [...items]
-  for (let i = copy.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(Math.random() * (i + 1))
-    ;[copy[i], copy[j]] = [copy[j], copy[i]]
-  }
-  return copy
-}
-
-function slotsFromWeights(
-  total: number,
-  weights: Array<{ difficulty: QuizDifficulty; weight: number }>
-): QuizDifficulty[] {
-  const base = weights.map((entry, index) => {
-    const exact = total * entry.weight
-    return {
-      ...entry,
-      index,
-      count: Math.floor(exact),
-      remainder: exact - Math.floor(exact),
-    }
-  })
-  let assigned = base.reduce((sum, entry) => sum + entry.count, 0)
-  const byRemainder = [...base].sort(
-    (a, b) => b.remainder - a.remainder || a.index - b.index
-  )
-
-  for (const entry of byRemainder) {
-    if (assigned >= total) break
-    entry.count += 1
-    assigned += 1
-  }
-
-  return shuffle(base.flatMap((entry) => Array(entry.count).fill(entry.difficulty)))
-}
-
-function buildDifficultyRampDeck(questions: QuizQuestion[]): QuizQuestion[] {
-  const pools = DIFFICULTIES.reduce(
-    (acc, difficulty) => {
-      acc[difficulty] = shuffle(questions.filter((question) => question.difficulty === difficulty))
-      return acc
-    },
-    {} as Record<QuizDifficulty, QuizQuestion[]>
-  )
-
-  const deck: QuizQuestion[] = []
-  const remainingCount = () => DIFFICULTIES.reduce((sum, difficulty) => sum + pools[difficulty].length, 0)
-  const fallbackByDifficulty: Record<QuizDifficulty, QuizDifficulty[]> = {
-    easy: ['easy', 'medium', 'hard'],
-    medium: ['medium', 'easy', 'hard'],
-    hard: ['hard', 'medium', 'easy'],
-  }
-  const take = (difficulty: QuizDifficulty) => {
-    for (const candidate of fallbackByDifficulty[difficulty]) {
-      const question = pools[candidate].pop()
-      if (question) return question
-    }
-    return null
-  }
-  const appendPhase = (
-    size: number,
-    weights: Array<{ difficulty: QuizDifficulty; weight: number }>
-  ) => {
-    const phaseSize = Math.min(size, remainingCount())
-    for (const difficulty of slotsFromWeights(phaseSize, weights)) {
-      const question = take(difficulty)
-      if (question) deck.push(question)
-    }
-  }
-
-  appendPhase(5, [{ difficulty: 'easy', weight: 1 }])
-  appendPhase(10, [
-    { difficulty: 'easy', weight: 0.4 },
-    { difficulty: 'medium', weight: 0.6 },
-  ])
-  appendPhase(10, [
-    { difficulty: 'easy', weight: 0.2 },
-    { difficulty: 'medium', weight: 0.5 },
-    { difficulty: 'hard', weight: 0.3 },
-  ])
-  appendPhase(remainingCount(), [
-    { difficulty: 'hard', weight: 0.7 },
-    { difficulty: 'medium', weight: 0.3 },
-  ])
-
-  return deck
-}
 
 export default function HostCreatePage() {
   const router = useRouter()
@@ -152,7 +63,7 @@ export default function HostCreatePage() {
       if (res.ok) {
         setAuthOk(true)
         sessionStorage.setItem(HOST_LOGIN_STORAGE_KEY, saved)
-        checkActiveRoom()
+        checkActiveRoom(saved)
         loadEventQuestionSet()
       } else {
         if (saved) sessionStorage.removeItem(HOST_LOGIN_STORAGE_KEY)
@@ -162,11 +73,11 @@ export default function HostCreatePage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  function checkActiveRoom() {
+  function checkActiveRoom(key = sessionStorage.getItem(HOST_LOGIN_STORAGE_KEY) ?? '') {
     const forceNew = new URLSearchParams(window.location.search).get('new') === '1'
     if (forceNew) return
     setCheckingActive(true)
-    fetch('/api/active-room', { cache: 'no-store' })
+    fetch('/api/active-room', { cache: 'no-store', headers: { 'x-login-key': key } })
       .then((r) => r.json())
       .then((d: { pin?: string | null }) => {
         if (d?.pin) router.replace(`/host/${d.pin}`)
@@ -204,7 +115,7 @@ export default function HostCreatePage() {
 
       const merged: Quiz = {
         title: 'Bộ câu hỏi sự kiện - Police Quiz 2026',
-        questions: buildDifficultyRampDeck(questions),
+        questions,
       }
       const mergedOption: QuizOption = {
         file: EVENT_QUESTIONSET_ID,
@@ -237,7 +148,7 @@ export default function HostCreatePage() {
       if (res.ok) {
         sessionStorage.setItem(HOST_LOGIN_STORAGE_KEY, loginKey)
         setAuthOk(true)
-        checkActiveRoom()
+        checkActiveRoom(loginKey)
         loadEventQuestionSet()
       } else {
         sessionStorage.removeItem(HOST_LOGIN_STORAGE_KEY)
@@ -252,8 +163,9 @@ export default function HostCreatePage() {
     if (selectedQuiz === EVENT_QUESTIONSET_ID) {
       const quiz = eventQuestionSet ?? await loadEventQuestionSet()
       if (!quiz) return
+      const questionOrderMode: QuestionOrderMode = randomizeQuestions ? 'difficulty_ramp' : 'fixed'
       setBusy(true)
-      getSocket().emit('host:create', { quiz, minPlayersToEnd, maxPlayers, timeLimitSec, randomizeQuestions, randomizeAnswers, loginKey, kahootThreshold }, (res) => {
+      getSocket().emit('host:create', { quiz, minPlayersToEnd, maxPlayers, timeLimitSec, randomizeQuestions, randomizeAnswers, questionOrderMode, loginKey, kahootThreshold }, (res) => {
         setBusy(false)
         if (res.ok && res.pin) {
           sessionStorage.setItem(HOST_LOGIN_STORAGE_KEY, loginKey)
@@ -277,6 +189,7 @@ export default function HostCreatePage() {
       if (!quizRes.ok) throw new Error(`Không tải được quiz (${quizRes.status})`)
       const quiz = parseQuiz(await quizRes.json())
       const socket = getSocket()
+      const questionOrderMode: QuestionOrderMode = randomizeQuestions ? 'difficulty_ramp' : 'fixed'
       socket.emit('host:create', {
         quiz,
         minPlayersToEnd,
@@ -284,6 +197,7 @@ export default function HostCreatePage() {
         timeLimitSec,
         randomizeQuestions,
         randomizeAnswers,
+        questionOrderMode,
         loginKey,
         kahootThreshold,
       }, (res) => {
@@ -489,9 +403,14 @@ export default function HostCreatePage() {
                     />
                     <span className="text-xs font-semibold text-foreground/95 group-hover:text-accent transition-colors flex items-center gap-1.5">
                       <Shuffle className="size-3.5" />
-                      Tráo ngẫu nhiên câu hỏi
+                      Tráo câu hỏi trong đúng phase
                     </span>
                   </label>
+                  {randomizeQuestions && (
+                    <span className="text-[10px] text-muted-foreground">
+                      Giữ flow độ khó: 1-5 easy, 6-15 easy/medium, 16-25 easy/medium/hard.
+                    </span>
+                  )}
 
                   <label className="flex items-center gap-2.5 cursor-pointer group">
                     <input

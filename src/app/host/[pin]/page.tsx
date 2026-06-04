@@ -139,7 +139,7 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
 
   useEffect(() => {
     setIsMounted(true)
-    setJoinUrl(`${window.location.origin}/play?pin=${pin}`)
+    setJoinUrl(`${window.location.origin}/play`)
     const savedLoginKey = sessionStorage.getItem(HOST_LOGIN_STORAGE_KEY) ?? ''
     setLoginKey(savedLoginKey)
     const socket = getSocket()
@@ -435,7 +435,7 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
                   <LobbyHero pin={pin} joinUrl={joinUrl} showQr />
 
                   <a
-                    href={`/lobby?pin=${pin}`}
+                    href="/lobby"
                     target="_blank"
                     rel="noreferrer"
                     className={cn(buttonVariants({ variant: 'outline', size: 'lg' }), 'gap-2')}

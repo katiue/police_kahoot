@@ -66,11 +66,11 @@ export default function HostCheckPage() {
   const [origin, setOrigin] = useState('')
 
   const projectorUrl = useMemo(
-    () => (origin && room ? `${origin}/lobby?pin=${room.pin}` : ''),
+    () => (origin && room ? `${origin}/lobby` : ''),
     [origin, room]
   )
   const playerUrl = useMemo(
-    () => (origin && room ? `${origin}/play?pin=${room.pin}` : ''),
+    () => (origin && room ? `${origin}/play` : ''),
     [origin, room]
   )
 
@@ -102,7 +102,10 @@ export default function HostCheckPage() {
   }, [])
 
   function refresh() {
-    fetch('/api/active-room', { cache: 'no-store' })
+    fetch('/api/active-room', {
+      cache: 'no-store',
+      headers: { 'x-login-key': sessionStorage.getItem(HOST_LOGIN_STORAGE_KEY) ?? loginKey },
+    })
       .then((r) => r.json())
       .then((d: { room?: ActiveRoom | null }) => setRoom(d.room ?? null))
       .catch(() => setRoom(null))

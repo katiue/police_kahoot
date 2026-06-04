@@ -1,6 +1,6 @@
-# Rung Chuông Vàng — Realtime Quiz
+# SINH VIÊN THỜI ĐẠI SỐ — Realtime Quiz
 
-Realtime Kahoot-style elimination quiz for events ("Rung Chuông Vàng" — internal codename: Police Kahoot). Host loads a quiz (JSON), opens a room (PIN + QR), players join on their phones and answer live. Server-authoritative timing + correctness; last player(s) standing win.
+Realtime Kahoot-style elimination quiz for events ("SINH VIÊN THỜI ĐẠI SỐ" — internal codename: Police Kahoot). Host loads a quiz (JSON), opens a room (PIN + QR), players join on their phones and answer live. Server-authoritative timing + correctness; last player(s) standing win.
 
 Theme: **Chống Lừa Đảo** cybersecurity (dark navy + neon cyan, Space Grotesk) — design reused from CLD-minigame.
 

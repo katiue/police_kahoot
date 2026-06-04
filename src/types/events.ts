@@ -5,6 +5,7 @@
 
 export type GameStatus = 'lobby' | 'question' | 'result' | 'kahoot' | 'ended'
 export type QuizDifficulty = 'easy' | 'medium' | 'hard'
+export type QuestionOrderMode = 'fixed' | 'full_random' | 'difficulty_ramp'
 
 /**
  * Quiz as loaded from JSON.
@@ -91,6 +92,7 @@ export interface ClientToServerEvents {
       timeLimitSec?: number | null
       randomizeQuestions?: boolean
       randomizeAnswers?: boolean
+      questionOrderMode?: QuestionOrderMode
       loginKey?: string
       /** Players ≤ this number triggers the Kahoot speed-round. 0 = disabled. */
       kahootThreshold?: number
@@ -120,7 +122,7 @@ export interface ClientToServerEvents {
 
   /** Read-only audience view of a room. */
   'projector:join': (
-    payload: { pin: string },
+    payload: { pin: string; loginKey?: string },
     ack: (res: { ok: boolean; state?: ProjectorSnapshot; error?: string }) => void
   ) => void
 }
@@ -158,6 +160,7 @@ export interface HostSnapshot {
   timeLimitSec?: number | null
   randomizeQuestions?: boolean
   randomizeAnswers?: boolean
+  questionOrderMode?: QuestionOrderMode
   kahootThreshold?: number
   kahootMode?: boolean
   leaderboard?: LeaderboardEntry[]
@@ -182,6 +185,7 @@ export interface ProjectorSnapshot {
   timeLimitSec?: number | null
   randomizeQuestions?: boolean
   randomizeAnswers?: boolean
+  questionOrderMode?: QuestionOrderMode
   kahootThreshold?: number
   kahootMode?: boolean
   leaderboard?: LeaderboardEntry[]

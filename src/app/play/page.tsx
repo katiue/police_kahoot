@@ -27,18 +27,7 @@ function JoinForm() {
         const p = search.get('pin')
         if (p) {
             setPin(p.replace(/[^A-Za-z0-9]/g, '').slice(0, 12).toUpperCase())
-            return
         }
-        // Single-room event mode: ask the server which PIN is live so the player
-        // doesn't have to type one in. Silent fail if no active room.
-        fetch('/api/active-room', { cache: 'no-store' })
-            .then((r) => r.json())
-            .then((d: { pin?: string | null }) => {
-                if (d?.pin) setPin(String(d.pin).toUpperCase())
-            })
-            .catch(() => {
-                /* no-op — fall back to manual entry */
-            })
     }, [search])
 
     // Auto-advance to nickname when PIN is filled in (auto-resolved or 6-digit typed)
@@ -156,7 +145,7 @@ function JoinForm() {
                 value={pin}
                 onChange={(e) => setPin(e.target.value.replace(/[^A-Za-z0-9]/g, '').toUpperCase().slice(0, 12))}
                 autoFocus={!pin}
-                placeholder="Game PIN"
+                placeholder="Passcode"
                 className="pin-display h-14 w-full rounded-xl border border-border bg-input/60 text-center text-2xl font-bold text-accent outline-none focus:border-accent/70 uppercase"
             />
             <input

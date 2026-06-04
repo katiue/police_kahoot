@@ -5,6 +5,7 @@ import type {
   Quiz,
   QuizQuestion,
   GameStatus,
+  QuestionOrderMode,
   PlayerView,
   PublicQuestion,
   ProjectorSnapshot,
@@ -12,6 +13,7 @@ import type {
   LeaderboardEntry,
 } from '@/types/events'
 import { checkNickname } from '@/lib/nickname'
+import { buildDifficultyRampDeck } from '@/lib/difficulty-ramp'
 
 type IO = Server<ClientToServerEvents, ServerToClientEvents>
 
@@ -76,6 +78,7 @@ interface Room {
   timeLimitSec: number | null
   randomizeQuestions: boolean
   randomizeAnswers: boolean
+  questionOrderMode: QuestionOrderMode
   /**
    * When active players drop to <= this threshold, switch to Kahoot speed-round.
    * 0 = disabled.
@@ -139,10 +142,16 @@ function shuffled<T>(items: T[]): T[] {
   return copy
 }
 
-function randomizeQuiz(quiz: Quiz, randomizeQuestions = true, randomizeAnswers = true): Quiz {
+function orderQuestions(quiz: Quiz, mode: QuestionOrderMode): QuizQuestion[] {
+  if (mode === 'difficulty_ramp') return buildDifficultyRampDeck(quiz.questions)
+  if (mode === 'full_random') return shuffled(quiz.questions)
+  return quiz.questions
+}
+
+function prepareQuiz(quiz: Quiz, questionOrderMode: QuestionOrderMode, randomizeAnswers = true): Quiz {
   return {
     ...quiz,
-    questions: (randomizeQuestions ? shuffled(quiz.questions) : quiz.questions).map((question) => ({
+    questions: orderQuestions(quiz, questionOrderMode).map((question) => ({
       ...question,
       answers: randomizeAnswers ? shuffled(question.answers) : question.answers,
     })),
@@ -201,6 +210,7 @@ export class RoomManager {
       timeLimitSec?: number | null
       randomizeQuestions?: boolean
       randomizeAnswers?: boolean
+      questionOrderMode?: QuestionOrderMode
       kahootThreshold?: number
     } = {},
     fixedPin?: string
@@ -224,12 +234,14 @@ export class RoomManager {
         : null
     const randomizeQuestions = options.randomizeQuestions !== false
     const randomizeAnswers = options.randomizeAnswers !== false
+    const questionOrderMode: QuestionOrderMode =
+      options.questionOrderMode ?? (randomizeQuestions ? 'full_random' : 'fixed')
     const kahootThreshold =
       typeof options.kahootThreshold === 'number' && options.kahootThreshold >= 0
         ? Math.round(options.kahootThreshold)
         : 10
 
-    const randomizedQuiz = randomizeQuiz(quiz, randomizeQuestions, randomizeAnswers)
+    const randomizedQuiz = prepareQuiz(quiz, questionOrderMode, randomizeAnswers)
     const kahootPool = pickKahootPool(quiz, KAHOOT_QUESTION_COUNT)
 
     this.rooms.set(pin, {
@@ -253,6 +265,7 @@ export class RoomManager {
       timeLimitSec,
       randomizeQuestions,
       randomizeAnswers,
+      questionOrderMode,
       kahootThreshold,
       kahootMode: false,
       kahootPool,
@@ -269,7 +282,7 @@ export class RoomManager {
     const room = this.rooms.get(pin)
     if (!room) return false
     this.clearTimer(room)
-    room.quiz = randomizeQuiz(room.sourceQuiz, room.randomizeQuestions, room.randomizeAnswers)
+    room.quiz = prepareQuiz(room.sourceQuiz, room.questionOrderMode, room.randomizeAnswers)
     room.kahootPool = pickKahootPool(room.sourceQuiz, KAHOOT_QUESTION_COUNT)
     room.status = 'lobby'
     room.questionIndex = -1
@@ -326,6 +339,7 @@ export class RoomManager {
       timeLimitSec: room.timeLimitSec,
       randomizeQuestions: room.randomizeQuestions,
       randomizeAnswers: room.randomizeAnswers,
+      questionOrderMode: room.questionOrderMode,
       kahootThreshold: room.kahootThreshold,
       kahootMode: room.kahootMode,
       leaderboard: room.lastLeaderboard ?? undefined,
@@ -333,6 +347,7 @@ export class RoomManager {
     if (room.status === 'question' && room.questionIndex >= 0) {
       snap.question = this.buildPublicQuestion(room)
     } else if (room.status === 'result' && room.lastResult) {
+      snap.question = this.buildPublicQuestion(room)
       snap.result = room.lastResult
     } else if (room.status === 'ended') {
       snap.ended = this.getPlayerSummary(room)
@@ -699,6 +714,7 @@ export class RoomManager {
     if (room.hostSocketId) {
       this.io.to(room.hostSocketId).emit('question:result', base)
     }
+    this.io.to(`projector:${room.pin}`).emit('question:result', base)
     // each player gets a personalized copy with points earned
     for (const p of room.players.values()) {
       if (!p.socketId) continue

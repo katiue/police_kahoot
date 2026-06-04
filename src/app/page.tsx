@@ -61,7 +61,7 @@ export default function HomePage() {
 
             {/* Giant Cyber Title */}
             <h1 className="cyber-title tech-render-title text-4xl font-extrabold tracking-wider text-balance leading-[1.1] md:text-6xl max-w-3xl mb-4">
-              RUNG CHUÔNG <span className="text-[var(--primary)] text-glow-real italic">VÀNG</span>
+              SINH VIÊN <span className="text-[var(--primary)] text-glow-real italic">THỜI ĐẠI SỐ</span>
             </h1>
 
             {/* Description */}
