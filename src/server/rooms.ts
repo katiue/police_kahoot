@@ -151,12 +151,24 @@ function randomizeQuiz(quiz: Quiz, randomizeQuestions = true, randomizeAnswers =
 
 /**
  * Pick N unique questions for the Kahoot pool.
- * Prefers questions NOT already in the main quiz shuffle to maximize variety,
- * but falls back to any question if the pool is small.
+ * Excludes questions already asked in the main round whenever enough unused
+ * questions remain, and only falls back to previously asked questions for tiny
+ * quiz banks.
  */
-function pickKahootPool(quiz: Quiz, count: number): QuizQuestion[] {
-  const all = shuffled(quiz.questions)
-  return all.slice(0, Math.min(count, all.length))
+function pickKahootPool(
+  quiz: Quiz,
+  count: number,
+  excludedQuestionIds = new Set<string>()
+): QuizQuestion[] {
+  const unused = quiz.questions.filter((question) => !excludedQuestionIds.has(question.id))
+  const pool = shuffled(unused).slice(0, count)
+  if (pool.length >= count) return pool
+
+  const selectedIds = new Set(pool.map((question) => question.id))
+  const fallback = shuffled(
+    quiz.questions.filter((question) => !selectedIds.has(question.id))
+  )
+  return [...pool, ...fallback].slice(0, Math.min(count, quiz.questions.length))
 }
 
 /**
@@ -779,8 +791,12 @@ export class RoomManager {
   private startKahootMode(room: Room): void {
     room.kahootMode = true
     room.kahootQuestionIndex = -1
-    // Refresh the kahoot pool with fresh random picks
-    room.kahootPool = pickKahootPool(room.sourceQuiz, KAHOOT_QUESTION_COUNT)
+    const askedQuestionIds = new Set(
+      room.quiz.questions
+        .slice(0, Math.max(room.questionIndex + 1, 0))
+        .map((question) => question.id)
+    )
+    room.kahootPool = pickKahootPool(room.sourceQuiz, KAHOOT_QUESTION_COUNT, askedQuestionIds)
     this.askKahootQuestion(room, 0)
   }
 
