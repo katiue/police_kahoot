@@ -153,7 +153,7 @@ export default function HostCreatePage() {
         setAuthOk(true)
         sessionStorage.setItem(HOST_LOGIN_STORAGE_KEY, saved)
         checkActiveRoom()
-        loadQuizzes()
+        loadEventQuestionSet()
       } else {
         if (saved) sessionStorage.removeItem(HOST_LOGIN_STORAGE_KEY)
         setAuthOk(false)
@@ -177,26 +177,7 @@ export default function HostCreatePage() {
       .finally(() => setCheckingActive(false))
   }
 
-  function loadQuizzes(showToast = false) {
-    setLoadingQuestionSet(true)
-    fetch('/api/quizzes', { cache: 'no-store' })
-      .then((r) => r.json())
-      .then((d: { quizzes?: QuizOption[] }) => {
-        const eventQuizzes = (d.quizzes ?? []).filter((q) => q.file !== 'sample.json')
-        const valid = eventQuizzes.filter((q) => !q.error)
-        setQuizzes(eventQuizzes)
-        if (!valid.some((q) => q.file === selectedQuiz)) {
-          setSelectedQuiz(valid[0]?.file ?? '')
-        }
-      })
-      .then(() => {
-        if (showToast) toast.success('Đã tải bộ câu hỏi sự kiện')
-      })
-      .catch(() => toast.error('Không tải được bộ câu hỏi sự kiện'))
-      .finally(() => setLoadingQuestionSet(false))
-  }
-
-  async function loadEventQuestionSet() {
+  async function loadEventQuestionSet(showToast = false): Promise<Quiz | null> {
     setLoadingQuestionSet(true)
     try {
       const listRes = await fetch('/api/quizzes', { cache: 'no-store' })
@@ -234,11 +215,15 @@ export default function HostCreatePage() {
       setEventQuestionSet(merged)
       setQuizzes([mergedOption, ...eventQuizzes])
       setSelectedQuiz(EVENT_QUESTIONSET_ID)
-      toast.success(
-        `Đã gộp ${eventQuizzes.length} bộ câu hỏi thành ${merged.questions.length} câu theo thang độ khó`
-      )
+      if (showToast) {
+        toast.success(
+          `Đã gộp ${eventQuizzes.length} bộ câu hỏi thành ${merged.questions.length} câu theo thang độ khó`
+        )
+      }
+      return merged
     } catch (e) {
       toast.error(e instanceof Error ? e.message : 'Không tải được bộ câu hỏi sự kiện')
+      return null
     } finally {
       setLoadingQuestionSet(false)
     }
@@ -253,7 +238,7 @@ export default function HostCreatePage() {
         sessionStorage.setItem(HOST_LOGIN_STORAGE_KEY, loginKey)
         setAuthOk(true)
         checkActiveRoom()
-        loadQuizzes()
+        loadEventQuestionSet()
       } else {
         sessionStorage.removeItem(HOST_LOGIN_STORAGE_KEY)
         setAuthOk(false)
@@ -265,9 +250,10 @@ export default function HostCreatePage() {
   async function create() {
     const chosen = quizzes.find((q) => q.file === selectedQuiz)
     if (selectedQuiz === EVENT_QUESTIONSET_ID) {
-      if (!eventQuestionSet) return toast.error('Bấm Tải bộ câu hỏi sự kiện trước')
+      const quiz = eventQuestionSet ?? await loadEventQuestionSet()
+      if (!quiz) return
       setBusy(true)
-      getSocket().emit('host:create', { quiz: eventQuestionSet, minPlayersToEnd, maxPlayers, timeLimitSec, randomizeQuestions, randomizeAnswers, loginKey, kahootThreshold }, (res) => {
+      getSocket().emit('host:create', { quiz, minPlayersToEnd, maxPlayers, timeLimitSec, randomizeQuestions, randomizeAnswers, loginKey, kahootThreshold }, (res) => {
         setBusy(false)
         if (res.ok && res.pin) {
           sessionStorage.setItem(HOST_LOGIN_STORAGE_KEY, loginKey)
@@ -372,7 +358,7 @@ export default function HostCreatePage() {
             <Button
               type="button"
               variant="outline"
-              onClick={loadEventQuestionSet}
+              onClick={() => loadEventQuestionSet(true)}
               disabled={!authOk || loadingQuestionSet}
               className="gap-2 self-start"
             >
