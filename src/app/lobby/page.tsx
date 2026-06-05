@@ -2,6 +2,7 @@
 import { Suspense, useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
+import { Backdrop } from '@/components/game/Backdrop'
 import { QrPanel } from '@/components/game/QrPanel'
 import { PoliceEmblem } from '@/components/game/PoliceEmblem'
 import { Timer } from '@/components/game/Timer'
@@ -22,13 +23,17 @@ import type {
 import { Trophy, Users, ShieldOff, Zap } from 'lucide-react'
 
 const MARQUEE_ITEMS = [
-    'CỤC AN NINH MẠNG',
-    'ANTI-SCAM',
-    'DIGITAL TRUST',
+    'BỨC TƯỜNG AN NINH MẠNG',
     'SINH VIÊN THỜI ĐẠI SỐ',
-    'EVENT EDITION',
-    'ONLINE SAFETY',
-    'CYBER AWARENESS',
+    'BỨC TƯỜNG AN NINH MẠNG',
+    'SINH VIÊN THỜI ĐẠI SỐ',
+]
+
+const MARQUEE_SEQUENCE = [
+    ...MARQUEE_ITEMS,
+    ...MARQUEE_ITEMS,
+    ...MARQUEE_ITEMS,
+    ...MARQUEE_ITEMS,
 ]
 
 /** Cap visible lobby avatars on the projector; large rooms show "+N" chip. */
@@ -50,7 +55,6 @@ function ProjectorView() {
     const [kahootMode, setKahootMode] = useState(false)
     const [progress, setProgress] = useState({ answered: 0, total: 0 })
     const [connectionLost, setConnectionLost] = useState(false)
-    const [isMounted, setIsMounted] = useState(false)
     const [authOk, setAuthOk] = useState(false)
     const [authBusy, setAuthBusy] = useState(true)
     const [authError, setAuthError] = useState('')
@@ -58,7 +62,6 @@ function ProjectorView() {
     const subscribedPin = useRef<string>('')
 
     useEffect(() => {
-        setIsMounted(true)
         setJoinUrl(`${window.location.origin}/play`)
         const saved = sessionStorage.getItem(HOST_LOGIN_STORAGE_KEY) ?? ''
         setLoginKey(saved)
@@ -201,7 +204,7 @@ function ProjectorView() {
     const topLeaders = leaderboard.slice(0, 3)
 
     return (
-        <div className="lobby-root fixed inset-0 flex select-none flex-col overflow-hidden bg-background text-foreground">
+        <Backdrop className="lobby-root fixed inset-0 min-h-0 select-none overflow-hidden">
             {!authOk && (
                 <HostAuthCard
                     loginKey={loginKey}
@@ -214,12 +217,10 @@ function ProjectorView() {
                     onSubmit={authenticate}
                 />
             )}
-            <div className="bg-glow pointer-events-none absolute inset-0 z-0" />
-            <div className="grid-bg pointer-events-none absolute inset-0 z-0 opacity-80" />
 
             {/* Top bar */}
             <header className="relative z-10 border-b border-[rgba(0,191,255,0.15)] bg-transparent backdrop-blur-sm">
-                <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-8 py-3">
+                <div className="relative mx-auto flex w-full max-w-7xl items-center justify-center px-8 py-4">
                     <div className="flex flex-col items-center gap-1.5 text-center">
                         <a
                             href="https://bocongan.gov.vn/"
@@ -228,14 +229,17 @@ function ProjectorView() {
                             aria-label="Cục An Ninh Mạng và Phòng, Chống Tội Phạm Sử Dụng Công Nghệ Cao"
                             className="inline-flex"
                         >
-                            <PoliceEmblem className="h-9 w-9 shrink-0" />
+                            <PoliceEmblem
+                                className="h-14 w-14 shrink-0"
+                                style={{ filter: 'drop-shadow(0 0 10px rgba(200,150,12,0.55))' }}
+                            />
                         </a>
-                        <p className="whitespace-pre-line text-center text-[0.48rem] font-medium leading-snug tracking-[0.08em] text-white">
+                        <p className="whitespace-pre-line text-center text-[0.56rem] font-medium leading-snug tracking-[0.08em] text-white">
                             {`CỤC AN NINH MẠNG VÀ PHÒNG, CHỐNG\nTỘI PHẠM SỬ DỤNG CÔNG NGHỆ CAO`}
                         </p>
                     </div>
                     {authOk && pin && (
-                        <span className="hidden items-center gap-2 text-[10px] font-medium uppercase tracking-[0.25em] text-muted-foreground sm:inline-flex">
+                        <span className="absolute right-8 top-1/2 hidden -translate-y-1/2 items-center gap-2 text-[10px] font-medium uppercase tracking-[0.25em] text-muted-foreground sm:inline-flex">
                             <motion.span
                                 className="size-1.5 rounded-full bg-accent"
                                 animate={{ opacity: [0.3, 1, 0.3] }}
@@ -264,25 +268,7 @@ function ProjectorView() {
             </AnimatePresence>
 
             {/* Body — full game state */}
-            <section className="relative z-10 flex flex-1 flex-col overflow-hidden">
-                {isMounted &&
-                    status === 'lobby' &&
-                    Array.from({ length: 18 }).map((_, i) => (
-                        <motion.div
-                            key={i}
-                            className={`pointer-events-none absolute rounded-full ${i % 4 === 0 ? 'bg-accent' : 'bg-primary'}`}
-                            style={{
-                                width: i % 3 === 0 ? 3 : 2,
-                                height: i % 3 === 0 ? 3 : 2,
-                                left: `${(i * 53 + 7) % 100}%`,
-                                top: `${(i * 37 + 11) % 100}%`,
-                                opacity: 0,
-                            }}
-                            animate={{ y: [0, -50, 0], opacity: [0, 0.6, 0] }}
-                            transition={{ duration: 3 + (i % 4), repeat: Infinity, delay: i * 0.25, ease: 'easeInOut' }}
-                        />
-                    ))}
-
+            <section className="relative z-10 flex min-h-0 flex-1 flex-col overflow-hidden">
                 <AnimatePresence mode="wait">
                     {/* ── Lobby: QR + player roster ── */}
                     {status === 'lobby' && (
@@ -292,12 +278,12 @@ function ProjectorView() {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -8 }}
                             transition={{ duration: 0.45, ease: [0.32, 0.72, 0, 1] }}
-                            className="relative z-10 flex flex-1 flex-col items-center justify-center gap-6 px-8 text-center"
+                            className="relative z-10 flex min-h-0 flex-1 flex-col items-center justify-center gap-[clamp(1rem,2.2vh,1.65rem)] px-10 py-[clamp(1rem,2.5vh,2rem)] text-center"
                         >
                             <p className="text-[11px] uppercase tracking-[0.3em] text-muted-foreground">
                                 Quét QR · nhập passcode đã nhận · trả lời đúng để sống sót
                             </p>
-                            <h1 className="text-display text-[6vw] font-bold neon-text-white leading-none">
+                            <h1 className="text-display whitespace-nowrap text-[clamp(4rem,5.2vw,7rem)] font-bold neon-text-white leading-[1.04]">
                                 SINH VIÊN{' '}
                                 <span className="text-accent neon-text-cyan font-light italic">THỜI ĐẠI SỐ</span>
                             </h1>
@@ -306,14 +292,14 @@ function ProjectorView() {
                                 <div className="flex flex-col items-center gap-4">
                                     {joinUrl && (
                                         <div className="flex items-center gap-6">
-                                            <QrPanel joinUrl={joinUrl} size={180} />
-                                            <div className="text-left">
+                                            <QrPanel joinUrl={joinUrl} size={190} />
+                                            {/* <div className="text-left">
                                                 <p className="text-xs uppercase tracking-widest text-muted-foreground">Vào chơi tại</p>
                                                 <p className="text-display text-2xl font-bold">{joinUrl.replace(/^https?:\/\//, '')}</p>
                                                 <p className="mt-2 max-w-sm text-sm text-muted-foreground">
                                                     Nhập passcode ban tổ chức đã gửi trước để vào phòng.
                                                 </p>
-                                            </div>
+                                            </div> */}
                                         </div>
                                     )}
                                 </div>
@@ -537,18 +523,26 @@ function ProjectorView() {
 
             {/* footer marquee */}
             <footer className="relative z-10 border-t border-[rgba(0,191,255,0.15)] bg-transparent backdrop-blur-sm">
-                <div className="relative overflow-hidden py-3">
-                    <div className="animate-marquee flex w-max gap-8 text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground">
-                        {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map((item, i) => (
-                            <span key={i} className="flex shrink-0 items-center gap-8">
-                                {item}
-                                <span className="size-1 rounded-full bg-accent" style={{ boxShadow: '0 0 6px rgba(0,212,255,0.85)' }} />
-                            </span>
+                <div className="relative overflow-hidden py-2.5">
+                    <div className="animate-marquee flex w-max text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground">
+                        {[0, 1].map((group) => (
+                            <div
+                                key={group}
+                                aria-hidden={group === 1}
+                                className="flex shrink-0 items-center gap-10 pr-10"
+                            >
+                                {MARQUEE_SEQUENCE.map((item, i) => (
+                                    <span key={`${group}-${i}`} className="flex shrink-0 items-center gap-10">
+                                        {item}
+                                        <span className="size-1 rounded-full bg-accent" style={{ boxShadow: '0 0 6px rgba(0,212,255,0.85)' }} />
+                                    </span>
+                                ))}
+                            </div>
                         ))}
                     </div>
                 </div>
             </footer>
-        </div>
+        </Backdrop>
     )
 }
 
