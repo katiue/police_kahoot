@@ -54,10 +54,10 @@ export default function HomePage() {
           <div className="tech-screen-content flex flex-col items-center">
 
             {/* Tag Badge */}
-            <div className="inline-flex items-center gap-2 bg-[rgba(0,191,255,0.08)] border border-[rgba(0,191,255,0.22)] text-[var(--primary)] px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-[0.16em] mb-6">
+            {/* <div className="inline-flex items-center gap-2 bg-[rgba(0,191,255,0.08)] border border-[rgba(0,191,255,0.22)] text-[var(--primary)] px-4 py-1.5 rounded-full text-xs font-semibold uppercase tracking-[0.16em] mb-6">
               <ShieldCheck className="size-4 text-[var(--primary)]" />
               An Toàn Mạng
-            </div>
+            </div> */}
 
             {/* Giant Cyber Title */}
             <h1 className="cyber-title tech-render-title text-4xl font-extrabold tracking-wider text-balance leading-[1.1] md:text-6xl max-w-3xl mb-4">
@@ -66,7 +66,7 @@ export default function HomePage() {
 
             {/* Description */}
             <p className="max-w-xl text-sm md:text-base leading-relaxed text-[var(--muted-foreground)] mb-8">
-              Trò chơi kiểm tra kiến thức an toàn mạng theo thể thức loại trực tiếp — hệ thống thực chiến đến khi còn người cuối cùng đứng vững.
+              Trò chơi kiểm tra kiến thức an ninh mạng theo thể thức loại trực tiếp — hệ thống thực chiến đến khi còn người cuối cùng đứng vững.
             </p>
 
             {/* Glowing Button */}
