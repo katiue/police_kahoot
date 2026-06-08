@@ -1093,6 +1093,10 @@
   font-family: ui-monospace, "SFMono-Regular", monospace;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.06em;
+  /* Long pre-shared passcodes must wrap, never overflow the viewport. */
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 @keyframes avatar-pulse {

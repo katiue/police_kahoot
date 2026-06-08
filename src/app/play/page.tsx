@@ -26,17 +26,13 @@ function JoinForm() {
     useEffect(() => {
         const p = search.get('pin')
         if (p) {
-            setPin(p.replace(/[^A-Za-z0-9]/g, '').slice(0, 12).toUpperCase())
+            setPin(p.replace(/[^A-Za-z0-9]/g, '').slice(0, 32).toUpperCase())
+            // PIN arrived prefilled (deep-link) → jump to nickname once.
+            // Manual typing is NOT auto-advanced: stealing focus mid-entry
+            // breaks fixed passcodes longer than 4 chars.
+            nicknameRef.current?.focus()
         }
     }, [search])
-
-    // Auto-advance to nickname when PIN is filled in (auto-resolved or 6-digit typed)
-    useEffect(() => {
-        const ready = pin.length >= 4
-        if (ready && nicknameRef.current && document.activeElement !== nicknameRef.current) {
-            nicknameRef.current.focus()
-        }
-    }, [pin])
 
     const effectiveNickname = nickname.trim() || 'Guest'
 
@@ -143,7 +139,7 @@ function JoinForm() {
 
             <input
                 value={pin}
-                onChange={(e) => setPin(e.target.value.replace(/[^A-Za-z0-9]/g, '').toUpperCase().slice(0, 12))}
+                onChange={(e) => setPin(e.target.value.replace(/[^A-Za-z0-9]/g, '').toUpperCase().slice(0, 32))}
                 autoFocus={!pin}
                 placeholder="Passcode"
                 className="pin-display h-14 w-full rounded-xl border border-border bg-input/60 text-center text-2xl font-bold text-accent outline-none focus:border-accent/70 uppercase"
