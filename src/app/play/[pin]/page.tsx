@@ -142,17 +142,25 @@ export default function PlayRoomPage({ params }: { params: Promise<{ pin: string
 
     const socket = getSocket()
     const rejoin = () =>
-      socket.emit('player:join', { pin, nickname: nick, playerId }, (res) => {
+      socket.emit('player:join', { pin, nickname: nick, playerId: playerIdRef.current }, (res) => {
         if (!res.ok) {
           toast.error(res.error ?? 'Mất kết nối phòng')
           router.replace(`/play?pin=${pin}`)
         } else if (res.playerId) {
+          // A reconfigure rebuilds the room → we may get a NEW id. Persist it so
+          // a later refresh/reconnect resolves to the right player.
           playerIdRef.current = res.playerId
+          sessionStorage.setItem(
+            `pk:${pin}`,
+            JSON.stringify({ playerId: res.playerId, nickname: nick, avatarIconIndex, avatarColorIndex })
+          )
         }
       })
 
     rejoin()
     socket.on('connect', rejoin)
+    // Server rebuilt the room (reconfigure) → re-register so we aren't orphaned.
+    socket.on('room:rejoin', rejoin)
 
     socket.on('game:question', (q) => {
       setQuestion(q)
@@ -178,6 +186,15 @@ export default function PlayRoomPage({ params }: { params: Promise<{ pin: string
     socket.on('player:eliminated', () => {
       setIsEliminated(true)
       haptic([60, 40, 80])
+    })
+    socket.on('player:kicked', (p) => {
+      // Drop the session + stop auto-rejoin so a reconnect/rebuild can't re-add us.
+      sessionStorage.removeItem(`pk:${pin}`)
+      socket.off('connect', rejoin)
+      socket.off('room:rejoin', rejoin)
+      haptic([80, 40, 80])
+      toast.error(p?.reason ?? 'Bạn đã bị đưa ra khỏi phòng')
+      router.replace('/play')
     })
     socket.on('lobby:update', (p) => {
       setAllPlayers(p.players)
@@ -218,6 +235,8 @@ export default function PlayRoomPage({ params }: { params: Promise<{ pin: string
       socket.off('game:question')
       socket.off('question:result')
       socket.off('player:eliminated')
+      socket.off('player:kicked')
+      socket.off('room:rejoin', rejoin)
       socket.off('lobby:update')
       socket.off('leaderboard:update')
       socket.off('kahoot:start')

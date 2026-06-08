@@ -255,10 +255,10 @@ export default function HostCreatePage() {
 
         <div>
           <h1 className="text-display text-4xl font-bold">
-            Tạo <span className="text-accent neon-text-cyan">phòng</span>
+            Cấu hình <span className="text-accent neon-text-cyan">phòng</span>
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            Chế độ phòng đơn (Single-room): nếu đã có phòng đang hoạt động, host sẽ được chuyển thẳng vào phòng đó.
+            Phòng cố định: áp dụng cấu hình dưới đây vào phòng hiện tại và <span className="text-foreground">giữ nguyên passcode</span> đã gửi sinh viên. Người chơi sẽ được đưa về lobby.
           </p>
         </div>
 
@@ -437,7 +437,7 @@ export default function HostCreatePage() {
           className="gap-2"
         >
           <Rocket className="size-5" />
-          {checkingActive ? 'Đang kiểm tra phòng đang hoạt động...' : busy ? 'Đang tạo...' : 'Tạo phòng'}
+          {checkingActive ? 'Đang kiểm tra phòng đang hoạt động...' : busy ? 'Đang áp dụng...' : 'Áp dụng cấu hình'}
         </Button>
 
         <a

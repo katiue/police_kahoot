@@ -271,6 +271,15 @@ export class RoomManager {
       kahootPool,
       kahootQuestionIndex: -1,
     })
+    // Push a fresh lobby snapshot so a reconfigure (same fixed PIN) resets any
+    // still-connected projector/players in real time, then nudge those clients
+    // to re-register — the rebuilt room starts with an empty player map, so
+    // without this they'd be orphaned (UI in lobby but unknown server-side).
+    const created = this.rooms.get(pin)
+    if (created) {
+      this.broadcastLobby(created)
+      this.io.to(pin).emit('room:rejoin')
+    }
     return pin
   }
 
@@ -430,6 +439,30 @@ export class RoomManager {
     })
     this.broadcastLobby(room)
     return { ok: true, playerId: id }
+  }
+
+  /**
+   * Host-initiated removal of one or more players. Each kicked client receives
+   * player:kicked and is removed from the socket room. Remaining players +
+   * projector get a fresh lobby snapshot.
+   */
+  kickPlayers(pin: string, playerIds: string[]): { ok: boolean; kicked: number; error?: string } {
+    const room = this.rooms.get(pin)
+    if (!room) return { ok: false, kicked: 0, error: 'Không tìm thấy phòng' }
+    let kicked = 0
+    for (const id of playerIds) {
+      const p = room.players.get(id)
+      if (!p) continue
+      if (p.socketId) {
+        this.io.to(p.socketId).emit('player:kicked', { reason: 'Host đã đưa bạn ra khỏi phòng' })
+        this.io.sockets.sockets.get(p.socketId)?.leave(room.pin)
+      }
+      room.players.delete(id)
+      room.responses.delete(id)
+      kicked += 1
+    }
+    if (kicked > 0) this.broadcastLobby(room)
+    return { ok: true, kicked }
   }
 
   markDisconnected(socketId: string): void {

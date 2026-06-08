@@ -31,6 +31,10 @@ export function registerSocketHandlers(io: IO): RoomManager {
           return
         }
         const parsed = parseQuiz(quiz)
+        // Single fixed-room mode: reuse the well-known PIN (EVENT_PIN, else the
+        // current room's PIN) so applying settings reconfigures THE room instead
+        // of minting a new code students don't have.
+        const fixedPin = process.env.EVENT_PIN?.trim() || manager.firstRoomPin() || undefined
         const pin = manager.createRoom(parsed, {
           minPlayersToEnd,
           maxPlayers,
@@ -39,7 +43,7 @@ export function registerSocketHandlers(io: IO): RoomManager {
           randomizeAnswers,
           questionOrderMode,
           kahootThreshold,
-        })
+        }, fixedPin)
         ack({ ok: true, pin })
       } catch (e) {
         ack({ ok: false, error: e instanceof Error ? e.message : 'Quiz không hợp lệ' })
@@ -83,14 +87,22 @@ export function registerSocketHandlers(io: IO): RoomManager {
       const ok = manager.resetRoom(pin)
       ack?.({ ok, error: ok ? undefined : 'Không tìm thấy phòng' })
     })
+    socket.on('host:kick', ({ pin, loginKey, playerIds }, ack) => {
+      if (!isAuthorized(loginKey)) return ack?.({ ok: false, error: 'Mã đăng nhập không đúng' })
+      const res = manager.kickPlayers(pin, Array.isArray(playerIds) ? playerIds : [])
+      ack?.(res)
+    })
 
-    // ── Projector: read-only audience view ──
-    socket.on('projector:join', ({ pin, loginKey }, ack) => {
-      if (!isAuthorized(loginKey)) return ack({ ok: false, error: 'Mã đăng nhập không đúng' })
-      const snap = manager.projectorSnapshot(pin)
+    // ── Projector: public read-only audience view (no auth) ──
+    // No PIN → attach to the single active room. The passcode is never sent to
+    // this open screen, so it can't leak via an unauthenticated projector.
+    socket.on('projector:join', ({ pin }, ack) => {
+      const resolvedPin = (pin && pin.trim().toUpperCase()) || manager.firstRoomPin()
+      if (!resolvedPin) return ack({ ok: false, error: 'Chưa có phòng' })
+      const snap = manager.projectorSnapshot(resolvedPin)
       if (!snap) return ack({ ok: false, error: 'Không tìm thấy phòng' })
-      socket.join(pin)
-      socket.join(`projector:${pin}`)
+      socket.join(resolvedPin)
+      socket.join(`projector:${resolvedPin}`)
       ack({ ok: true, state: snap })
     })
 

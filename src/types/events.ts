@@ -110,6 +110,11 @@ export interface ClientToServerEvents {
     payload: { pin: string; loginKey?: string },
     ack?: (res: { ok: boolean; error?: string }) => void
   ) => void
+  /** Remove one or more players from the room. */
+  'host:kick': (
+    payload: { pin: string; loginKey?: string; playerIds: string[] },
+    ack?: (res: { ok: boolean; kicked?: number; error?: string }) => void
+  ) => void
 
   'player:join': (
     payload: { pin: string; nickname: string; playerId?: string },
@@ -120,9 +125,10 @@ export interface ClientToServerEvents {
     ack: (res: { ok: boolean; error?: string }) => void
   ) => void
 
-  /** Read-only audience view of a room. */
+  /** Read-only audience view of a room. Public — no auth. Omit pin to attach to
+   *  the single active room (server resolves it) without exposing the passcode. */
   'projector:join': (
-    payload: { pin: string; loginKey?: string },
+    payload: { pin?: string; loginKey?: string },
     ack: (res: { ok: boolean; state?: ProjectorSnapshot; error?: string }) => void
   ) => void
 }
@@ -136,6 +142,10 @@ export interface ServerToClientEvents {
   'question:progress': (payload: { questionIndex: number; answered: number; total: number }) => void
   'answer:ack': (payload: { questionIndex: number; received: boolean }) => void
   'player:eliminated': (payload: { reason: 'wrong' | 'timeout' }) => void
+  /** Fired to a player the host removed from the room. */
+  'player:kicked': (payload: { reason?: string }) => void
+  /** Tells still-connected clients to re-send player:join (room was rebuilt by a reconfigure). */
+  'room:rejoin': () => void
   'error:msg': (payload: { message: string }) => void
   /** Fired when active players drop to/below kahootThreshold — signals mode switch */
   'kahoot:start': (payload: {

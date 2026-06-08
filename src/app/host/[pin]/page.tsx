@@ -30,11 +30,13 @@ import {
   FileJson,
   Play,
   RefreshCw,
+  Settings,
   ShieldOff,
   SkipForward,
   Square,
   Trophy,
   Users,
+  UserX,
   Zap,
 } from 'lucide-react'
 
@@ -135,7 +137,9 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
   const [kahootMode, setKahootMode] = useState(false)
   const [kahootBanner, setKahootBanner] = useState<{ threshold: number; survivors: PlayerView[] } | null>(null)
   const [progress, setProgress] = useState({ answered: 0, total: 0 })
-  const [confirmAction, setConfirmAction] = useState<'reset' | 'end' | null>(null)
+  const [confirmAction, setConfirmAction] = useState<'reset' | 'end' | 'kick' | null>(null)
+  /** Player ids the host has ticked for removal in the lobby grid. */
+  const [selectedKick, setSelectedKick] = useState<Set<string>>(new Set())
 
   useEffect(() => {
     setIsMounted(true)
@@ -287,6 +291,15 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
     setKahootBanner(null)
   }
 
+  function toggleKick(id: string) {
+    setSelectedKick((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  }
+
   function confirmCurrentAction() {
     if (confirmAction === 'end') {
       getSocket().emit('host:end', { pin, loginKey })
@@ -294,6 +307,13 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
       getSocket().emit('host:reset', { pin, loginKey }, (res) => {
         if (!res?.ok) return toast.error(res?.error ?? 'Reset thất bại')
         resetLocalToLobby()
+      })
+    } else if (confirmAction === 'kick') {
+      const ids = [...selectedKick]
+      getSocket().emit('host:kick', { pin, loginKey, playerIds: ids }, (res) => {
+        if (!res?.ok) return toast.error(res?.error ?? 'Đuổi người chơi thất bại')
+        toast.success(`Đã đuổi ${res.kicked ?? ids.length} người chơi`)
+        setSelectedKick(new Set())
       })
     }
     setConfirmAction(null)
@@ -316,13 +336,21 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
     <Backdrop>
       <ConfirmDialog
         open={confirmAction !== null}
-        title={confirmAction === 'reset' ? 'Reset trận đấu?' : 'Kết thúc trận đấu?'}
+        title={
+          confirmAction === 'reset'
+            ? 'Reset trận đấu?'
+            : confirmAction === 'kick'
+              ? `Đuổi ${selectedKick.size} người chơi?`
+              : 'Kết thúc trận đấu?'
+        }
         description={
           confirmAction === 'reset'
             ? 'Bạn chắc chắn? Reset sẽ xóa scores hiện tại, đưa tất cả người chơi về lobby và giữ nguyên PIN.'
-            : 'Bạn chắc chắn? Trận sẽ kết thúc ngay lập tức và màn hình kết quả sẽ được hiển thị.'
+            : confirmAction === 'kick'
+              ? 'Người chơi được chọn sẽ bị đưa ra khỏi phòng ngay. Họ có thể tham gia lại khi phòng còn ở lobby.'
+              : 'Bạn chắc chắn? Trận sẽ kết thúc ngay lập tức và màn hình kết quả sẽ được hiển thị.'
         }
-        confirmLabel={confirmAction === 'reset' ? 'Reset trận' : 'Kết thúc'}
+        confirmLabel={confirmAction === 'reset' ? 'Reset trận' : confirmAction === 'kick' ? 'Đuổi' : 'Kết thúc'}
         destructive
         onCancel={() => setConfirmAction(null)}
         onConfirm={confirmCurrentAction}
@@ -434,14 +462,23 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
                 >
                   <LobbyHero pin={pin} joinUrl={joinUrl} showQr />
 
-                  <a
-                    href="/lobby"
-                    target="_blank"
-                    rel="noreferrer"
-                    className={cn(buttonVariants({ variant: 'outline', size: 'lg' }), 'gap-2')}
-                  >
-                    Mở màn hình chờ (projector) →
-                  </a>
+                  <div className="flex flex-wrap items-center justify-center gap-3">
+                    <a
+                      href="/lobby"
+                      target="_blank"
+                      rel="noreferrer"
+                      className={cn(buttonVariants({ variant: 'outline', size: 'lg' }), 'gap-2')}
+                    >
+                      Mở màn hình chờ (projector) →
+                    </a>
+                    {/* Reconfigure the fixed room (quiz/settings) — keeps the same PIN. */}
+                    <a
+                      href="/host?new=1"
+                      className={cn(buttonVariants({ variant: 'ghost', size: 'lg' }), 'gap-2')}
+                    >
+                      <Settings className="size-4" /> Cấu hình trận
+                    </a>
+                  </div>
 
                   <div className="w-full max-w-2xl">
                     {players.length === 0 ? (
@@ -449,9 +486,27 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
                     ) : (
                       <>
                         <div className="mb-2 flex items-center justify-between text-[10px] uppercase tracking-widest text-[var(--muted-foreground)]">
-                          <span>Người chơi đã vào</span>
+                          <span>Người chơi đã vào · chạm để chọn đuổi</span>
                           <span className="text-[var(--accent)]">{players.length}</span>
                         </div>
+                        {selectedKick.size > 0 && (
+                          <div className="mb-2 flex items-center gap-3">
+                            <button
+                              type="button"
+                              onClick={() => setConfirmAction('kick')}
+                              className="inline-flex items-center gap-1.5 rounded-lg border border-red-500/40 bg-red-500/10 px-3 py-1.5 text-xs font-bold text-red-400 transition-colors hover:bg-red-500/20"
+                            >
+                              <UserX className="size-4" /> Đuổi {selectedKick.size} người
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setSelectedKick(new Set())}
+                              className="text-[10px] uppercase tracking-widest text-muted-foreground transition-colors hover:text-accent"
+                            >
+                              Bỏ chọn
+                            </button>
+                          </div>
+                        )}
                         <div className="max-h-[40vh] overflow-y-auto rounded-xl border border-[rgba(0,212,255,0.08)] bg-[rgba(2,8,23,0.4)] p-2">
                           <div className="grid grid-cols-4 gap-2 sm:grid-cols-6 md:grid-cols-8">
                             {(() => {
@@ -459,6 +514,19 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
                               const heavy = players.length > 40
                               const visible = players.slice(0, LOBBY_VISIBLE_CAP)
                               const overflow = players.length - visible.length
+                              const tileClass = (id: string) =>
+                                cn(
+                                  'relative flex cursor-pointer flex-col items-center gap-1.5 rounded-xl border bg-[rgba(6,24,48,0.8)] px-2 py-3 transition-colors',
+                                  selectedKick.has(id)
+                                    ? 'border-red-500/70 ring-2 ring-red-500/60'
+                                    : 'border-[rgba(0,212,255,0.15)] hover:border-accent/40'
+                                )
+                              const KickBadge = ({ id }: { id: string }) =>
+                                selectedKick.has(id) ? (
+                                  <span className="absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-red-500 text-[9px] font-bold text-white">
+                                    ×
+                                  </span>
+                                ) : null
                               return (
                                 <>
                                   <AnimatePresence initial={false}>
@@ -466,8 +534,10 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
                                       heavy ? (
                                         <div
                                           key={p.id}
-                                          className="flex flex-col items-center gap-1.5 rounded-xl border border-[rgba(0,212,255,0.15)] bg-[rgba(6,24,48,0.8)] px-2 py-3"
+                                          onClick={() => toggleKick(p.id)}
+                                          className={tileClass(p.id)}
                                         >
+                                          <KickBadge id={p.id} />
                                           <PlayerAvatar nickname={p.nickname} size="sm" />
                                           <span className="w-full truncate text-center text-[10px] font-semibold">{p.nickname}</span>
                                         </div>
@@ -477,8 +547,10 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
                                           initial={{ opacity: 0, scale: 0.7 }}
                                           animate={{ opacity: 1, scale: 1 }}
                                           transition={{ type: 'spring', stiffness: 400, damping: 28, delay: Math.min(i, 20) * 0.02 }}
-                                          className="flex flex-col items-center gap-1.5 rounded-xl border border-[rgba(0,212,255,0.15)] bg-[rgba(6,24,48,0.8)] px-2 py-3"
+                                          onClick={() => toggleKick(p.id)}
+                                          className={tileClass(p.id)}
                                         >
+                                          <KickBadge id={p.id} />
                                           <PlayerAvatar nickname={p.nickname} size="sm" pulse />
                                           <span className="w-full truncate text-center text-[10px] font-semibold">{p.nickname}</span>
                                         </motion.div>
