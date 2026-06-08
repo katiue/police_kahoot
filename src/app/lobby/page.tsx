@@ -1,5 +1,5 @@
 'use client'
-import { Suspense, useEffect, useRef, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Backdrop } from '@/components/game/Backdrop'
@@ -10,7 +10,6 @@ import { AnswerGrid } from '@/components/game/AnswerGrid'
 import { PlayerAvatar } from '@/components/game/PlayerAvatar'
 import { PlayerCount } from '@/components/game/PlayerCount'
 import { ErrorBoundary } from '@/components/game/ErrorBoundary'
-import { HostAuthCard, HOST_LOGIN_STORAGE_KEY } from '@/components/auth/HostAuthCard'
 import { getSocket } from '@/lib/socket-client'
 import type {
     GameStatus,
@@ -41,7 +40,7 @@ const LOBBY_AVATAR_CAP = 60
 
 function ProjectorView() {
     const search = useSearchParams()
-    const urlPin = (search.get('pin') || '').trim().toUpperCase().slice(0, 12)
+    const urlPin = (search.get('pin') || '').trim().toUpperCase().slice(0, 32)
 
     const [pin, setPin] = useState(urlPin)
     const [joinUrl, setJoinUrl] = useState('')
@@ -55,78 +54,32 @@ function ProjectorView() {
     const [kahootMode, setKahootMode] = useState(false)
     const [progress, setProgress] = useState({ answered: 0, total: 0 })
     const [connectionLost, setConnectionLost] = useState(false)
-    const [authOk, setAuthOk] = useState(false)
-    const [authBusy, setAuthBusy] = useState(true)
-    const [authError, setAuthError] = useState('')
-    const [loginKey, setLoginKey] = useState('')
-    const subscribedPin = useRef<string>('')
 
     useEffect(() => {
         setJoinUrl(`${window.location.origin}/play`)
-        const saved = sessionStorage.getItem(HOST_LOGIN_STORAGE_KEY) ?? ''
-        setLoginKey(saved)
-        getSocket().emit('host:auth', { loginKey: saved }, (res) => {
-            setAuthBusy(false)
-            if (res.ok) {
-                sessionStorage.setItem(HOST_LOGIN_STORAGE_KEY, saved)
-                setAuthOk(true)
-            } else {
-                if (saved) sessionStorage.removeItem(HOST_LOGIN_STORAGE_KEY)
-                setAuthOk(false)
-            }
-        })
     }, [])
 
-    function authenticate() {
-        setAuthBusy(true)
-        setAuthError('')
-        getSocket().emit('host:auth', { loginKey }, (res) => {
-            setAuthBusy(false)
-            if (res.ok) {
-                sessionStorage.setItem(HOST_LOGIN_STORAGE_KEY, loginKey)
-                setAuthOk(true)
-            } else {
-                sessionStorage.removeItem(HOST_LOGIN_STORAGE_KEY)
-                setAuthOk(false)
-                setAuthError('LOGIN_KEY không đúng')
-            }
-        })
-    }
-
-    // Resolve PIN after projector auth: URL param first, else /api/active-room.
+    // Subscribe as a PUBLIC projector — no auth. The server resolves the single
+    // active room when no PIN is supplied, so the pre-shared passcode is never
+    // exposed to this open screen. Retries until a room exists.
     useEffect(() => {
-        if (!authOk) return
-        if (urlPin) {
-            setPin(urlPin)
-            return
-        }
-        fetch('/api/active-room', {
-            cache: 'no-store',
-            headers: { 'x-login-key': sessionStorage.getItem(HOST_LOGIN_STORAGE_KEY) ?? loginKey },
-        })
-            .then((r) => r.json())
-            .then((d: { pin?: string | null }) => {
-                if (d?.pin) setPin(String(d.pin).toUpperCase())
-            })
-            .catch(() => {
-                /* no-op — projector keeps showing standby until a PIN resolves */
-            })
-    }, [authOk, loginKey, urlPin])
-
-    // Subscribe to the room as a projector and follow events
-    useEffect(() => {
-        if (!pin || !authOk) return
         const socket = getSocket()
+        let active = true
+        let retry: ReturnType<typeof setTimeout> | null = null
 
         const subscribe = () => {
-            subscribedPin.current = pin
-            socket.emit('projector:join', { pin, loginKey: sessionStorage.getItem(HOST_LOGIN_STORAGE_KEY) ?? loginKey }, (res) => {
-                if (!res.ok || !res.state) return
+            socket.emit('projector:join', { pin: urlPin || undefined }, (res) => {
+                if (!active) return
+                if (!res.ok || !res.state) {
+                    retry = setTimeout(subscribe, 3000)
+                    return
+                }
                 applySnapshot(res.state)
             })
         }
 
         const applySnapshot = (snap: ProjectorSnapshot) => {
+            setPin(snap.pin)
             setStatus(snap.status)
             setPlayers(snap.players)
             setKahootMode(snap.kahootMode ?? false)
@@ -183,6 +136,8 @@ function ProjectorView() {
         socket.on('game:over', onOver)
 
         return () => {
+            active = false
+            if (retry) clearTimeout(retry)
             socket.off('connect', onConnect)
             socket.off('disconnect', onDisconnect)
             socket.off('lobby:update', onLobby)
@@ -196,7 +151,7 @@ function ProjectorView() {
         // the latest closure each event tick; depending on it would re-subscribe
         // on every player join and break the room subscription.
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [authOk, loginKey, pin])
+    }, [urlPin])
 
     const activePlayers = players.filter((p) => !p.eliminated)
     const visibleLobby = players.slice(0, LOBBY_AVATAR_CAP)
@@ -205,19 +160,6 @@ function ProjectorView() {
 
     return (
         <Backdrop className="lobby-root fixed inset-0 min-h-0 select-none overflow-hidden">
-            {!authOk && (
-                <HostAuthCard
-                    loginKey={loginKey}
-                    busy={authBusy}
-                    error={authError}
-                    onChange={(value) => {
-                        setLoginKey(value)
-                        setAuthError('')
-                    }}
-                    onSubmit={authenticate}
-                />
-            )}
-
             {/* Top bar */}
             <header className="relative z-10 border-b border-[rgba(0,191,255,0.15)] bg-transparent backdrop-blur-sm">
                 <div className="relative mx-auto flex w-full max-w-7xl items-center justify-center px-8 py-4">
@@ -238,7 +180,7 @@ function ProjectorView() {
                             {`CỤC AN NINH MẠNG VÀ PHÒNG, CHỐNG\nTỘI PHẠM SỬ DỤNG CÔNG NGHỆ CAO`}
                         </p>
                     </div>
-                    {authOk && pin && (
+                    {pin && (
                         <span className="absolute right-8 top-1/2 hidden -translate-y-1/2 items-center gap-2 text-[10px] font-medium uppercase tracking-[0.25em] text-muted-foreground sm:inline-flex">
                             <motion.span
                                 className="size-1.5 rounded-full bg-accent"
@@ -292,7 +234,7 @@ function ProjectorView() {
                                 <div className="flex flex-col items-center gap-4">
                                     {joinUrl && (
                                         <div className="flex items-center gap-6">
-                                            <QrPanel joinUrl={joinUrl} size={190} />
+                                            <QrPanel joinUrl={joinUrl} size={280} />
                                             {/* <div className="text-left">
                                                 <p className="text-xs uppercase tracking-widest text-muted-foreground">Vào chơi tại</p>
                                                 <p className="text-display text-2xl font-bold">{joinUrl.replace(/^https?:\/\//, '')}</p>
