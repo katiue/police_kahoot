@@ -1,5 +1,5 @@
 'use client'
-import { PoliceEmblem } from './PoliceEmblem'
+import { PoliceBranding } from './PoliceEmblem'
 import { ChongLuaDaoMark } from './ChongLuaDao'
 
 /**
@@ -23,19 +23,7 @@ export function EventBranding({
   if (variant === 'hero') {
     return (
       <div className={`flex flex-col items-center gap-3 ${className}`}>
-        {/* Police emblem — dominant */}
-        <a
-          href="https://bocongan.gov.vn/"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Cục An Ninh Mạng và Phòng, Chống Tội Phạm Sử Dụng Công Nghệ Cao"
-          className="inline-flex"
-        >
-          <PoliceEmblem className="h-20 w-20 drop-shadow-[0_0_16px_rgba(200,150,12,0.45)]" />
-        </a>
-        <p className="whitespace-pre-line text-center text-[0.55rem] font-medium leading-snug tracking-[0.08em] text-white">
-          {`CỤC AN NINH MẠNG VÀ PHÒNG, CHỐNG\nTỘI PHẠM SỬ DỤNG CÔNG NGHỆ CAO`}
-        </p>
+        <PoliceBranding />
         {/* Divider */}
         <div className="h-px w-16 bg-gradient-to-r from-transparent via-[rgba(0,212,255,0.3)] to-transparent" />
         {/* CLD mark — secondary */}
@@ -53,22 +41,7 @@ export function EventBranding({
   return (
     <div className={`flex items-center justify-between gap-3 ${className}`}>
       {/* Police (primary) — left */}
-      <div className="flex flex-col items-center gap-1 text-center">
-        <a
-          href="https://bocongan.gov.vn/"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Cục An Ninh Mạng và Phòng, Chống Tội Phạm Sử Dụng Công Nghệ Cao"
-          className="inline-flex"
-        >
-          <PoliceEmblem
-            className="h-9 w-9 shrink-0 drop-shadow-[0_0_8px_rgba(200,150,12,0.5)]"
-          />
-        </a>
-        <p className="whitespace-pre-line text-center text-[0.42rem] font-medium leading-snug tracking-[0.07em] text-white">
-          {`CỤC AN NINH MẠNG VÀ PHÒNG, CHỐNG\nTỘI PHẠM SỬ DỤNG CÔNG NGHỆ CAO`}
-        </p>
-      </div>
+      <PoliceBranding />
 
       {/* Separator */}
       <div className="h-6 w-px bg-[rgba(0,212,255,0.2)]" />

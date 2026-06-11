@@ -1,5 +1,5 @@
 'use client'
-import { PoliceEmblem } from './PoliceEmblem'
+import { PoliceBranding } from './PoliceEmblem'
 import { QrPanel } from './QrPanel'
 import { formatPin } from '@/lib/utils'
 
@@ -21,23 +21,7 @@ export function LobbyHero({
   const formattedPin = formatPin(pin)
   return (
     <div className="flex flex-col items-center gap-8">
-      <div className="flex flex-col items-center gap-2 text-center mb-2">
-        <a
-          href="https://bocongan.gov.vn/"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Cục An Ninh Mạng và Phòng, Chống Tội Phạm Sử Dụng Công Nghệ Cao"
-          className="inline-flex"
-        >
-          <PoliceEmblem
-            className="h-16 w-16 shrink-0"
-            style={{ filter: 'drop-shadow(0 0 10px rgba(200,150,12,0.55))' }}
-          />
-        </a>
-        <p className="whitespace-pre-line text-center text-[0.6rem] font-medium leading-snug tracking-[0.08em] text-white">
-          {`CỤC AN NINH MẠNG VÀ PHÒNG, CHỐNG\nTỘI PHẠM SỬ DỤNG CÔNG NGHỆ CAO`}
-        </p>
-      </div>
+      <PoliceBranding className="mb-2" />
 
       <div className="flex flex-col items-center gap-2">
         <p className="text-xs uppercase tracking-widest text-[var(--muted-foreground)]">Vào chơi tại</p>

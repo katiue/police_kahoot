@@ -4,7 +4,7 @@ import { useSearchParams } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Backdrop } from '@/components/game/Backdrop'
 import { QrPanel } from '@/components/game/QrPanel'
-import { PoliceEmblem } from '@/components/game/PoliceEmblem'
+import { PoliceBranding } from '@/components/game/PoliceEmblem'
 import { Timer } from '@/components/game/Timer'
 import { AnswerGrid } from '@/components/game/AnswerGrid'
 import { PlayerAvatar } from '@/components/game/PlayerAvatar'
@@ -163,23 +163,7 @@ function ProjectorView() {
             {/* Top bar */}
             <header className="relative z-10 border-b border-[rgba(0,191,255,0.15)] bg-transparent backdrop-blur-sm">
                 <div className="relative mx-auto flex w-full max-w-7xl items-center justify-center px-8 py-4">
-                    <div className="flex flex-col items-center gap-1.5 text-center">
-                        <a
-                            href="https://bocongan.gov.vn/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            aria-label="Cục An Ninh Mạng và Phòng, Chống Tội Phạm Sử Dụng Công Nghệ Cao"
-                            className="inline-flex"
-                        >
-                            <PoliceEmblem
-                                className="h-14 w-14 shrink-0"
-                                style={{ filter: 'drop-shadow(0 0 10px rgba(200,150,12,0.55))' }}
-                            />
-                        </a>
-                        <p className="whitespace-pre-line text-center text-[0.56rem] font-medium leading-snug tracking-[0.08em] text-white">
-                            {`CỤC AN NINH MẠNG VÀ PHÒNG, CHỐNG\nTỘI PHẠM SỬ DỤNG CÔNG NGHỆ CAO`}
-                        </p>
-                    </div>
+                    <PoliceBranding />
                     {pin && (
                         <span className="absolute right-8 top-1/2 hidden -translate-y-1/2 items-center gap-2 text-[10px] font-medium uppercase tracking-[0.25em] text-muted-foreground sm:inline-flex">
                             <motion.span

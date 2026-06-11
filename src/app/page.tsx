@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Backdrop } from '@/components/game/Backdrop'
 import { Button } from '@/components/ui/button'
-import { PoliceEmblem } from '@/components/game/PoliceEmblem'
+import { PoliceBranding } from '@/components/game/PoliceEmblem'
 import { Users, MonitorPlay, ShieldCheck, Zap } from 'lucide-react'
 
 export default function HomePage() {
@@ -17,23 +17,7 @@ export default function HomePage() {
       {/* ── Header — police emblem + department name ── */}
       <header className="relative z-20 w-full bg-transparent px-4 py-4 md:px-8">
         <div className="mx-auto flex max-w-7xl items-center justify-center">
-          <div className="flex flex-col items-center gap-2 text-center">
-            <a
-              href="https://bocongan.gov.vn/"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Cục An Ninh Mạng và Phòng, Chống Tội Phạm Sử Dụng Công Nghệ Cao"
-              className="inline-flex"
-            >
-              <PoliceEmblem
-                className="h-16 w-auto object-contain md:h-20"
-                style={{ filter: 'drop-shadow(0 0 14px rgba(255,213,74,0.4))' }}
-              />
-            </a>
-            <p className="whitespace-pre-line text-center text-[0.52rem] font-medium leading-snug tracking-[0.08em] text-white md:text-[0.82rem]">
-              {`CỤC AN NINH MẠNG VÀ PHÒNG, CHỐNG\nTỘI PHẠM SỬ DỤNG CÔNG NGHỆ CAO`}
-            </p>
-          </div>
+          <PoliceBranding />
         </div>
       </header>
 
