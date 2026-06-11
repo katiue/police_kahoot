@@ -84,6 +84,8 @@ interface Room {
    * 0 = disabled.
    */
   kahootThreshold: number
+  /** When completed normal questions reach this count, switch to Kahoot. 0 = disabled. */
+  kahootQuestionThreshold: number
   /** Whether the Kahoot speed-round is currently active */
   kahootMode: boolean
   /** Pre-picked questions for the Kahoot round */
@@ -212,6 +214,7 @@ export class RoomManager {
       randomizeAnswers?: boolean
       questionOrderMode?: QuestionOrderMode
       kahootThreshold?: number
+      kahootQuestionThreshold?: number
     } = {},
     fixedPin?: string
   ): string {
@@ -240,6 +243,10 @@ export class RoomManager {
       typeof options.kahootThreshold === 'number' && options.kahootThreshold >= 0
         ? Math.round(options.kahootThreshold)
         : 10
+    const kahootQuestionThreshold =
+      typeof options.kahootQuestionThreshold === 'number' && options.kahootQuestionThreshold >= 0
+        ? Math.round(options.kahootQuestionThreshold)
+        : 20
 
     const randomizedQuiz = prepareQuiz(quiz, questionOrderMode, randomizeAnswers)
     const kahootPool = pickKahootPool(quiz, KAHOOT_QUESTION_COUNT)
@@ -267,6 +274,7 @@ export class RoomManager {
       randomizeAnswers,
       questionOrderMode,
       kahootThreshold,
+      kahootQuestionThreshold,
       kahootMode: false,
       kahootPool,
       kahootQuestionIndex: -1,
@@ -350,6 +358,7 @@ export class RoomManager {
       randomizeAnswers: room.randomizeAnswers,
       questionOrderMode: room.questionOrderMode,
       kahootThreshold: room.kahootThreshold,
+      kahootQuestionThreshold: room.kahootQuestionThreshold,
       kahootMode: room.kahootMode,
       leaderboard: room.lastLeaderboard ?? undefined,
     }
@@ -815,7 +824,7 @@ export class RoomManager {
   private shouldEndGame(room: Room): boolean {
     if (room.kahootMode) return false
     // If Kahoot is enabled, never auto-end during elimination — let Kahoot handle it
-    if (room.kahootThreshold > 0) return false
+    if (room.kahootThreshold > 0 || room.kahootQuestionThreshold > 0) return false
     const active = [...room.players.values()].filter((p) => !p.eliminated).length
     return active <= room.minPlayersToEnd
   }
@@ -826,9 +835,13 @@ export class RoomManager {
    */
   private shouldStartKahoot(room: Room): boolean {
     if (room.kahootMode) return false
-    if (room.kahootThreshold <= 0) return false
     const active = [...room.players.values()].filter((p) => !p.eliminated).length
-    return active <= room.kahootThreshold
+    const completedNormalQuestions = room.questionIndex + 1
+    const reachedPlayerThreshold =
+      room.kahootThreshold > 0 && active <= room.kahootThreshold
+    const reachedQuestionThreshold =
+      room.kahootQuestionThreshold > 0 && completedNormalQuestions >= room.kahootQuestionThreshold
+    return reachedPlayerThreshold || reachedQuestionThreshold
   }
 
   /**
@@ -842,6 +855,7 @@ export class RoomManager {
     const leaderboard = this.buildLeaderboard(room)
     this.io.to(room.pin).emit('kahoot:start', {
       threshold: room.kahootThreshold,
+      questionThreshold: room.kahootQuestionThreshold,
       survivors,
       leaderboard,
     })

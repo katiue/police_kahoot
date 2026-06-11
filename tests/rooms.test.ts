@@ -18,7 +18,7 @@ afterEach(() => {
 
 /** Create a room with kahoot disabled (pure elimination) unless overridden. */
 function createElim(quiz: Quiz, opts = {}) {
-  return mgr.createRoom(quiz, { kahootThreshold: 0, randomizeQuestions: false, randomizeAnswers: false, ...opts })
+  return mgr.createRoom(quiz, { kahootThreshold: 0, kahootQuestionThreshold: 0, randomizeQuestions: false, randomizeAnswers: false, ...opts })
 }
 
 /** Join a player and return its id. */
@@ -42,20 +42,22 @@ describe('createRoom — options & defaults', () => {
   })
 
   it('clamps invalid options to defaults', () => {
-    const pin = mgr.createRoom(makeQuiz(3), { maxPlayers: -5, timeLimitSec: -1, minPlayersToEnd: 0, kahootThreshold: -3 })
+    const pin = mgr.createRoom(makeQuiz(3), { maxPlayers: -5, timeLimitSec: -1, minPlayersToEnd: 0, kahootThreshold: -3, kahootQuestionThreshold: -4 })
     const room = mgr.getRoom(pin)!
     expect(room.maxPlayers).toBe(100) // invalid -> default 100
     expect(room.timeLimitSec).toBeNull() // <=0 -> null
     expect(room.minPlayersToEnd).toBe(1) // floored to min 1
     expect(room.kahootThreshold).toBe(10) // invalid -> default 10
+    expect(room.kahootQuestionThreshold).toBe(20) // invalid -> default 20
   })
 
   it('rounds fractional numeric options', () => {
-    const pin = mgr.createRoom(makeQuiz(3), { maxPlayers: 12.7, timeLimitSec: 9.4, kahootThreshold: 4.6 })
+    const pin = mgr.createRoom(makeQuiz(3), { maxPlayers: 12.7, timeLimitSec: 9.4, kahootThreshold: 4.6, kahootQuestionThreshold: 19.6 })
     const room = mgr.getRoom(pin)!
     expect(room.maxPlayers).toBe(13)
     expect(room.timeLimitSec).toBe(9)
     expect(room.kahootThreshold).toBe(5)
+    expect(room.kahootQuestionThreshold).toBe(20)
   })
 
   it('defaults questionOrderMode from randomizeQuestions flag', () => {
@@ -357,6 +359,31 @@ describe('kahoot speed-round', () => {
     mgr.submitAnswer(pin, c, 0, 2) // wrong -> 2 survivors == threshold
     expect(mock.byEvent('kahoot:start').length).toBe(1) // announced
     mgr.nextQuestion(pin) // host advances -> kahoot begins
+    expect(mgr.getRoom(pin)!.kahootMode).toBe(true)
+  })
+
+  it('transitions from elimination to kahoot once completed questions hit threshold', () => {
+    const pin = mgr.createRoom(makeQuiz(8), {
+      kahootThreshold: 0,
+      kahootQuestionThreshold: 2,
+      randomizeQuestions: false,
+      randomizeAnswers: false,
+    })
+    const a = join(pin, 'Alice', 's1')
+    const b = join(pin, 'Bob', 's2')
+    const c = join(pin, 'Carol', 's3')
+    mgr.startGame(pin)
+    mgr.submitAnswer(pin, a, 0, 1)
+    mgr.submitAnswer(pin, b, 0, 1)
+    mgr.submitAnswer(pin, c, 0, 1)
+    expect(mock.byEvent('kahoot:start').length).toBe(0)
+
+    mgr.nextQuestion(pin)
+    mgr.submitAnswer(pin, a, 1, 1)
+    mgr.submitAnswer(pin, b, 1, 1)
+    mgr.submitAnswer(pin, c, 1, 1)
+    expect(mock.byEvent('kahoot:start').length).toBe(1)
+    mgr.nextQuestion(pin)
     expect(mgr.getRoom(pin)!.kahootMode).toBe(true)
   })
 

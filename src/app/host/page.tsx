@@ -46,6 +46,7 @@ export default function HostCreatePage() {
   const [randomizeQuestions, setRandomizeQuestions] = useState(true)
   const [randomizeAnswers, setRandomizeAnswers] = useState(true)
   const [kahootThreshold, setKahootThreshold] = useState(10)
+  const [kahootQuestionThreshold, setKahootQuestionThreshold] = useState(20)
   const [loginKey, setLoginKey] = useState('')
   const [authOk, setAuthOk] = useState(false)
   const [authBusy, setAuthBusy] = useState(true)
@@ -165,7 +166,7 @@ export default function HostCreatePage() {
       if (!quiz) return
       const questionOrderMode: QuestionOrderMode = randomizeQuestions ? 'difficulty_ramp' : 'fixed'
       setBusy(true)
-      getSocket().emit('host:create', { quiz, minPlayersToEnd, maxPlayers, timeLimitSec, randomizeQuestions, randomizeAnswers, questionOrderMode, loginKey, kahootThreshold }, (res) => {
+      getSocket().emit('host:create', { quiz, minPlayersToEnd, maxPlayers, timeLimitSec, randomizeQuestions, randomizeAnswers, questionOrderMode, loginKey, kahootThreshold, kahootQuestionThreshold }, (res) => {
         setBusy(false)
         if (res.ok && res.pin) {
           sessionStorage.setItem(HOST_LOGIN_STORAGE_KEY, loginKey)
@@ -200,6 +201,7 @@ export default function HostCreatePage() {
         questionOrderMode,
         loginKey,
         kahootThreshold,
+        kahootQuestionThreshold,
       }, (res) => {
         setBusy(false)
         if (res.ok && res.pin) {
@@ -388,6 +390,25 @@ export default function HostCreatePage() {
                       {kahootThreshold === 0 ? '(Tắt — loại dần đến hết)' : `(Top ${kahootThreshold} → speed round)`}
                     </span>
                   </div>
+                  <div className="flex items-center gap-3">
+                    <input
+                      id="kahoot-question-threshold"
+                      type="number"
+                      min={0}
+                      max={200}
+                      value={kahootQuestionThreshold}
+                      onChange={(e) =>
+                        setKahootQuestionThreshold(Math.min(200, Math.max(0, parseInt(e.target.value, 10) || 0)))
+                      }
+                      className="w-24 rounded-lg border border-yellow-400/30 bg-input/60 px-3 py-2 text-sm font-mono text-foreground outline-none focus:border-yellow-400/60 transition-colors"
+                    />
+                    <span className="text-xs text-yellow-400 font-semibold font-mono">
+                      {kahootQuestionThreshold === 0 ? '(Tắt theo số câu)' : `(Sau ${kahootQuestionThreshold} câu)`}
+                    </span>
+                  </div>
+                  <span className="text-[10px] text-muted-foreground">
+                    Điều kiện Kahoot là OR: còn ≤ N đặc vụ hoặc đã hoàn thành ≥ K câu hỏi. K mặc định là 20.
+                  </span>
                   <span className="text-[10px] text-muted-foreground">
                     Khi còn ≤ N đặc vụ chưa bị loại, trận tự chuyển sang 5 câu Kahoot tốc độ rồi kết thúc. Đặt 0 để loại dần đến người cuối.
                   </span>

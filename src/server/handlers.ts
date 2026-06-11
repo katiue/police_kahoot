@@ -24,7 +24,7 @@ export function registerSocketHandlers(io: IO): RoomManager {
     })
 
     // ── Host: create room ──
-    socket.on('host:create', ({ quiz, minPlayersToEnd, maxPlayers, timeLimitSec, randomizeQuestions, randomizeAnswers, questionOrderMode, loginKey, kahootThreshold }, ack) => {
+    socket.on('host:create', ({ quiz, minPlayersToEnd, maxPlayers, timeLimitSec, randomizeQuestions, randomizeAnswers, questionOrderMode, loginKey, kahootThreshold, kahootQuestionThreshold }, ack) => {
       try {
         if (!isAuthorized(loginKey)) {
           ack({ ok: false, error: 'Mã đăng nhập không đúng' })
@@ -43,6 +43,7 @@ export function registerSocketHandlers(io: IO): RoomManager {
           randomizeAnswers,
           questionOrderMode,
           kahootThreshold,
+          kahootQuestionThreshold,
         }, fixedPin)
         ack({ ok: true, pin })
       } catch (e) {

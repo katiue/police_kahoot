@@ -43,10 +43,12 @@ import {
 // ── Kahoot announcement overlay ─────────────────────────────────
 function KahootStartBanner({
   threshold,
+  questionThreshold,
   survivors,
   onDismiss,
 }: {
   threshold: number
+  questionThreshold: number
   survivors: PlayerView[]
   onDismiss: () => void
 }) {
@@ -87,6 +89,11 @@ function KahootStartBanner({
         <p className="mt-2 text-base font-semibold text-white/80">
           Top <span className="font-black text-yellow-400">{threshold}</span> đặc vụ — 5 câu tốc độ
         </p>
+        {questionThreshold > 0 && (
+          <p className="mt-1 text-sm font-semibold text-yellow-300/90">
+            Hoặc sau {questionThreshold} câu hỏi thường
+          </p>
+        )}
         <p className="mt-1 text-sm text-white/50">
           Không loại — điểm tốc độ quyết định thứ hạng
         </p>
@@ -134,8 +141,9 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
   const [loginKey, setLoginKey] = useState('')
   const [minPlayersToEnd, setMinPlayersToEnd] = useState(1)
   const [kahootThreshold, setKahootThreshold] = useState(10)
+  const [kahootQuestionThreshold, setKahootQuestionThreshold] = useState(20)
   const [kahootMode, setKahootMode] = useState(false)
-  const [kahootBanner, setKahootBanner] = useState<{ threshold: number; survivors: PlayerView[] } | null>(null)
+  const [kahootBanner, setKahootBanner] = useState<{ threshold: number; questionThreshold: number; survivors: PlayerView[] } | null>(null)
   const [progress, setProgress] = useState({ answered: 0, total: 0 })
   const [confirmAction, setConfirmAction] = useState<'reset' | 'end' | 'kick' | null>(null)
   /** Player ids the host has ticked for removal in the lobby grid. */
@@ -153,6 +161,7 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
       setPlayers(state.players)
       setMinPlayersToEnd(state.minPlayersToEnd)
       setKahootThreshold(state.kahootThreshold ?? 10)
+      setKahootQuestionThreshold(state.kahootQuestionThreshold ?? 20)
       setKahootMode(state.kahootMode ?? false)
       setLeaderboard(state.leaderboard ?? [])
       setQuestion(state.question ?? null)
@@ -219,7 +228,7 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
       setLeaderboard(p.entries)
     })
     socket.on('kahoot:start', (p) => {
-      setKahootBanner({ threshold: p.threshold, survivors: p.survivors })
+      setKahootBanner({ threshold: p.threshold, questionThreshold: p.questionThreshold, survivors: p.survivors })
       setLeaderboard(p.leaderboard)
     })
     socket.on('game:over', (o) => {
@@ -264,6 +273,7 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
         setPlayers(res.state.players)
         setMinPlayersToEnd(res.state.minPlayersToEnd)
         setKahootThreshold(res.state.kahootThreshold ?? 10)
+        setKahootQuestionThreshold(res.state.kahootQuestionThreshold ?? 20)
         setKahootMode(res.state.kahootMode ?? false)
         setLeaderboard(res.state.leaderboard ?? [])
         setQuestion(res.state.question ?? null)
@@ -384,6 +394,7 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
         {kahootBanner && (
           <KahootStartBanner
             threshold={kahootBanner.threshold}
+            questionThreshold={kahootBanner.questionThreshold}
             survivors={kahootBanner.survivors}
             onDismiss={() => setKahootBanner(null)}
           />
@@ -435,6 +446,11 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
               {!kahootMode && kahootThreshold > 0 && (
                 <span className="text-[10px] text-yellow-400/60">
                   Kahoot ≤{kahootThreshold}
+                </span>
+              )}
+              {!kahootMode && kahootQuestionThreshold > 0 && (
+                <span className="text-[10px] text-yellow-400/60">
+                  Kahoot ≥{kahootQuestionThreshold} câu
                 </span>
               )}
               <ConnectionDot label={false} />

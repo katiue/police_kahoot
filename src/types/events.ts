@@ -96,6 +96,7 @@ export interface ClientToServerEvents {
       loginKey?: string
       /** Players ≤ this number triggers the Kahoot speed-round. 0 = disabled. */
       kahootThreshold?: number
+      kahootQuestionThreshold?: number
     },
     ack: (res: { ok: boolean; pin?: string; error?: string }) => void
   ) => void
@@ -154,6 +155,7 @@ export interface ServerToClientEvents {
   /** Fired when active players drop to/below kahootThreshold — signals mode switch */
   'kahoot:start': (payload: {
     threshold: number
+    questionThreshold: number
     survivors: PlayerView[]
     leaderboard: LeaderboardEntry[]
   }) => void
@@ -176,6 +178,7 @@ export interface HostSnapshot {
   randomizeAnswers?: boolean
   questionOrderMode?: QuestionOrderMode
   kahootThreshold?: number
+  kahootQuestionThreshold?: number
   kahootMode?: boolean
   leaderboard?: LeaderboardEntry[]
   /** Present when status === 'question'. */
@@ -201,6 +204,7 @@ export interface ProjectorSnapshot {
   randomizeAnswers?: boolean
   questionOrderMode?: QuestionOrderMode
   kahootThreshold?: number
+  kahootQuestionThreshold?: number
   kahootMode?: boolean
   leaderboard?: LeaderboardEntry[]
   /** Present when status === 'question'. */
