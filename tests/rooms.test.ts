@@ -360,6 +360,35 @@ describe('kahoot speed-round', () => {
     expect(mgr.getRoom(pin)!.kahootMode).toBe(true)
   })
 
+  it('lets the host manually start kahoot from a normal result screen', () => {
+    const pin = mgr.createRoom(makeQuiz(8), { kahootThreshold: 0, randomizeQuestions: false, randomizeAnswers: false })
+    const a = join(pin, 'Alice', 's1')
+    const b = join(pin, 'Bob', 's2')
+    mgr.startGame(pin)
+    mgr.submitAnswer(pin, a, 0, 1)
+    mgr.submitAnswer(pin, b, 0, 1)
+    const res = mgr.startKahoot(pin)
+    const room = mgr.getRoom(pin)!
+    expect(res.ok).toBe(true)
+    expect(room.kahootMode).toBe(true)
+    expect(room.status).toBe('question')
+    expect(mock.last('game:question')).toMatchObject({
+      index: 0,
+      kahootRound: { questionIndex: 1, totalQuestions: 5 },
+    })
+  })
+
+  it('does not manually start kahoot while a question is active', () => {
+    const pin = mgr.createRoom(makeQuiz(8), { kahootThreshold: 0, randomizeQuestions: false, randomizeAnswers: false })
+    join(pin, 'Alice', 's1')
+    join(pin, 'Bob', 's2')
+    mgr.startGame(pin)
+    const res = mgr.startKahoot(pin)
+    expect(res.ok).toBe(false)
+    expect(mgr.getRoom(pin)!.kahootMode).toBe(false)
+    expect(mgr.getRoom(pin)!.status).toBe('question')
+  })
+
   it('ends the game after the last kahoot question', () => {
     const pin = mgr.createRoom(makeQuiz(8), { kahootThreshold: 5, randomizeQuestions: false, randomizeAnswers: false })
     const a = join(pin, 'Alice', 's1')

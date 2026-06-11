@@ -300,6 +300,16 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
     })
   }
 
+  function startManualKahoot() {
+    getSocket().emit('host:kahoot', { pin, loginKey }, (res) => {
+      if (!res?.ok) {
+        toast.error(res?.error ?? 'Không thể chuyển sang Kahoot')
+        return
+      }
+      setKahootBanner(null)
+    })
+  }
+
   function confirmCurrentAction() {
     if (confirmAction === 'end') {
       getSocket().emit('host:end', { pin, loginKey })
@@ -804,7 +814,17 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
 
                   {/* Normal mode next button — bottom */}
                   {!kahootMode && (
-                    <div className="flex justify-center">
+                    <div className="flex flex-wrap justify-center gap-3">
+                      <Button
+                        size="xl"
+                        variant="outline"
+                        onClick={startManualKahoot}
+                        disabled={status !== 'result' || activePlayers.length === 0}
+                        className="gap-2 border-yellow-400/40 bg-yellow-400/10 text-yellow-300 hover:bg-yellow-400/20"
+                      >
+                        <Zap className="size-5" />
+                        Vào Kahoot
+                      </Button>
                       <Button
                         size="xl"
                         onClick={() =>

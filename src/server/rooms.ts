@@ -528,6 +528,17 @@ export class RoomManager {
     }
   }
 
+  startKahoot(pin: string): { ok: boolean; error?: string } {
+    const room = this.rooms.get(pin)
+    if (!room) return { ok: false, error: 'Không tìm thấy phòng' }
+    if (room.kahootMode) return { ok: false, error: 'Đang ở vòng Kahoot' }
+    if (room.status !== 'result') {
+      return { ok: false, error: 'Chỉ có thể chuyển sang Kahoot sau khi hiện kết quả câu hỏi' }
+    }
+    this.startKahootMode(room)
+    return { ok: true }
+  }
+
   endGame(roomOrPin: Room | string): void {
     const room = typeof roomOrPin === 'string' ? this.rooms.get(roomOrPin) : roomOrPin
     if (!room) return

@@ -105,6 +105,10 @@ export interface ClientToServerEvents {
   ) => void
   'host:start': (payload: { pin: string; loginKey?: string }) => void
   'host:next': (payload: { pin: string; loginKey?: string }) => void
+  'host:kahoot': (
+    payload: { pin: string; loginKey?: string },
+    ack?: (res: { ok: boolean; error?: string }) => void
+  ) => void
   'host:end': (payload: { pin: string; loginKey?: string }) => void
   'host:reset': (
     payload: { pin: string; loginKey?: string },

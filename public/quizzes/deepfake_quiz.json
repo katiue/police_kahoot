@@ -1,0 +1,605 @@
+{
+  "title": "Deepfake - Police Quiz 2026",
+  "questions": [
+    {
+      "id": "q1",
+      "text": "Bạn nhận được cuộc gọi video từ số lạ. Giọng nói giống hệt con trai bạn, khóc lóc báo bị tai nạn giao thông nghiêm trọng (có tiếng còi hú ồn ào ở nền) và đòi bạn chuyển khoản gấp 50 triệu đồng bằng tiền mã hóa hoặc thẻ cào, đồng thời yêu cầu giữ bí mật tuyệt đối. Bạn nên làm gì?",
+      "correctAnswerId": 1,
+      "difficulty": "easy",
+      "answers": [
+        { "id": 1, "text": "Cúp máy ngay lập tức, tự liên lạc lại với con trai hoặc người thân qua kênh liên lạc quen thuộc trước đó để xác minh." },
+        { "id": 2, "text": "Chuyển tiền ngay lập tức vì tiếng còi hú cảnh sát và giọng nói quá giống con trai đang trong cơn nguy kịch." },
+        { "id": 3, "text": "Tin tưởng tuyệt đối, chỉ chuyển một nửa số tiền để con trai kịp đóng viện phí cấp cứu trước." },
+        { "id": 4, "text": "Làm theo yêu cầu của cuộc gọi và giữ bí mật hoàn toàn để tránh rắc rối pháp lý cho gia đình." }
+      ]
+    },
+    {
+      "id": "q2",
+      "text": "Đồng nghiệp hoặc cấp trên gọi điện đột xuất bằng số lạ hoặc qua Zalo, yêu cầu bạn chuyển khoản gấp một khoản tiền lớn của công ty hoặc xuất mật khẩu hệ thống. Hành động nào thể hiện đúng quy trình kiểm tra kênh phụ độc lập (Out-of-Band Callback)?",
+      "correctAnswerId": 1,
+      "difficulty": "easy",
+      "answers": [
+        { "id": 1, "text": "Ngắt cuộc gọi ngay, tự tìm số điện thoại nội bộ hoặc tài khoản Teams/Slack đã được xác minh trước đó để gọi lại kiểm tra." },
+        { "id": 2, "text": "Tiếp tục cuộc gọi, yêu cầu sếp đọc số tài khoản để đối chiếu xem có đúng tài khoản quen thuộc của công ty không." },
+        { "id": 3, "text": "Gọi lại ngay vào chính số điện thoại vừa gọi đến để xác nhận lại nhu cầu cấp bách của sếp." },
+        { "id": 4, "text": "Thực hiện giao dịch chuyển tiền ngay để tránh làm chậm trễ công việc, sau đó báo cáo qua email." }
+      ]
+    },
+    {
+      "id": "q3",
+      "text": "Để hạn chế nguy cơ bị kẻ xấu tạo ra một bản sao giọng nói (vocal clone) cực kỳ giống bạn bằng AI để đi lừa đảo, biện pháp bảo vệ dấu chân kỹ thuật số (Audio-Visual OPSEC) nào dưới đây là tốt nhất?",
+      "correctAnswerId": 1,
+      "difficulty": "easy",
+      "answers": [
+        { "id": 1, "text": "Hạn chế đăng tải các đoạn video/âm thanh nói chuyện dài, rõ tiếng, chất lượng cao của bản thân lên các nền tảng mạng xã hội công khai." },
+        { "id": 2, "text": "Chỉ đăng các đoạn clip nói chuyện ngắn dưới 10 giây vì nghĩ AI cần hàng giờ âm thanh phòng thu mới bắt chước được." },
+        { "id": 3, "text": "Đổi mật khẩu định kỳ của tất cả tài khoản mạng xã hội cá nhân mỗi tháng." },
+        { "id": 4, "text": "Cố gắng nói giọng trầm hoặc thay đổi ngữ điệu liên tục trong mọi cuộc giao tiếp hàng ngày." }
+      ]
+    },
+    {
+      "id": "q4",
+      "text": "Một người tự xưng là nhân viên bộ phận IT (Helpdesk) của công ty chủ động gọi điện báo tài khoản của bạn đang gặp sự cố bảo mật nghiêm trọng và yêu cầu cung cấp mã xác thực OTP hoặc mã phê duyệt MFA để xử lý. Dấu hiệu cảnh báo đỏ (Red Flag) là gì?",
+      "correctAnswerId": 1,
+      "difficulty": "easy",
+      "answers": [
+        { "id": 1, "text": "Bộ phận kỹ thuật chủ động liên hệ yêu cầu bạn cung cấp mã xác thực OTP, mật khẩu hoặc xác nhận phê duyệt MFA trực tiếp." },
+        { "id": 2, "text": "Nhân viên hỗ trợ kỹ thuật gọi điện vào đúng khung giờ làm việc hành chính của công ty." },
+        { "id": 3, "text": "Nhân viên IT sử dụng ngôn từ chuyên nghiệp và đọc chính xác họ tên của bạn." },
+        { "id": 4, "text": "Nhân viên yêu cầu bạn tự truy cập vào cổng tự phục vụ của hệ thống để thay đổi mật khẩu cá nhân." }
+      ]
+    },
+    {
+      "id": "q5",
+      "text": "Trong các kịch bản lừa đảo \"Family Emergency\" nhắm vào các gia đình, kẻ tấn công thường sử dụng các công cụ Deepfake-as-a-service trên Dark Web cùng kỹ thuật thu thập mẫu giọng nói để làm gì?",
+      "correctAnswerId": 1,
+      "difficulty": "easy",
+      "answers": [
+        { "id": 1, "text": "Quét và thu thập các mẫu âm thanh từ các nền tảng mạng xã hội công khai của người thân để tạo giọng nói nhân bản giống hệt." },
+        { "id": 2, "text": "Tấn công và chiếm đoạt sim điện thoại vật lý (Sim Swap) của nạn nhân từ xa." },
+        { "id": 3, "text": "Bẻ khóa trực tiếp mật mã két sắt điện tử gia đình thông qua sóng vô tuyến điện thoại." },
+        { "id": 4, "text": "Cài đặt mã độc vào micro của các thiết bị loa thông minh trong nhà nạn nhân." }
+      ]
+    },
+    {
+      "id": "q6",
+      "text": "Khi nhận được một cuộc gọi tự xưng là từ ngân hàng yêu cầu bạn đọc mã OTP, lý do cốt lõi nào khiến bạn tuyệt đối không được cung cấp mã này?",
+      "correctAnswerId": 1,
+      "difficulty": "easy",
+      "answers": [
+        { "id": 1, "text": "Mã OTP là lớp xác thực giao dịch cuối cùng để thực hiện chuyển khoản; ngân hàng chính thống không bao giờ yêu cầu khách hàng cung cấp mã này." },
+        { "id": 2, "text": "Đọc mã OTP sẽ làm rò rỉ hình ảnh camera trước của điện thoại bạn cho kẻ xấu." },
+        { "id": 3, "text": "Cung cấp mã OTP sẽ khiến định vị GPS của thiết bị bị chuyển hướng sang nước ngoài." },
+        { "id": 4, "text": "Đọc OTP sẽ làm mất hiệu lực của gói bảo hiểm thiết bị di động mà bạn đã đăng ký." }
+      ]
+    },
+    {
+      "id": "q7",
+      "text": "Trong các vụ lừa đảo \"Corporate Whaling\" (giả mạo lãnh đạo cấp cao), mục tiêu tâm lý chính mà kẻ tấn công muốn khai thác ở các nhân viên là gì?",
+      "correctAnswerId": 1,
+      "difficulty": "easy",
+      "answers": [
+        { "id": 1, "text": "Thao túng hệ thống cấp bậc trong tổ chức để ép buộc nhân viên tuân thủ các yêu cầu tài chính bất thường vì sợ ảnh hưởng công việc." },
+        { "id": 2, "text": "Kích thích lòng tham của nhân viên bằng cách hứa hẹn thăng chức hoặc tăng lương ngay lập tức." },
+        { "id": 3, "text": "Tận dụng sự lười biếng của nhân viên trong việc thực hiện các quy trình đối soát tài chính hàng tuần." },
+        { "id": 4, "text": "Khai thác sự thiếu hiểu biết của nhân viên về các quy định thuế quốc tế của doanh nghiệp." }
+      ]
+    },
+    {
+      "id": "q8",
+      "text": "Điểm khác biệt cơ bản giữa cuộc gọi lừa đảo Cheap Fake (hoặc Shallow Fake) và Deepfake tinh vi là gì?",
+      "correctAnswerId": 1,
+      "difficulty": "easy",
+      "answers": [
+        { "id": 1, "text": "Cheap Fake sử dụng các công cụ biên tập thô sơ như cắt ghép, làm chậm hoặc đổi tiếng thủ công mà không cần mạng thần kinh phức tạp." },
+        { "id": 2, "text": "Cheap Fake bắt buộc phải chạy trên hệ thống siêu máy tính đám mây để tạo ra độ phân giải cực cao." },
+        { "id": 3, "text": "Cheap Fake chỉ có thể giả mạo chữ viết tay chứ không thể can thiệp vào âm thanh và video." },
+        { "id": 4, "text": "Cheap Fake luôn bị chặn tự động bởi các phần mềm chống virus thông thường trên điện thoại di động." }
+      ]
+    },
+    {
+      "id": "q9",
+      "text": "Trên các ứng dụng hẹn hò hoặc mạng xã hội, một tài khoản có ảnh cá nhân đẹp xuất sắc và chủ động đẩy nhanh tốc độ thân mật tình cảm, nhưng luôn viện cớ không thể gặp mặt trực tiếp hoặc gọi video trong điều kiện đủ sáng. Dấu hiệu cảnh báo đỏ (Red Flag) ở đây là gì?",
+      "correctAnswerId": 1,
+      "difficulty": "easy",
+      "answers": [
+        { "id": 1, "text": "Khả năng đây là tài khoản sử dụng khuôn mặt được tổng hợp hoàn toàn bằng AI (Zero-Footprint profile) và dùng bộ lọc tráo mặt thời gian thực trong điều kiện thiếu sáng." },
+        { "id": 2, "text": "Người dùng này đang sử dụng thiết bị mạng 3G tốc độ thấp nên không thể truyền tải luồng video chất lượng cao." },
+        { "id": 3, "text": "Hệ điều hành điện thoại của đối phương đã được nâng cấp chứng chỉ bảo mật iBeta Level 2 chặn hoàn toàn camera." },
+        { "id": 4, "text": "Đối phương đang tham gia một chương trình thực tế ẩn danh của các đài truyền hình quốc tế." }
+      ]
+    },
+    {
+      "id": "q10",
+      "text": "Theo thực tế thực địa được ghi nhận, tần suất các vụ tấn công giả mạo giọng nói (vishing) trong các trung tâm liên lạc (contact centers) của doanh nghiệp hiện nay đã tăng lên mức nào?",
+      "correctAnswerId": 1,
+      "difficulty": "easy",
+      "answers": [
+        { "id": 1, "text": "Các vụ tấn công đã tăng trưởng vọt 400% trong những năm gần đây, đạt mức trung bình khoảng 7 vụ tấn công mỗi ngày ở mỗi đơn vị." },
+        { "id": 2, "text": "Mỗi trung tâm liên lạc chỉ ghi nhận trung bình 1 vụ tấn công giả mạo mỗi năm do hệ thống bảo mật mạng quá mạnh." },
+        { "id": 3, "text": "Đã hoàn toàn chấm dứt nhờ vào sự ra đời của các chuẩn liveness kiểm thử giọng nói dựa trên phần cứng điện thoại." },
+        { "id": 4, "text": "Tần suất tấn công giảm đi một nửa do kẻ xấu chuyển sang hình thức gửi thư tay truyền thống." }
+      ]
+    },
+    {
+      "id": "q11",
+      "text": "Trong các kịch bản lừa đảo Corporate Whaling, dấu hiệu cảnh báo đỏ (Red Flag) về hành vi giao tiếp của kẻ giả mạo CEO nhắm vào nhân viên cấp dưới là gì?",
+      "correctAnswerId": 1,
+      "difficulty": "easy",
+      "answers": [
+        { "id": 1, "text": "Chủ động nhắn tin qua các ứng dụng chat cá nhân ngoài giờ làm việc chính thức và yêu cầu bypass các quy trình tài chính chuẩn." },
+        { "id": 2, "text": "Yêu cầu nhân viên lập báo cáo tiến độ dự án thông qua hệ thống quản lý công việc Jira của công ty." },
+        { "id": 3, "text": "Sử dụng email chính thức của tập đoàn có đuôi mở rộng đã được xác thực bảo mật đa yếu tố." },
+        { "id": 4, "text": "Tổ chức một cuộc họp trực tiếp tại văn phòng đại diện để ký hợp đồng trước mặt ban pháp chế." }
+      ]
+    },
+    {
+      "id": "q12",
+      "text": "Sự tăng trưởng thần tốc 400% của các vụ lừa đảo giả giọng nói (vishing) trong thời gian qua chủ yếu được thúc đẩy bởi yếu tố kỹ thuật nào?",
+      "correctAnswerId": 1,
+      "difficulty": "easy",
+      "answers": [
+        { "id": 1, "text": "Sự phổ biến của các mô hình generative AI zero-shot cho phép tạo giọng nói nhân bản chất lượng cao chỉ từ 20-30 giây âm thanh mẫu." },
+        { "id": 2, "text": "Các nhà mạng viễn thông đồng loạt gỡ bỏ hoàn toàn tường lửa bảo mật quốc tế của mạng VoIP." },
+        { "id": 3, "text": "Tốc độ xử lý của mạng internet di động 5G giúp truyền tải tệp âm thanh WAV dung lượng hàng Gigabyte tức thì." },
+        { "id": 4, "text": "Kẻ tấn công sử dụng các thiết bị ghi âm chuyên dụng của đài truyền hình để thu âm nạn nhân trực tiếp." }
+      ]
+    },
+    {
+      "id": "q13",
+      "text": "Một người cho rằng: 'Chỉ cần thực hiện cuộc gọi video trực tiếp thì chắc chắn đối phương là thật, vì hình ảnh thời gian thực không thể làm giả trơn tru được'. Quan niệm này sai lầm như thế nào?",
+      "correctAnswerId": 1,
+      "difficulty": "easy",
+      "answers": [
+        { "id": 1, "text": "Công nghệ Deepfake thời gian thực hiện nay có thể tráo đổi khuôn mặt và giả giọng nói với độ trễ cực thấp dưới 200 ms, không thể phát hiện bằng mắt thường." },
+        { "id": 2, "text": "Cuộc gọi video thời gian thực bắt buộc phải truyền qua các máy chủ trung gian mã hóa nên AI không thể can thiệp." },
+        { "id": 3, "text": "Hệ thống truyền dẫn video trực tuyến luôn tự động chặn tất cả các luồng hình ảnh nhân tạo dựa trên AI." },
+        { "id": 4, "text": "Các mô hình tráo mặt chỉ có thể xử lý hình ảnh tĩnh chứ chưa từng tạo ra được chuyển động cơ thể trong video." }
+      ]
+    },
+    {
+      "id": "q14",
+      "text": "Quy trình Out-of-Band Callback (Gọi lại kênh phụ) yêu cầu bạn làm gì khi nhận được một cuộc gọi khẩn cấp từ đối tác yêu cầu chuyển tiền gấp?",
+      "correctAnswerId": 1,
+      "difficulty": "easy",
+      "answers": [
+        { "id": 1, "text": "Cúp máy ngay lập tức và chủ động thực hiện một cuộc gọi mới bằng số điện thoại chính thức được lưu trữ trong danh bạ nội bộ uy tín." },
+        { "id": 2, "text": "Bấm nút gọi lại ngay trên chính lịch sử cuộc gọi vừa liên hệ để hỏi rõ chi tiết giao dịch." },
+        { "id": 3, "text": "Yêu cầu người gọi gửi một tin nhắn SMS đính kèm liên kết xác thực danh tính để bạn bấm vào xác nhận." },
+        { "id": 4, "text": "Tiếp tục cuộc trò chuyện và cố gắng phân tích xem giọng nói của đối phương có âm thanh lạ hay không." }
+      ]
+    },
+    {
+      "id": "q15",
+      "text": "Nếu bạn phát hiện mình đã bị lừa đảo chuyển khoản do một cuộc gọi video giả mạo Deepfake, hành động khẩn cấp nào dưới đây cần thực hiện đầu tiên?",
+      "correctAnswerId": 1,
+      "difficulty": "easy",
+      "answers": [
+        { "id": 1, "text": "Ngừng lập tức mọi giao dịch liên quan, chụp màn hình lưu lại bằng chứng truyền thông và báo cáo ngay cơ quan chức năng (như FTC hoặc cơ quan công an)." },
+        { "id": 2, "text": "Tiếp tục chuyển thêm một khoản tiền nhỏ nữa để giữ kết nối với kẻ lừa đảo nhằm lần ra dấu vết của chúng." },
+        { "id": 3, "text": "Xóa toàn bộ lịch sử trò chuyện và các hình ảnh giao dịch trên điện thoại để tránh bị rò rỉ dữ liệu cá nhân." },
+        { "id": 4, "text": "Cố gắng tự thiết kế một cuộc gọi video giả mạo tương tự để đe dọa ngược lại kẻ tấn công nhằm đòi lại tiền." }
+      ]
+    },
+    {
+      "id": "q16",
+      "text": "Thiệt hại tài chính do các vụ lừa đảo Deepfake gây ra tại thị trường Bắc Mỹ được ghi nhận ở mức độ nghiêm trọng nào?",
+      "correctAnswerId": 1,
+      "difficulty": "easy",
+      "answers": [
+        { "id": 1, "text": "Đã vượt mốc 200 triệu USD chỉ trong vòng một quý đơn lẻ của năm khảo sát." },
+        { "id": 2, "text": "Vẫn ở mức rất thấp dưới 10.000 USD do người dân nâng cao ý thức cảnh giác cao độ." },
+        { "id": 3, "text": "Hoàn toàn bằng 0 vì tất cả các ngân hàng Bắc Mỹ đã áp dụng công nghệ khóa sinh trắc học tuyệt đối." },
+        { "id": 4, "text": "Tất cả các khoản thiệt hại đều được bảo hiểm bồi hoàn đầy đủ trong vòng 24 giờ kể từ khi xảy ra sự việc." }
+      ]
+    },
+    {
+      "id": "q17",
+      "text": "Các chuyên gia dự báo tổng thiệt hại toàn cầu do gian lận bằng trí tuệ nhân tạo tạo sinh (Generative AI) gây ra sẽ tiệm cận con số nào vào năm 2027?",
+      "correctAnswerId": 1,
+      "difficulty": "easy",
+      "answers": [
+        { "id": 1, "text": "Ước tính sẽ đạt mức 40 tỷ USD hàng năm do sự bùng nổ và dễ tiếp cận của các công cụ Deepfake." },
+        { "id": 2, "text": "Sẽ giảm về mức tối thiểu do các tập đoàn công nghệ lớn cam kết xóa bỏ hoàn toàn AI tạo sinh." },
+        { "id": 3, "text": "Được dự báo duy trì ổn định ở mức 50 triệu USD nhờ các chuẩn mã hóa bảo mật truyền thông mới." },
+        { "id": 4, "text": "Sẽ chỉ ảnh hưởng đến thị trường trao đổi tiền mã hóa phi tập trung mà không tác động đến tài chính truyền thống." }
+      ]
+    },
+    {
+      "id": "q18",
+      "text": "Khi nghi ngờ một cuộc gọi video là giả mạo Deepfake thời gian thực, bạn yêu cầu người bên kia quay đầu chậm sang một bên góc 90 độ (nhìn nghiêng hoàn toàn). Thử thách này khai thác điểm yếu chí mạng nào của AI?",
+      "correctAnswerId": 1,
+      "difficulty": "medium",
+      "answers": [
+        { "id": 1, "text": "Sự mất căn chỉnh tọa độ của các bộ theo dõi điểm mốc khuôn mặt 2D (2D landmark trackers) khi góc xoay đầu vượt yaw angle cực đại (±90°)." },
+        { "id": 2, "text": "Khả năng xử lý âm thanh vòm bị ngắt quãng khi micro không hướng thẳng vào màn hình điện thoại." },
+        { "id": 3, "text": "Sự thay đổi đột ngột về cường độ sáng khiến thuật toán AI không thể nhận diện được màu da cổ." },
+        { "id": 4, "text": "Độ trễ truyền dẫn của mạng viễn thông di động tăng lên đột ngột khi camera chuyển góc chụp rộng." }
+      ]
+    },
+    {
+      "id": "q19",
+      "text": "Bạn yêu cầu đối phương vẫy tay nhanh liên tục trước mặt trong một cuộc gọi video nghi ngờ lừa đảo. Hiện tượng lỗi kỹ thuật (artifact signature) rõ rệt nhất bạn sẽ quan sát thấy là gì nếu đó là Deepfake?",
+      "correctAnswerId": 1,
+      "difficulty": "medium",
+      "answers": [
+        { "id": 1, "text": "Khuôn mặt bị nhòe nặng, xuất hiện các vệt răng cưa biến dạng quanh ngón tay hoặc lớp tráo mặt bị rách, lag do giới hạn vẽ ranh giới tay-mặt." },
+        { "id": 2, "text": "Hệ thống video tự động bật chế độ lọc nhiễu thông minh làm sắc nét từng chuyển động của bàn tay." },
+        { "id": 3, "text": "Âm thanh cuộc gọi tự động chuyển sang chế độ đàm thoại tần số thấp để tiết kiệm năng lượng xử lý." },
+        { "id": 4, "text": "Màn hình hiển thị lập tức thu nhỏ kích thước khung hình về dạng ảnh đại diện tĩnh." }
+      ]
+    },
+    {
+      "id": "q20",
+      "text": "Trong vụ việc Ferrari Executive đẩy lùi cuộc gọi giả giọng CEO thành công năm 2024, câu hỏi thử thách tri thức cá nhân phi công khai (Non-OSINT) được đưa ra nhắm vào chi tiết nào?",
+      "correctAnswerId": 1,
+      "difficulty": "medium",
+      "answers": [
+        { "id": 1, "text": "Tên của một cuốn sách chuyên biệt, ngách (niche book) mà CEO đã trực tiếp giới thiệu cho vị giám đốc này trước đó." },
+        { "id": 2, "text": "Mã số thuế cá nhân và số tài khoản ngân hàng chính thức của CEO đang đăng ký tại Thụy Sĩ." },
+        { "id": 3, "text": "Địa chỉ nhà riêng thời thơ ấu của CEO được công khai trong cuốn hồi ký bán chạy nhất trên Amazon." },
+        { "id": 4, "text": "Tên dòng xe thể thao đời mới nhất mà hãng Ferrari chuẩn bị công bố ra thị trường toàn cầu." }
+      ]
+    },
+    {
+      "id": "q21",
+      "text": "Nhiều tài liệu đào tạo an ninh mạng cũ hướng dẫn nhân viên phát hiện Deepfake bằng cách tìm các lỗi cảm quan như giọng nói robotic, chớp mắt bất thường hoặc lỗi răng. Tại sao quy tắc này hoàn toàn lỗi thời vào năm 2026?",
+      "correctAnswerId": 1,
+      "difficulty": "medium",
+      "answers": [
+        { "id": 1, "text": "Mô hình AI tạo sinh chạy trên GPU cá nhân thế hệ mới đã xóa nhòa khoảng cách fidelity, tự động tạo nhịp thở tự nhiên, chớp mắt và hắng giọng hoàn hảo." },
+        { "id": 2, "text": "Toàn bộ phần mềm Deepfake hiện nay đã chuyển sang cơ chế xử lý bằng giọng nói tĩnh không có chuyển động môi." },
+        { "id": 3, "text": "Các tiêu chuẩn nén video mới trên mạng xã hội đã tự động loại bỏ mọi tạp âm nền trong các cuộc hội thoại trực tuyến." },
+        { "id": 4, "text": "Kẻ lừa đảo chỉ sử dụng hình ảnh 3D tĩnh để thực hiện các cuộc gọi video nên không có lỗi chuyển động." }
+      ]
+    },
+    {
+      "id": "q22",
+      "text": "Hình thức tấn công tiêm mã phần mềm (Software Injection Attack) vượt qua hệ thống xác thực sinh trắc học onboarding (KYC) được thực hiện dựa trên cơ chế nào?",
+      "correctAnswerId": 1,
+      "difficulty": "medium",
+      "answers": [
+        { "id": 1, "text": "Sử dụng các phần mềm camera ảo (virtual camera) để bơm trực tiếp luồng video giả lập, pre-recorded vào ứng dụng mà không đi qua ống kính vật lý thực tế." },
+        { "id": 2, "text": "Đặt một tấm ảnh in độ phân giải siêu cao trước ống kính camera của điện thoại thông minh." },
+        { "id": 3, "text": "Đeo mặt nạ silicon 3D mô phỏng chính xác cấu trúc cơ mặt của nạn nhân khi đứng trước camera." },
+        { "id": 4, "text": "Thay đổi mã nguồn của hệ điều hành di động từ xa thông qua việc gửi tin nhắn chứa mã độc ẩn." }
+      ]
+    },
+    {
+      "id": "q23",
+      "text": "Dấu hiệu cảnh báo đỏ (Red Flag) kỹ thuật quan trọng nhất giúp hệ thống phát hiện một nỗ lực vượt qua định danh KYC trực tuyến bằng tấn công tiêm luồng video là gì?",
+      "correctAnswerId": 1,
+      "difficulty": "medium",
+      "answers": [
+        { "id": 1, "text": "Siêu dữ liệu (metadata) đăng ký driver camera ảo (Virtual Driver) xuất hiện trong luồng ghi nhận của hệ thống thay vì mã định danh camera phần cứng." },
+        { "id": 2, "text": "Tốc độ khung hình truyền tải video (FPS) dao động thất thường từ mức 30 FPS xuống dưới 29 FPS." },
+        { "id": 3, "text": "Người dùng đăng ký định danh vào các khung giờ đêm muộn từ 22h tối đến 4h sáng hôm sau." },
+        { "id": 4, "text": "Kích thước tệp tin hình ảnh giấy tờ tùy thân tải lên vượt quá dung lượng cho phép của hệ thống lưu trữ." }
+      ]
+    },
+    {
+      "id": "q24",
+      "text": "Các phần mềm định danh khách hàng đạt chứng nhận iBeta Level 2 liveness được thiết kế cốt lõi để phòng chống loại hình tấn công nào?",
+      "correctAnswerId": 1,
+      "difficulty": "medium",
+      "answers": [
+        { "id": 1, "text": "Các cuộc tấn công trình diện vật lý (Presentation Attacks) như đưa ảnh chụp, mặt nạ silicon hoặc màn hình hiển thị trước camera vật cứng." },
+        { "id": 2, "text": "Các cuộc tấn công tiêm luồng dữ liệu số ảo trực tiếp (Injection Attacks) từ trình giả lập hệ điều hành." },
+        { "id": 3, "text": "Các cuộc tấn công lừa đảo chiếm đoạt tài khoản bằng kỹ thuật thiết kế giao diện mạng giả mạo (Phishing)." },
+        { "id": 4, "text": "Các cuộc tấn công từ chối dịch vụ phân tán (DDoS) nhắm vào hạ tầng máy chủ của đơn vị định danh." }
+      ]
+    },
+    {
+      "id": "q25",
+      "text": "Khi đối mặt với các tệp tin Deepfake thế giới thực nằm ngoài tập dữ liệu huấn luyện tiêu chuẩn (out-of-distribution), độ chính xác của các mô hình phát hiện pháp y (forensic detection models) bị ảnh hưởng như thế nào?",
+      "correctAnswerId": 1,
+      "difficulty": "medium",
+      "answers": [
+        { "id": 1, "text": "Độ chính xác của mô hình bị sụt giảm nghiêm trọng tới 50% do sự biến thiên liên tục của các thuật toán sinh hình ảnh mới." },
+        { "id": 2, "text": "Mô hình tự động nâng cao năng lực nhận diện và đạt độ chính xác tuyệt đối 100% nhờ cơ chế tự học." },
+        { "id": 3, "text": "Độ chính xác duy trì ổn định không đổi nhờ vào các đặc tính cấu trúc hình học bất biến của khuôn mặt người." },
+        { "id": 4, "text": "Hệ thống sẽ từ chối phân tích và tự động đưa ra cảnh báo lỗi kết nối máy chủ đám mây." }
+      ]
+    },
+    {
+      "id": "q26",
+      "text": "Tại sao các công cụ tìm kiếm hình ảnh đảo ngược (reverse-image search) phổ biến hiện nay lại hoàn toàn bất lực trước các tài khoản giả mạo sử dụng ảnh chân dung Deepfake (AI Catfishing)?",
+      "correctAnswerId": 1,
+      "difficulty": "medium",
+      "answers": [
+        { "id": 1, "text": "Các chân dung này được tạo hoàn toàn bằng AI sinh hình ảnh mới, chưa từng tồn tại trên internet nên không có dữ liệu đối sánh lịch sử." },
+        { "id": 2, "text": "Hình ảnh Deepfake chứa các mã bảo mật chặn không cho các con bot quét dữ liệu của Google hay Bing hoạt động." },
+        { "id": 3, "text": "Mọi bức ảnh tạo bằng trí tuệ nhân tạo đều tự động thay đổi cấu trúc pixel sau mỗi 60 giây để tránh bị phát hiện." },
+        { "id": 4, "text": "Công cụ tìm kiếm đảo ngược chỉ hỗ trợ quét các bức ảnh phong cảnh hoặc động vật chứ không quét chân dung người." }
+      ]
+    },
+    {
+      "id": "q27",
+      "text": "Cơ chế quản lý tài chính phê duyệt kép (Dual-Authorization) hoạt động dựa trên nguyên lý an ninh cơ bản nào để triệt tiêu rủi ro Deepfake?",
+      "correctAnswerId": 1,
+      "difficulty": "medium",
+      "answers": [
+        { "id": 1, "text": "Loại bỏ điểm yếu đơn lẻ (single point of failure) bằng cách yêu cầu hai nhân sự độc lập phê duyệt và xác thực chéo qua hai kênh phụ riêng biệt." },
+        { "id": 2, "text": "Bắt buộc toàn bộ hệ thống giao dịch phải sử dụng chữ ký tay vật lý trên giấy nến chống sao chép." },
+        { "id": 3, "text": "Yêu cầu ngân hàng chỉ thực hiện giao dịch chuyển tiền ra nước ngoài vào một khung giờ cố định duy nhất trong ngày." },
+        { "id": 4, "text": "Tự động giới hạn số tiền chuyển khoản tối đa của mỗi tài khoản doanh nghiệp ở mức dưới 100 USD." }
+      ]
+    },
+    {
+      "id": "q28",
+      "text": "Kịch bản lừa đảo giả danh IT Helpdesk (vishing) thường sử dụng yếu tố áp lực tâm lý khẩn cấp nhằm mục đích gì ở nạn nhân?",
+      "correctAnswerId": 1,
+      "difficulty": "medium",
+      "answers": [
+        { "id": 1, "text": "Kích hoạt hành vi tuân thủ mù quáng trước thẩm quyền kỹ thuật trong tình huống khủng hoảng giả tạo để nạn nhân vội vã bàn giao mã xác thực." },
+        { "id": 2, "text": "Làm cho nạn nhân cảm thấy chán nản và muốn cúp máy để kẻ tấn công dễ dàng hack hệ thống chạy ẩn." },
+        { "id": 3, "text": "Ép buộc nạn nhân phải tự cài đặt lại hệ điều hành của thiết bị di động sang phiên bản thử nghiệm." },
+        { "id": 4, "text": "Khiến nạn nhân nghi ngờ năng lực chuyên môn của bộ phận an ninh mạng nội bộ của chính công ty mình." }
+      ]
+    },
+    {
+      "id": "q29",
+      "text": "Độ trễ xử lý (processing latency) dưới 200 ms của các mô hình Deepfake thời gian thực thế hệ mới mang lại ưu thế quyết định nào cho kẻ tấn công?",
+      "correctAnswerId": 1,
+      "difficulty": "medium",
+      "answers": [
+        { "id": 1, "text": "Tạo ra sự mượt mà hoàn hảo trong giao tiếp tương tác trực tiếp, khiến bộ não con người không thể nhận biết được độ trễ hình ảnh và giọng nói." },
+        { "id": 2, "text": "Giúp tệp tin Deepfake có dung lượng siêu nhẹ để dễ dàng gửi đính kèm qua email doanh nghiệp thông thường." },
+        { "id": 3, "text": "Cho phép chạy thuật toán sinh hình ảnh mà hoàn toàn không cần tiêu thụ tài nguyên phần cứng GPU của máy tính." },
+        { "id": 4, "text": "Tự động vô hiệu hóa các phần mềm quét virus cài đặt trên máy tính của nạn nhân ngay khi kết nối cuộc gọi." }
+      ]
+    },
+    {
+      "id": "q30",
+      "text": "Hiện tượng micro-glitch (lỗi kết xuất siêu nhỏ) xuất hiện trên luồng video trong cuộc gọi liveness onboarding là dấu hiệu của hành vi nào?",
+      "correctAnswerId": 1,
+      "difficulty": "medium",
+      "answers": [
+        { "id": 1, "text": "Sự lệch đồng bộ kết xuất giữa luồng video tiêm kỹ thuật số ảo và giao thức nhận diện thời gian thực của ứng dụng KYC." },
+        { "id": 2, "text": "Lỗi vật lý phát sinh do bụi bẩn bám trên ống kính camera trước của điện thoại người dùng." },
+        { "id": 3, "text": "Sóng điện từ xung quanh thiết bị di động bị nhiễu do ảnh hưởng của thời tiết xấu bên ngoài." },
+        { "id": 4, "text": "Hệ thống máy chủ của ngân hàng đang tự động nâng cấp cơ sở dữ liệu lưu trữ chữ ký số." }
+      ]
+    },
+    {
+      "id": "q31",
+      "text": "Trong tổng số các nỗ lực gian lận tài chính được ghi nhận toàn cầu, tỷ lệ các vụ lừa đảo sử dụng công nghệ Deepfake chiếm thị phần đáng báo động nào?",
+      "correctAnswerId": 1,
+      "difficulty": "medium",
+      "answers": [
+        { "id": 1, "text": "Chiếm khoảng 6.5% tổng số nỗ lực gian lận trong toàn ngành tài chính, và đang có xu hướng tăng nhanh." },
+        { "id": 2, "text": "Chỉ chiếm tỷ lệ không đáng kể dưới 0.01% do chi phí vận hành công nghệ AI quá đắt đỏ." },
+        { "id": 3, "text": "Đã đạt mức chi phối tuyệt đối trên 95% do tất cả các hình thức lừa đảo cũ đã bị triệt tiêu hoàn toàn." },
+        { "id": 4, "text": "Duy trì ở mức 12% nhưng chỉ xuất hiện ở các quốc gia vùng Đông Âu và Nam Mỹ." }
+      ]
+    },
+    {
+      "id": "q32",
+      "text": "Tốc độ gia tăng các vụ lừa đảo Deepfake trong lĩnh vực giao dịch tài sản mã hóa (cryptocurrency) được ghi nhận ở mức nào?",
+      "correctAnswerId": 1,
+      "difficulty": "medium",
+      "answers": [
+        { "id": 1, "text": "Tăng trưởng vọt 30% so với năm trước do tính chất phi tập trung và khó thu hồi của các giao dịch blockchain." },
+        { "id": 2, "text": "Giảm mạnh 50% nhờ vào sự ra đời của các giao thức xác thực ví cứng đa chữ ký thế hệ mới." },
+        { "id": 3, "text": "Hoàn toàn đi ngang do kẻ xấu không tìm được cách tích hợp Deepfake vào luồng giao dịch thông minh." },
+        { "id": 4, "text": "Tăng trưởng gấp 10 lần nhưng chỉ ảnh hưởng đến các tài khoản của nhà phát triển dự án tiền ảo." }
+      ]
+    },
+    {
+      "id": "q33",
+      "text": "Nguyên lý cốt lõi của triết lý bảo mật Zero-Trust đối với các tương tác truyền thông kỹ thuật số thời đại Generative AI yêu cầu điều gì?",
+      "correctAnswerId": 1,
+      "difficulty": "medium",
+      "answers": [
+        { "id": 1, "text": "Mặc định coi tất cả luồng dữ liệu truyền thông (video, âm thanh) là không tin cậy cho đến khi được kiểm chứng độc lập bằng quy trình phi cảm quan." },
+        { "id": 2, "text": "Chỉ tin tưởng vào các cuộc gọi video được thực hiện từ các dòng điện thoại thông minh cao cấp nhất." },
+        { "id": 3, "text": "Bắt buộc mọi cuộc giao tiếp doanh nghiệp phải sử dụng mật khẩu dùng một lần (OTP) gửi qua mạng viễn thông." },
+        { "id": 4, "text": "Tin tưởng hoàn toàn vào các đối tác đã từng gặp mặt trực tiếp trong lịch sử làm việc trên 5 năm." }
+      ]
+    },
+    {
+      "id": "q34",
+      "text": "Trong vụ lừa đảo Corporate Whaling kinh điển cướp đi 25 triệu USD của một tập đoàn đa quốc gia, cấu trúc của cuộc họp video trực tuyến giả mạo đó diễn ra như thế nào?",
+      "correctAnswerId": 1,
+      "difficulty": "medium",
+      "answers": [
+        { "id": 1, "text": "Một cuộc họp trực tuyến hoàn chỉnh mà tất cả những người tham gia khác đều là thực thể AI tổng hợp mô phỏng hoàn hảo các lãnh đạo của công ty." },
+        { "id": 2, "text": "Kẻ tấn công chỉ dùng một bức ảnh tĩnh của CEO làm avatar đại diện và nói chuyện bằng giọng robot méo tiếng." },
+        { "id": 3, "text": "Cuộc gọi video bị chèn mã độc liên tục gây nhiễu sóng màn hình khiến nhân viên kế toán không thể nhìn rõ mặt ai." },
+        { "id": 4, "text": "Kẻ lừa đảo sử dụng công cụ giả danh số điện thoại của ban pháp chế để gửi tin nhắn yêu cầu chuyển khoản khẩn cấp." }
+      ]
+    },
+    {
+      "id": "q35",
+      "text": "Điểm khác biệt cốt lõi về ranh giới kỹ thuật giữa một cuộc tấn công trình diện sinh trắc (Presentation Attack) và một cuộc tấn công tiêm mã (Injection Attack) là gì?",
+      "correctAnswerId": 1,
+      "difficulty": "hard",
+      "answers": [
+        { "id": 1, "text": "Presentation Attack đưa đạo cụ vật lý trước ống kính camera thực; còn Injection Attack can thiệp ở cấp độ phần mềm để đưa luồng video trực tiếp vào API hệ thống." },
+        { "id": 2, "text": "Presentation Attack chỉ nhắm vào hệ thống nhận diện giọng nói; còn Injection Attack nhắm mục tiêu tráo đổi giấy tờ tùy thân." },
+        { "id": 3, "text": "Presentation Attack đòi hỏi quyền truy cập root của hệ điều hành; còn Injection Attack chỉ cần sử dụng các bộ lọc hình ảnh đơn giản." },
+        { "id": 4, "text": "Presentation Attack không thể bị phát hiện bởi chuẩn kiểm thử iBeta; còn Injection Attack dễ dàng bị chặn đứng bởi camera thường." }
+      ]
+    },
+    {
+      "id": "q36",
+      "text": "Trong kỹ thuật tạo dựng 'Cheap Fake', kẻ tấn công làm chậm tốc độ phát (playback speed) của video phát biểu nhằm mục đích thao túng tâm lý nào ở người xem?",
+      "correctAnswerId": 1,
+      "difficulty": "hard",
+      "answers": [
+        { "id": 1, "text": "Làm cho người phát biểu có vẻ như bị suy giảm nhận thức, say rượu hoặc không tỉnh táo để hủy hoại uy tín chính trị hoặc thương hiệu cá nhân." },
+        { "id": 2, "text": "Giúp người xem dễ dàng phân tích cấu trúc khẩu hình miệng của người nói để phát hiện việc sử dụng AI tráo mặt." },
+        { "id": 3, "text": "Giảm dung lượng băng thông truyền tải của tệp tin video khi đăng tải lên các nền tảng mạng xã hội có tường lửa mạnh." },
+        { "id": 4, "text": "Vượt qua hệ thống quét bản quyền âm thanh tự động của các trang chia sẻ video trực tuyến lớn." }
+      ]
+    },
+    {
+      "id": "q37",
+      "text": "Chỉ số thống kê nào phản ánh đúng quy mô của các nỗ lực gian lận được hỗ trợ bởi trí tuệ nhân tạo (AI-driven fraud) trong các hệ thống phát hiện bảo mật hiện đại?",
+      "correctAnswerId": 1,
+      "difficulty": "hard",
+      "answers": [
+        { "id": 1, "text": "AI-driven fraud hiện đã chiếm tới 42.5% tổng số các phát hiện gian lận và tấn công sinh trắc học trực tuyến." },
+        { "id": 2, "text": "Chỉ chiếm tỷ lệ nhỏ dưới 5% vì đa số tội phạm vẫn ưu tiên sử dụng các phương thức tấn công kỹ thuật xã hội truyền thống." },
+        { "id": 3, "text": "Đã đạt mức bão hòa 90% do các hình thức tấn công không dùng AI đã hoàn toàn biến mất trên thị trường quốc tế." },
+        { "id": 4, "text": "Chiếm 15% và hầu như chỉ xuất hiện ở các ứng dụng định danh của ví điện tử quy mô nhỏ." }
+      ]
+    },
+    {
+      "id": "q38",
+      "text": "Tại sao một câu hỏi thử thách an ninh dựa trên mật khẩu an toàn hoặc tri thức cá nhân bắt buộc phải sử dụng các thông tin phi công khai (Non-OSINT)?",
+      "correctAnswerId": 1,
+      "difficulty": "hard",
+      "answers": [
+        { "id": 1, "text": "Vì thông tin công khai dễ dàng bị các thuật toán AI và công cụ OSINT tự động thu thập từ mạng xã hội để tạo kịch bản phản hồi tức thời." },
+        { "id": 2, "text": "Để đảm bảo cuộc đối thoại đáp ứng các tiêu chuẩn bảo mật dữ liệu cá nhân nghiêm ngặt của luật GDPR Châu Âu." },
+        { "id": 3, "text": "Thông tin công khai sẽ bị hệ thống nhà mạng tự động mã hóa và chặn truyền dẫn do chứa từ khóa nhạy cảm." },
+        { "id": 4, "text": "Để tránh việc máy chủ Deepfake ghi nhận tần số giọng nói và thực hiện nhân bản giọng nói của bạn ngay trong cuộc gọi." }
+      ]
+    },
+    {
+      "id": "q39",
+      "text": "Cơ chế toán học nào giải thích việc các bộ theo dõi điểm mốc khuôn mặt 2D (2D landmark trackers) bị mất dấu hoàn toàn khi đầu xoay nghiêng quá mức ±90°?",
+      "correctAnswerId": 1,
+      "difficulty": "hard",
+      "answers": [
+        { "id": 1, "text": "Sự biến mất của các điểm mốc đối xứng (như mắt đối diện, cánh mũi) khiến thuật toán không thể giải phương trình ma trận hình học chiếu xạ khuôn mặt." },
+        { "id": 2, "text": "Góc xoay nghiêng làm giảm tần số ánh sáng phản xạ từ da mặt khiến cảm biến camera không ghi nhận được photon." },
+        { "id": 3, "text": "Thuật toán tự động kích hoạt chế độ bảo mật ẩn khuôn mặt khi phát hiện góc nghiêng vượt quá yaw angle quy định." },
+        { "id": 4, "text": "Sự suy giảm đột ngột số lượng đa giác vẽ lưới 3D của hệ thống đồ họa điện thoại thông minh." }
+      ]
+    },
+    {
+      "id": "q40",
+      "text": "Sự bùng nổ của công nghệ tổng hợp hình ảnh AI đã đẩy tốc độ gia tăng các vụ làm giả tài liệu kỹ thuật số (digital document forgery) lên ngưỡng nào?",
+      "correctAnswerId": 1,
+      "difficulty": "hard",
+      "answers": [
+        { "id": 1, "text": "Tăng trưởng phi mã 244% so với năm trước, chiếm tới 57% trong tổng số tất cả các vụ gian lận liên quan đến tài liệu định danh." },
+        { "id": 2, "text": "Tăng nhẹ 10% và chỉ ảnh hưởng đến các tài liệu biên lai mua sắm trực tuyến nhỏ lẻ." },
+        { "id": 3, "text": "Đã hoàn toàn giảm thiểu về mức 0 nhờ các công nghệ in phôi giấy tờ có gắn chíp sinh học quốc gia." },
+        { "id": 4, "text": "Tăng gấp đôi nhưng chỉ xuất hiện ở các quốc gia không áp dụng hệ thống quét hộ chiếu điện tử tại sân bay." }
+      ]
+    },
+    {
+      "id": "q41",
+      "text": "Hạn chế vật lý cốt lõi nào của các mô hình Deepfake thời gian thực hiện nay khiến chúng rất dễ bị lỗi kết xuất khi đối mặt với các thử thách che khuất (occlusion Captcha)?",
+      "correctAnswerId": 1,
+      "difficulty": "hard",
+      "answers": [
+        { "id": 1, "text": "Thuật toán được tối ưu hóa cho các cấu trúc khuôn mặt hướng thẳng (forward-facing) và thiếu khả năng tính toán động học va chạm không gian 3D của vật thể che chắn." },
+        { "id": 2, "text": "Các mô hình AI bị giới hạn bởi dung lượng bộ nhớ RAM khả dụng trên thiết bị di động của kẻ tấn công." },
+        { "id": 3, "text": "Camera điện thoại thông minh không thể phân biệt được màu sắc của bàn tay và khuôn mặt khi chúng đè lên nhau." },
+        { "id": 4, "text": "Hệ thống tự động tắt luồng render hình ảnh khi phát hiện có chuyển động tay quá nhanh trước ống kính." }
+      ]
+    },
+    {
+      "id": "q42",
+      "text": "Tại sao việc gọi lại vào số điện thoại do chính đối phương cung cấp trong cuộc gọi đáng ngờ là một sai lầm bảo mật nghiêm trọng?",
+      "correctAnswerId": 1,
+      "difficulty": "hard",
+      "answers": [
+        { "id": 1, "text": "Số điện thoại đó nằm hoàn toàn trong tầm kiểm soát của kẻ tấn công và sẽ dẫn thẳng tới hệ thống tổng đài giả mạo được thiết kế sẵn để củng cố lòng tin." },
+        { "id": 2, "text": "Hành động này sẽ tự động cấp quyền truy cập danh bạ điện thoại di động của bạn cho tin tặc thông qua giao thức mạng." },
+        { "id": 3, "text": "Ngân hàng sẽ tự động đánh dấu tài khoản của bạn là 'hoạt động đáng ngờ' và khóa thẻ tín dụng lập tức." },
+        { "id": 4, "text": "Cuộc gọi gọi lại sẽ làm rò rỉ địa chỉ IP vật lý của thiết bị di động bạn đang sử dụng." }
+      ]
+    },
+    {
+      "id": "q43",
+      "text": "Yêu cầu kỹ thuật tối thiểu về mặt dữ liệu để kẻ xấu thực hiện tinh chỉnh (fine-tuning) một mô hình nhân bản giọng nói chất lượng cao đạt mức fidelity hoàn hảo là gì?",
+      "correctAnswerId": 1,
+      "difficulty": "hard",
+      "answers": [
+        { "id": 1, "text": "Một đoạn âm thanh sạch (clean audio) kéo dài từ 20 đến 30 giây chứa đầy đủ các đặc tính âm vị học và ngữ điệu tự nhiên của mục tiêu." },
+        { "id": 2, "text": "Hàng trăm giờ thu âm chuyên nghiệp trong môi trường hoàn toàn không có tiếng vang của phòng cách âm tiêu chuẩn." },
+        { "id": 3, "text": "Một tệp văn bản viết tay chứa chữ ký số đã được xác thực mã hóa của chính nạn nhân." },
+        { "id": 4, "text": "Một đoạn video quay cận cảnh chuyển động của dây thanh quản khi nạn nhân phát âm các nguyên âm chính." }
+      ]
+    },
+    {
+      "id": "q44",
+      "text": "So với các cuộc tấn công Phishing thông thường, điểm khác biệt mang tính chiến lược của chiến dịch 'Whaling' nhắm vào doanh nghiệp là gì?",
+      "correctAnswerId": 1,
+      "difficulty": "hard",
+      "answers": [
+        { "id": 1, "text": "Giả mạo toàn bộ chuỗi quyền lực (hierarchy) và ban điều hành để cô lập mục tiêu có giá trị cao, ép buộc thực hiện các giao dịch ngoài sổ sách." },
+        { "id": 2, "text": "Sử dụng tin nhắn SMS tự động gửi hàng loạt đến hàng triệu số điện thoại ngẫu nhiên để thu hút lượt truy cập." },
+        { "id": 3, "text": "Tấn công trực tiếp vào hạ tầng phần cứng của hệ thống máy chủ cơ sở dữ liệu để đánh cắp tiền mã hóa." },
+        { "id": 4, "text": "Tạo ra các trang web tuyển dụng giả mạo để thu thập thông tin căn cước công dân của sinh viên thực tập." }
+      ]
+    },
+    {
+      "id": "q45",
+      "text": "Làm thế nào một chuyên gia phân tích an ninh mạng có thể phát hiện việc sử dụng driver camera ảo (Virtual Camera Driver) trong metadata của một luồng đăng ký KYC đáng ngờ?",
+      "correctAnswerId": 1,
+      "difficulty": "hard",
+      "answers": [
+        { "id": 1, "text": "Kiểm tra mã định danh phần cứng (Hardware ID) và các chứng chỉ ký số của driver camera để phát hiện sự thiếu hụt của các hàm gọi phần cứng trực tiếp (DirectShow API)." },
+        { "id": 2, "text": "Quan sát xem hình ảnh giấy tờ tùy thân của người đăng ký có hiển thị rõ nét hay không." },
+        { "id": 3, "text": "Đo lường thời gian người dùng hoàn thành việc nhập thông tin họ tên trên giao diện đăng ký." },
+        { "id": 4, "text": "Kiểm tra xem hệ điều hành của thiết bị di động có đang chạy ứng dụng VPN bảo mật hay không." }
+      ]
+    },
+    {
+      "id": "q46",
+      "text": "Mục đích kỹ thuật của việc kẻ tấn công chèn thêm các tạp âm nền giả lập (còi cảnh sát, tiếng ồn sân bay) vào cuộc gọi giả mạo giọng nói AI là gì?",
+      "correctAnswerId": 1,
+      "difficulty": "hard",
+      "answers": [
+        { "id": 1, "text": "Tạo ra sự quá tải cảm giác và tình trạng khẩn cấp giả tạo để ngăn cản nạn nhân thực hiện việc phân tích kỹ lưỡng các lỗi cơ học của giọng nói nhân bản." },
+        { "id": 2, "text": "Vượt qua hệ thống lọc tiếng ồn chủ động (Active Noise Cancelling) tích hợp sẵn trên các dòng điện thoại cao cấp." },
+        { "id": 3, "text": "Tăng cường độ phân giải sóng âm của luồng VoIP truyền qua mạng viễn thông quốc tế." },
+        { "id": 4, "text": "Đánh lừa hệ thống giám sát tự động của nhà mạng để cuộc gọi không bị đánh dấu là tin nhắn rác." }
+      ]
+    },
+    {
+      "id": "q47",
+      "text": "Sự khác biệt về cơ chế render giữa công nghệ Face Puppetry (múa rối mặt) và Face-Swap Filters (bộ lọc tráo mặt) trong các cuộc gọi lừa đảo thời gian thực là gì?",
+      "correctAnswerId": 1,
+      "difficulty": "hard",
+      "answers": [
+        { "id": 1, "text": "Face Puppetry điều khiển cử động và biểu cảm khuôn mặt gốc theo thời gian thực; còn Face-Swap đè trực tiếp một lớp mặt nạ tĩnh hoặc động lên khuôn mặt có sẵn." },
+        { "id": 2, "text": "Face Puppetry chỉ hoạt động trên các bức ảnh 2D tĩnh; còn Face-Swap bắt buộc phải sử dụng mô hình quét 3D cấu trúc sọ." },
+        { "id": 3, "text": "Face Puppetry không cần sử dụng năng lượng xử lý GPU; còn Face-Swap đòi hỏi phải kết nối internet tốc độ cao liên tục." },
+        { "id": 4, "text": "Face Puppetry có độ trễ kết xuất lên tới hơn 2 giây; còn Face-Swap có thể chạy trơn tru không có độ trễ." }
+      ]
+    },
+    {
+      "id": "q48",
+      "text": "Một cụm từ 'safe word' được coi là có độ ngẫu nhiên lớn (high-entropy) để phòng chống Deepfake giọng nói hiệu quả phải đáp ứng tiêu chí nào?",
+      "correctAnswerId": 1,
+      "difficulty": "hard",
+      "answers": [
+        { "id": 1, "text": "Không chứa thông tin cá nhân, không thể suy luận từ tiểu sử, có cấu trúc từ vựng phức tạp và tuyệt đối không được ghi lại trên bất kỳ phương tiện số nào." },
+        { "id": 2, "text": "Trùng khớp với mật khẩu mở khóa màn hình điện thoại di động của thành viên lớn tuổi nhất trong gia đình." },
+        { "id": 3, "text": "Là tên của một bộ phim truyền hình nổi tiếng đang được phát sóng rộng rãi trên các kênh truyền thông quốc gia." },
+        { "id": 4, "text": "Được tạo tự động bằng ứng dụng Google Authenticator và thay đổi liên tục sau mỗi 30 giây." }
+      ]
+    },
+    {
+      "id": "q49",
+      "text": "Tại sao các bài kiểm tra liveness tự động dựa trên ảnh tĩnh hoặc chuyển động đầu đơn giản của hệ thống KYC thế hệ cũ hoàn toàn bất lực trước Deepfake tiêm luồng?",
+      "correctAnswerId": 1,
+      "difficulty": "hard",
+      "answers": [
+        { "id": 1, "text": "Vì kẻ tấn công có thể dễ dàng lập trình luồng video tiêm để thực hiện chính xác các chuyển động yêu cầu (chớp mắt, mỉm cười) mà không cần sự hiện diện vật lý thực tế." },
+        { "id": 2, "text": "Các hệ thống KYC thế hệ cũ tự động bỏ qua tất cả các bài kiểm tra bảo mật khi người dùng sử dụng thiết bị kết nối mạng Wi-Fi." },
+        { "id": 3, "text": "Độ phân giải của luồng video Deepfake tiêm luôn vượt trội so với khả năng phân tích pixel của phần mềm nhận diện cũ." },
+        { "id": 4, "text": "Do các thuật toán liveness cũ chỉ chấp nhận định dạng video chất lượng thấp có chứa nhiều tạp âm cơ học." }
+      ]
+    },
+    {
+      "id": "q50",
+      "text": "Một chiến lược phòng thủ doanh nghiệp toàn diện chống lại hiểm họa Deepfake thời đại Generative AI đòi hỏi sự tích hợp của các yếu tố nào dưới đây?",
+      "correctAnswerId": 1,
+      "difficulty": "hard",
+      "answers": [
+        { "id": 1, "text": "Từ bỏ xác thực cảm quan, áp dụng quy trình Zero-Trust, thử thách vật lý động (DF-Captcha), phê duyệt kép độc lập ngoại tuyến và hardening dấu chân kỹ thuật số." },
+        { "id": 2, "text": "Cấm hoàn toàn việc nhân viên sử dụng mạng xã hội cá nhân và bắt buộc họp trực tuyến bằng chế độ tắt camera vật lý." },
+        { "id": 3, "text": "Nâng cấp toàn bộ hệ thống máy tính của công ty lên dòng vi xử lý đời mới nhất có tích hợp chip bảo mật TPM." },
+        { "id": 4, "text": "Yêu cầu đối tác ký cam kết pháp lý chịu trách nhiệm tài chính 100% nếu có sự cố lừa đảo Deepfake xảy ra." }
+      ]
+    }
+  ]
+}

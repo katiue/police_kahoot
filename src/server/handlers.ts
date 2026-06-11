@@ -78,6 +78,10 @@ export function registerSocketHandlers(io: IO): RoomManager {
       if (!isAuthorized(loginKey)) return denyHost('next')
       manager.nextQuestion(pin)
     })
+    socket.on('host:kahoot', ({ pin, loginKey }, ack) => {
+      if (!isAuthorized(loginKey)) return ack?.({ ok: false, error: 'Mã đăng nhập không đúng' })
+      ack?.(manager.startKahoot(pin))
+    })
     socket.on('host:end', ({ pin, loginKey }) => {
       if (!isAuthorized(loginKey)) return denyHost('end')
       manager.endGame(pin)
