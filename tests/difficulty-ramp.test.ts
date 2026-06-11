@@ -45,25 +45,18 @@ describe('buildDifficultyRampDeck — single-difficulty banks', () => {
 })
 
 describe('buildDifficultyRampDeck — ramp shape', () => {
-  it('opens with easy questions when plenty of easy exist', () => {
-    // Phase 1 is 5 slots, 100% easy weight.
+  it('uses easy for questions 1-3 when plenty of easy exist', () => {
     const deck = buildDifficultyRampDeck(bank(20, 20, 20))
-    const firstFive = deck.slice(0, 5).map((q) => diffOf(q.id))
-    expect(firstFive.every((d) => d === 'easy')).toBe(true)
+    const firstThree = deck.slice(0, 3).map((q) => diffOf(q.id))
+    expect(firstThree).toEqual(['easy', 'easy', 'easy'])
   })
 
-  it('front-loads easy and back-loads hard (ramp trend)', () => {
-    // Phase 1 is 100% easy; the final phase carries no easy weight. So easy
-    // density must fall and hard density must rise across the deck. Compare
-    // halves (robust to within-phase shuffling) rather than fixed positions.
-    const deck = buildDifficultyRampDeck(bank(20, 20, 20))
-    const half = Math.floor(deck.length / 2)
-    const easyFirst = deck.slice(0, half).filter((q) => diffOf(q.id) === 'easy').length
-    const easyLast = deck.slice(half).filter((q) => diffOf(q.id) === 'easy').length
-    const hardFirst = deck.slice(0, half).filter((q) => diffOf(q.id) === 'hard').length
-    const hardLast = deck.slice(half).filter((q) => diffOf(q.id) === 'hard').length
-    expect(easyFirst).toBeGreaterThan(easyLast)
-    expect(hardLast).toBeGreaterThan(hardFirst)
+  it('uses medium for questions 4-6 and hard from question 7 onward when available', () => {
+    const deck = buildDifficultyRampDeck(bank(3, 3, 20))
+    const middleThree = deck.slice(3, 6).map((q) => diffOf(q.id))
+    const rest = deck.slice(6).map((q) => diffOf(q.id))
+    expect(middleThree).toEqual(['medium', 'medium', 'medium'])
+    expect(rest.every((d) => d === 'hard')).toBe(true)
   })
 
   it('never exceeds available counts per difficulty', () => {
