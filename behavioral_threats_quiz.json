@@ -1,0 +1,1205 @@
+{
+    "title": "Behavioral Threats - Police Quiz 2026",
+    "questions": [
+        {
+            "id": "q1",
+            "text": "Anh Minh nhận được tin nhắn SMS thông báo anh nợ khoản phí đường bộ chưa thanh toán là 2.5 USD (khoảng 60.000 VNĐ) từ một hệ thống thu phí tự động như EZ-Pass hoặc FasTrak, cảnh báo nếu không đóng ngay sẽ bị đình chỉ đăng ký xe. Tại sao đây là một kịch bản lừa đảo có tỷ lệ thành công rất cao?",
+            "correctAnswerId": 1,
+            "difficulty": "easy",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Do số tiền yêu cầu thanh toán rất nhỏ khiến nạn nhân có xu hướng trả ngay cho xong việc thay vì mất thời gian xác minh độc lập."
+                },
+                {
+                    "id": 2,
+                    "text": "Do các tin nhắn này được gửi trực tiếp từ máy chủ bảo mật của cơ quan đăng kiểm quốc gia."
+                },
+                {
+                    "id": 3,
+                    "text": "Do đối tượng lừa đảo bắt buộc nạn nhân phải thanh toán bằng tiền mặt trực tiếp tại các quầy BOT giao thông."
+                },
+                {
+                    "id": 4,
+                    "text": "Do tin nhắn chỉ được gửi cho những người đang thực sự sở hữu các phương tiện có nợ phí giao thông."
+                }
+            ]
+        },
+        {
+            "id": "q2",
+            "text": "Chị Vy đi ăn tối tại một nhà hàng và quét mã QR dán trên bàn để gọi món và thanh toán qua điện thoại. Trước khi quét bất kỳ mã QR nào ở những nơi công cộng, thói quen phòng thủ vật lý nào dưới đây là cần thiết nhất?",
+            "correctAnswerId": 1,
+            "difficulty": "easy",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Dùng ngón tay chạm trực tiếp lên bề mặt nhãn QR để kiểm tra xem có miếng đề-can giả mạo nào dán đè lên mã gốc hay không."
+                },
+                {
+                    "id": 2,
+                    "text": "Chỉ quét các mã QR có in logo thương hiệu của nhà hàng bằng mực phản quang chống giả."
+                },
+                {
+                    "id": 3,
+                    "text": "Đối chiếu mã QR đó với mã QR của các bàn bên cạnh xem có trùng khớp hoàn toàn về họa tiết hay không."
+                },
+                {
+                    "id": 4,
+                    "text": "Yêu cầu nhân viên nhà hàng đứng cạnh giám sát trong suốt quá trình camera điện thoại quét mã."
+                }
+            ]
+        },
+        {
+            "id": "q3",
+            "text": "Bạn nhận được cuộc gọi khẩn cấp tự xưng là từ ngân hàng Peoples Bank & Trust thông báo tài khoản của bạn đang có giao dịch đáng ngờ và yêu cầu xử lý ngay. Quy trình \"Xác minh kênh độc lập\" (Out-of-Band Verification) chuẩn xác nhất bạn cần làm là gì?",
+            "correctAnswerId": 1,
+            "difficulty": "easy",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Cúp máy ngay lập tức, tự tìm số điện thoại chính thức in ở mặt sau thẻ vật lý hoặc trên trang chính của ngân hàng để gọi lại xác minh."
+                },
+                {
+                    "id": 2,
+                    "text": "Nhấn phím gọi lại ngay số vừa liên hệ để yêu cầu nhân viên đó đọc mã số nhân viên của họ nhằm đối chiếu."
+                },
+                {
+                    "id": 3,
+                    "text": "Cung cấp tạm thời mã xác thực OTP để phong tỏa tài khoản trước, sau đó mới lên chi nhánh ngân hàng kiểm tra lại."
+                },
+                {
+                    "id": 4,
+                    "text": "Tiếp tục nói chuyện và yêu cầu đối phương gửi ảnh chụp thẻ nhân viên hoặc căn cước công dân qua mạng xã hội."
+                }
+            ]
+        },
+        {
+            "id": "q4",
+            "text": "Bác Nam nhận được một cuộc gọi khẩn cấp thông báo tài khoản tại ngân hàng SBI California của bác có dấu hiệu bị đăng nhập từ thiết bị lạ và yêu cầu bác đọc mã xác thực OTP gửi qua SMS để \"hủy thiết bị lạ\". Bác Nam nên xử lý thế nào?",
+            "correctAnswerId": 1,
+            "difficulty": "easy",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Từ chối tuyệt đối và cúp máy ngay, vì ngân hàng chính thống không bao giờ gọi điện yêu cầu cung cấp mật khẩu, mã PIN hoặc mã xác thực OTP."
+                },
+                {
+                    "id": 2,
+                    "text": "Đọc mã OTP cho nhân viên đó vì họ đã đọc đúng họ tên, ngày sinh của bác Nam và số tài khoản ngân hàng của bác."
+                },
+                {
+                    "id": 3,
+                    "text": "Yêu cầu người gọi chuyển hướng sang cuộc gọi video để bác xác nhận họ có mặc đồng phục của ngân hàng SBI California không trước khi đọc OTP."
+                },
+                {
+                    "id": 4,
+                    "text": "Đọc mã OTP nhưng yêu cầu nhân viên cam kết bằng văn bản qua email rằng tài khoản của bác sẽ được an toàn."
+                }
+            ]
+        },
+        {
+            "id": "q5",
+            "text": "Cô Lan vô tình trả lời một cuộc gọi thoại từ một số điện thoại nước ngoài kỳ lạ. Sau khi cúp máy, cô vô cùng lo sợ điện thoại của mình đã bị nhiễm mã độc và toàn bộ tiền ngân hàng sẽ bị rút sạch. Quan niệm nào dưới đây giải tỏa đúng sự lo lắng của cô?",
+            "correctAnswerId": 1,
+            "difficulty": "easy",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Việc chỉ trả lời một cuộc gọi thoại thông thường trên hệ điều hành di động hiện đại không thể tự động kích hoạt mã độc hay xâm nhập hệ thống bảo mật."
+                },
+                {
+                    "id": 2,
+                    "text": "Điện thoại chắc chắn đã bị hack chỉ bằng việc nhận cuộc gọi, cô cần phải khôi phục cài đặt gốc của máy ngay lập tức."
+                },
+                {
+                    "id": 3,
+                    "text": "Kẻ xấu chỉ cần nghe giọng nói của cô Lan qua điện thoại là có thể rút sạch tiền trong ví điện tử của cô mà không cần tài khoản hay mã xác thực."
+                },
+                {
+                    "id": 4,
+                    "text": "Các cuộc gọi thoại từ số lạ luôn đi kèm các gói dữ liệu chạy ẩn tự động cài đặt mã độc vào phân vùng bảo mật của ngân hàng."
+                }
+            ]
+        },
+        {
+            "id": "q6",
+            "text": "Một người dùng nhận được tin nhắn SMS cảnh báo điểm thưởng tích lũy (loyalty points) của họ sắp hết hạn trong 24 giờ tới và yêu cầu nhấn vào link để quy đổi quà ngay lập tức. Đây là ví dụ của hình thức tấn công nào?",
+            "correctAnswerId": 1,
+            "difficulty": "easy",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Smishing (SMS Phishing) khai thác tâm lý vội vã muốn bảo toàn quyền lợi để dụ nạn nhân click vào link rút gọn lừa đảo."
+                },
+                {
+                    "id": 2,
+                    "text": "Quishing (QR Phishing) cố gắng đưa mã phản hồi nhanh lén lút vào thiết bị qua đường truyền vật lý."
+                },
+                {
+                    "id": 3,
+                    "text": "Pig butchering (Lừa đảo thả heo) xây dựng mối quan hệ tình cảm tin tưởng sâu sắc qua nhiều tháng."
+                },
+                {
+                    "id": 4,
+                    "text": "Vishing (Voice Phishing) sử dụng công nghệ AI giả giọng nói thời gian thực của người thân nạn nhân."
+                }
+            ]
+        },
+        {
+            "id": "q7",
+            "text": "Bạn nhận được cuộc gọi thông báo tài khoản ngân hàng bị rò rỉ thông tin và đang bị điều tra rửa tiền. Kẻ lừa đảo tự xưng là nhân viên chính phủ yêu cầu bạn rút hết tiền tiết kiệm mua vàng miếng và giao cho một nhân viên chuyển phát (courier) để đưa đi bảo mật. Hành vi này có điểm phi lý cốt lõi nào?",
+            "correctAnswerId": 1,
+            "difficulty": "easy",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Không có bất kỳ cơ quan chính phủ hoặc lực lượng hành pháp hợp pháp nào yêu cầu công dân mua vàng miếng hoặc giao tiền mặt cho người chuyển phát."
+                },
+                {
+                    "id": 2,
+                    "text": "Nhân viên chính phủ chỉ thu vàng vào các ngày lễ lớn quốc gia để đưa vào ngân khố."
+                },
+                {
+                    "id": 3,
+                    "text": "Vàng miếng thu mua bắt buộc phải là vàng trang sức chứ không được sử dụng vàng miếng bốn số chín."
+                },
+                {
+                    "id": 4,
+                    "text": "Nhân viên chuyển phát bắt buộc phải đi xe bọc thép của nhà nước chứ không được sử dụng xe cá nhân."
+                }
+            ]
+        },
+        {
+            "id": "q8",
+            "text": "Việc quét mã QR để thanh toán bãi đỗ xe hoặc gọi đồ ăn tại bàn đang dần thay thế các giao dịch truyền thống. Các đối tượng lừa đảo lợi dụng thói quen tâm lý nào của người dùng để thực hiện các cuộc tấn công quét mã lừa đảo (Quishing)?",
+            "correctAnswerId": 1,
+            "difficulty": "easy",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Thói quen giảm thiểu ma sát (friction-reduction habit) mong muốn thực hiện các giao dịch không chạm nhanh chóng mà không cần kiểm tra kỹ liên kết."
+                },
+                {
+                    "id": 2,
+                    "text": "Sự thiếu hiểu biết hoàn toàn của người dùng về công nghệ mã vạch 1D truyền thống trên hàng hóa."
+                },
+                {
+                    "id": 3,
+                    "text": "Tâm lý mong muốn được nhận ưu đãi giảm giá lên tới 90% khi thực hiện thanh toán trực tiếp bằng séc ngân hàng."
+                },
+                {
+                    "id": 4,
+                    "text": "Sự tin tưởng tuyệt đối của người dùng vào các hệ điều hành điện thoại chạy trên máy tính bảng cá nhân."
+                }
+            ]
+        },
+        {
+            "id": "q9",
+            "text": "Bác Tư nhận được cuộc gọi tự xưng từ cơ quan y tế địa phương thông báo bác được cấp một thiết bị đai lưng hỗ trợ cột sống hoàn toàn miễn phí từ Medicare. Để hoàn tất thủ tục giao hàng, đối phương yêu cầu bác cung cấp số bảo hiểm Medicare. Mối nguy lớn nhất ở đây là gì?",
+            "correctAnswerId": 1,
+            "difficulty": "easy",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Kẻ xấu thu thập số Medicare để thực hiện hành vi trục lợi bảo hiểm bằng cách khai khống dịch vụ hoặc lừa đảo đưa người bệnh vào cơ sở hospice giả."
+                },
+                {
+                    "id": 2,
+                    "text": "Thiết bị đai lưng đính kèm chip định vị GPS để theo dõi thói quen di chuyển hàng ngày của bác Tư."
+                },
+                {
+                    "id": 3,
+                    "text": "Đối phương sẽ tự động rút sạch số tiền lương hưu từ thẻ căn cước công dân gắn chip của bác."
+                },
+                {
+                    "id": 4,
+                    "text": "Bác Tư sẽ bị tước bỏ vĩnh viễn quyền tham gia các chương trình khám chữa bệnh tại bệnh viện công."
+                }
+            ]
+        },
+        {
+            "id": "q10",
+            "text": "Bạn thấy một tin tuyển dụng hấp dẫn trên mạng xã hội cho một vị trí \"việc nhẹ lương cao, làm việc tại nhà\". Sau một cuộc phỏng vấn ngắn bằng tin nhắn chữ, bạn được nhận ngay và yêu cầu thanh toán trước tiền mua laptop làm việc với lời hứa sẽ được công ty hoàn trả lại đầy đủ sau khi nhận việc. Hành động an toàn nhất lúc này là gì?",
+            "correctAnswerId": 1,
+            "difficulty": "easy",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Từ chối ngay lập tức, vì yêu cầu thanh toán trước tiền mua thiết bị hoặc tài liệu là dấu hiệu rõ ràng của lừa đảo tuyển dụng."
+                },
+                {
+                    "id": 2,
+                    "text": "Thực hiện chuyển tiền ngay để kịp nhận thiết bị và bắt đầu công việc đúng thời hạn cam kết trong hợp đồng trực tuyến."
+                },
+                {
+                    "id": 3,
+                    "text": "Đề xuất chuyển một nửa số tiền để thể hiện sự nghiêm túc, phần còn lại trừ trực tiếp vào tháng lương đầu tiên."
+                },
+                {
+                    "id": 4,
+                    "text": "Cung cấp ngay thông tin tài khoản ngân hàng để công ty tự động trích nợ tiền thiết bị nhằm đảm bảo tính minh bạch."
+                }
+            ]
+        },
+        {
+            "id": "q11",
+            "text": "Khi bạn nhận được một tin nhắn khẩn cấp báo rằng thẻ tín dụng của bạn bị khóa và yêu cầu gọi vào số điện thoại đính kèm trong tin nhắn để mở lại, số điện thoại đáng tin cậy nhất mà bạn nên liên hệ là số nào?",
+            "correctAnswerId": 1,
+            "difficulty": "easy",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Số điện thoại chăm sóc khách hàng được in trực tiếp trên mặt sau thẻ ngân hàng vật lý của bạn."
+                },
+                {
+                    "id": 2,
+                    "text": "Số điện thoại di động được đính kèm trực tiếp trong nội dung tin nhắn SMS vừa gửi đến."
+                },
+                {
+                    "id": 3,
+                    "text": "Số điện thoại của người đã chia sẻ bài viết cảnh báo lừa đảo trên mạng xã hội cá nhân của họ."
+                },
+                {
+                    "id": 4,
+                    "text": "Số điện thoại bất kỳ do công cụ tìm kiếm trực tuyến Google gợi ý ở phần quảng cáo được tài trợ."
+                }
+            ]
+        },
+        {
+            "id": "q12",
+            "text": "Gia đình bạn muốn lập một từ khóa an toàn phòng chống lừa đảo giả giọng nói AI (voice cloning). Cách lưu trữ và quản lý từ khóa này an toàn nhất là gì?",
+            "correctAnswerId": 1,
+            "difficulty": "easy",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Ghi nhớ trong đầu và trao đổi trực tiếp hoàn toàn ngoại tuyến, không bao giờ gửi qua tin nhắn điện thoại hay lưu trên tài liệu số đám mây."
+                },
+                {
+                    "id": 2,
+                    "text": "Lưu vào một file văn bản trên Google Docs và chia sẻ quyền truy cập cho tất cả thành viên trong gia đình."
+                },
+                {
+                    "id": 3,
+                    "text": "Gửi tin nhắn nhóm trên Zalo hoặc Messenger để các thành viên dễ dàng sao chép khi cần thiết."
+                },
+                {
+                    "id": 4,
+                    "text": "Đăng từ khóa lên phần mô tả tiểu sử cá nhân trên Facebook để khi cần ai cũng có thể tra cứu nhanh."
+                }
+            ]
+        },
+        {
+            "id": "q13",
+            "text": "Trên màn hình điện thoại hiển thị cuộc gọi đến từ đúng tên danh bạ và logo của chi cục thuế địa phương nơi bạn cư trú. Bạn có thể tin tưởng hoàn toàn vào thông tin hiển thị trên màn hình cuộc gọi này không?",
+            "correctAnswerId": 1,
+            "difficulty": "easy",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Không, vì công nghệ VoIP cho phép kẻ lừa đảo dễ dàng giả mạo thông tin hiển thị người gọi (Caller ID Spoofing) để mạo danh cơ quan nhà nước."
+                },
+                {
+                    "id": 2,
+                    "text": "Có, vì các nhà mạng viễn thông đã triển khai hệ thống xác thực sinh trắc học bắt buộc đối với tất cả các đầu số hiển thị."
+                },
+                {
+                    "id": 3,
+                    "text": "Có, vì logo và tên thương hiệu của cơ quan nhà nước đã được đăng ký bản quyền kỹ thuật số và không thể sao chép."
+                },
+                {
+                    "id": 4,
+                    "text": "Không, ngoại trừ trường hợp điện thoại của bạn đang bật chế độ máy bay thì cuộc gọi hiển thị mới đáng tin tin cậy."
+                }
+            ]
+        },
+        {
+            "id": "q14",
+            "text": "Một người tự xưng là nhân viên điện lực liên hệ báo rằng gia đình bạn đang nợ tiền điện 2 tháng và đe dọa sẽ cắt điện sau 1 giờ nếu bạn không thanh toán ngay bằng cách mua thẻ quà tặng (gift card) và đọc mã số thẻ cho họ. Bạn xử lý thế nào?",
+            "correctAnswerId": 1,
+            "difficulty": "easy",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Nhận diện ngay đây là hành vi lừa đảo, vì không có doanh nghiệp điện lực nào yêu cầu thanh toán hóa đơn bằng thẻ quà tặng."
+                },
+                {
+                    "id": 2,
+                    "text": "Mua thẻ quà tặng ngay lập tức và đọc mã số thẻ cho họ để tránh bị gián đoạn sinh hoạt gia đình."
+                },
+                {
+                    "id": 3,
+                    "text": "Yêu cầu họ chiết khấu 20% trên tổng giá trị hóa đơn trước khi đồng ý mua thẻ quà tặng thanh toán."
+                },
+                {
+                    "id": 4,
+                    "text": "Chuyển tiền vào tài khoản ngân hàng cá nhân của người gọi để họ tự mua thẻ quà tặng giúp mình."
+                }
+            ]
+        },
+        {
+            "id": "q15",
+            "text": "Trong các kịch bản lừa đảo tình cảm kết hợp đầu tư tài chính (pig butchering), kẻ gian thường tiếp cận nạn nhân bằng cách nào trong thời gian đầu?",
+            "correctAnswerId": 1,
+            "difficulty": "easy",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Nhắn tin làm quen thân thiết, kiên trì trò chuyện chia sẻ cuộc sống hàng ngày suốt nhiều tuần mà hoàn toàn không nhắc gì đến tiền bạc."
+                },
+                {
+                    "id": 2,
+                    "text": "Gọi điện đe dọa phong tỏa tài sản và yêu cầu nạn nhân chuyển tiền gấp vào tài khoản tạm giữ của tòa án."
+                },
+                {
+                    "id": 3,
+                    "text": "Gửi các tin nhắn SMS tự động chứa liên kết giả mạo thông báo nợ phí đường bộ hoặc phạt nguội giao thông."
+                },
+                {
+                    "id": 4,
+                    "text": "Chủ động đề xuất các giao dịch mua bán vàng miếng vật chất và yêu cầu giao dịch trực tiếp thông qua người giao hàng."
+                }
+            ]
+        },
+        {
+            "id": "q16",
+            "text": "Bạn nhận được tin nhắn SMS từ một đầu số lạ cảnh báo tài khoản ngân hàng của bạn đang bị khóa và yêu cầu truy cập đường link có dạng 'bit.ly/bank-security-2026' để mở lại thẻ. Dấu hiệu cảnh báo đỏ (Red Flag) rõ ràng nhất ở đây là gì?",
+            "correctAnswerId": 1,
+            "difficulty": "easy",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Tin nhắn chứa một đường liên kết rút gọn không chính thức, không thuộc tên miền gốc đã được xác minh của ngân hàng."
+                },
+                {
+                    "id": 2,
+                    "text": "Tin nhắn được gửi từ một đầu số dài thay vì mã định danh tên thương hiệu (Brandname) của nhà mạng."
+                },
+                {
+                    "id": 3,
+                    "text": "Tin nhắn yêu cầu bạn phải thực hiện việc thay đổi mật khẩu định kỳ mỗi năm một lần."
+                },
+                {
+                    "id": 4,
+                    "text": "Nội dung tin nhắn sử dụng ngôn ngữ tiếng Việt có dấu thay vì ký tự không dấu viết liền nhau."
+                }
+            ]
+        },
+        {
+            "id": "q17",
+            "text": "Khi đỗ xe tại một cột thu phí công cộng có dán mã QR để thanh toán qua điện thoại, việc làm nào sau đây giúp bạn phát hiện nguy cơ thiết bị thu phí này đã bị kẻ xấu can thiệp vật lý?",
+            "correctAnswerId": 1,
+            "difficulty": "easy",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Cố gắng bóc nhẹ góc mã QR xem đó có phải là một nhãn dán đề-can đè lên trên mã gốc được in sẵn trên cột hay không."
+                },
+                {
+                    "id": 2,
+                    "text": "So sánh kích thước của mã QR trên cột thu phí với kích thước màn hình hiển thị của điện thoại thông minh."
+                },
+                {
+                    "id": 3,
+                    "text": "Kiểm tra xem mã QR có chứa đầy đủ các chấm màu sắc sặc sỡ đại diện cho thương hiệu của thành phố không."
+                },
+                {
+                    "id": 4,
+                    "text": "Nhờ một người đỗ xe bên cạnh quét thử trước xem giao diện hiển thị của họ có giống với của mình không."
+                }
+            ]
+        },
+        {
+            "id": "q18",
+            "text": "Một người mẹ nhận được cuộc gọi từ số lạ, đầu dây bên kia là giọng nói của cô con gái đang khóc lóc cầu cứu vì bị tai nạn nghiêm trọng và đòi chuyển tiền gấp. Thực tế đây là cuộc gọi giả mạo giọng nói bằng AI (voice cloning). AI thế hệ mới cần tối thiểu bao nhiêu thời gian âm thanh nguồn để sao chép giọng nói chất lượng cao?",
+            "correctAnswerId": 1,
+            "difficulty": "medium",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Dưới 10 giây âm thanh nguồn thu thập từ các đoạn clip hoặc video công khai của nạn nhân."
+                },
+                {
+                    "id": 2,
+                    "text": "Ít nhất phải từ 30 phút đến 1 tiếng thu âm trực tiếp trong phòng thu chuyên dụng."
+                },
+                {
+                    "id": 3,
+                    "text": "Khoảng 5 đến 10 phút nói chuyện liên tục trong môi trường hoàn toàn yên tĩnh không có tạp âm."
+                },
+                {
+                    "id": 4,
+                    "text": "AI không cần bất kỳ âm thanh nguồn nào, có thể tự động mô phỏng giọng nói chính xác dựa trên hình ảnh khuôn mặt."
+                }
+            ]
+        },
+        {
+            "id": "q19",
+            "text": "Trong một cuộc họp trực tuyến khẩn cấp trên Teams, bạn nghi ngờ tài khoản của Giám đốc tài chính đang bị giả mạo bằng công nghệ Deepfake thời gian thực. Để kiểm tra nhanh, bạn yêu cầu đối phương quay đầu chậm sang một bên góc 90 độ (nhìn nghiêng hoàn toàn). Hiện tượng lỗi kỹ thuật nào sẽ xảy ra nếu đó là Deepfake?",
+            "correctAnswerId": 1,
+            "difficulty": "medium",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Lớp mặt nạ kỹ thuật số bị méo mó, biến dạng hoặc biến mất hoàn toàn ở vùng má/mũi do mất các điểm mốc 2D ở góc xoay cực đại."
+                },
+                {
+                    "id": 2,
+                    "text": "Hệ thống Teams sẽ lập tức phát hiện vi phạm bản quyền hình ảnh và tự động ngắt kết nối cuộc họp."
+                },
+                {
+                    "id": 3,
+                    "text": "Camera của đối phương sẽ tự động kích hoạt bộ lọc làm mờ phông nền màu xanh để che giấu góc nghiêng."
+                },
+                {
+                    "id": 4,
+                    "text": "Màn hình hiển thị của đối phương sẽ lập tức chuyển sang màu đen hoặc báo lỗi phần cứng camera vật lý."
+                }
+            ]
+        },
+        {
+            "id": "q20",
+            "text": "Để phòng ngừa các vụ lừa đảo giả mạo giọng nói bằng AI (voice cloning), gia đình bạn quyết định thiết lập một \"Mật khẩu thoại an toàn\" (Cryptographic Verbal Challenge Token). Cách thức quản lý và sử dụng mật khẩu này như thế nào là đúng chuẩn bảo mật nhất?",
+            "correctAnswerId": 1,
+            "difficulty": "medium",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Lựa chọn một cụm từ riêng tư, lưu trữ hoàn toàn ngoại tuyến (offline), tuyệt đối không nhắn qua SMS/email hay lưu trên đám mây, và chỉ dùng để xác minh khi có cuộc gọi khẩn cấp."
+                },
+                {
+                    "id": 2,
+                    "text": "Đặt mật khẩu trùng với ngày sinh của người thân và gửi qua nhóm chat Zalo gia đình để mọi người cùng dễ nhớ."
+                },
+                {
+                    "id": 3,
+                    "text": "Tạo một file tài liệu Google Docs chứa mật khẩu này và chia sẻ quyền truy cập cho tất cả thành viên trong gia đình."
+                },
+                {
+                    "id": 4,
+                    "text": "Sử dụng một ứng dụng quản lý mật khẩu trực tuyến và cài đặt chế độ tự động gửi mật khẩu này qua SMS mỗi khi có cuộc gọi từ số lạ."
+                }
+            ]
+        },
+        {
+            "id": "q21",
+            "text": "Chị Mai nhận được cuộc gọi hiển thị đúng tên cơ quan Công an Quận và số điện thoại đường dây nóng của đơn vị này. Người gọi tự xưng là cán bộ điều tra yêu cầu chị chuyển tiền để xác minh phá án. Tại sao thông tin hiển thị trên màn hình cuộc gọi lại không thể dùng làm bằng chứng xác thực danh tính?",
+            "correctAnswerId": 1,
+            "difficulty": "medium",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Mạng viễn thông cho phép các hệ thống VoIP giả mạo trường dữ liệu hiển thị người gọi (Caller ID spoofing) với rất ít rào cản kỹ thuật."
+                },
+                {
+                    "id": 2,
+                    "text": "Số điện thoại đường dây nóng của cơ quan công an đã bị tin tặc tấn công vật lý và cướp quyền kiểm soát trực tiếp tại tổng đài."
+                },
+                {
+                    "id": 3,
+                    "text": "Điện thoại của chị Mai đã bị cài sẵn một ứng dụng ẩn tự động thay đổi mọi số gọi đến thành tên cơ quan nhà nước."
+                },
+                {
+                    "id": 4,
+                    "text": "Chỉ có các nhà mạng viễn thông quốc tế mới có quyền gán tên danh bạ hiển thị, còn các hệ thống VoIP không thể can thiệp vào Caller ID."
+                }
+            ]
+        },
+        {
+            "id": "q22",
+            "text": "Anh Hoàng kết bạn với một tài khoản nữ trên mạng xã hội. Người này trò chuyện thân mật, quan tâm anh mỗi ngày suốt 2 tháng mà hoàn toàn không nhắc gì đến tiền bạc. Đến tuần thứ 9, cô chia sẻ về một ứng dụng đầu tư tài chính có tỷ suất sinh lời cực cao mà cô đang tham gia và hướng dẫn anh thử nạp một khoản nhỏ. Kiểu lừa đảo này lợi dụng lỗ hổng tâm lý nào của nạn nhân?",
+            "correctAnswerId": 1,
+            "difficulty": "medium",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Phá bỏ phòng thủ tự nhiên bằng cách nuôi dưỡng lòng tin và tình cảm lâu dài (pig butchering), thay vì dùng áp lực đe dọa giao dịch ngay lập tức."
+                },
+                {
+                    "id": 2,
+                    "text": "Đánh trực diện vào nỗi sợ hãi bị truy tố pháp luật và các hình phạt hành chính của nạn nhân."
+                },
+                {
+                    "id": 3,
+                    "text": "Lợi dụng thói quen lười biếng, không muốn cài đặt các ứng dụng bảo mật của người dùng di động."
+                },
+                {
+                    "id": 4,
+                    "text": "Khai thác sự thiếu hiểu biết của nạn nhân về công nghệ blockchain và tiền mã hóa thông qua các thuật ngữ kỹ thuật phức tạp."
+                }
+            ]
+        },
+        {
+            "id": "q23",
+            "text": "Nạn nhân của các vụ lừa đảo đầu tư tài chính hoặc tình cảm thường bị đưa vào danh sách theo dõi của các băng nhóm tội phạm xuyên quốc gia. Nhiều tháng sau, họ lại tiếp tục bị tiếp cận bởi các tài khoản giả mạo luật sư hoặc cơ quan tư pháp hứa hẹn giúp thu hồi tài sản đã mất. Dấu hiệu lừa đảo quyết định của kịch bản này là gì?",
+            "correctAnswerId": 1,
+            "difficulty": "medium",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Yêu cầu nạn nhân phải đóng trước một khoản phí thủ tục, thuế giải tỏa hoặc phí luật sư trước khi nhận lại tiền bị chiếm đoạt."
+                },
+                {
+                    "id": 2,
+                    "text": "Yêu cầu cung cấp biên lai chuyển khoản và lịch sử giao dịch của vụ lừa đảo trước đó để làm hồ sơ khởi kiện."
+                },
+                {
+                    "id": 3,
+                    "text": "Đề xuất nạn nhân đến trực tiếp trụ sở của cơ quan công an quận để ký biên bản bàn giao hồ sơ vụ án."
+                },
+                {
+                    "id": 4,
+                    "text": "Yêu cầu nạn nhân thực hiện việc xác thực hai yếu tố (2FA) trên tài khoản mạng xã hội cá nhân của họ."
+                }
+            ]
+        },
+        {
+            "id": "q24",
+            "text": "Trong kịch bản lừa đảo bằng ngân phiếu/séc thừa (overpayment check scam), kẻ lừa đảo gửi séc trị giá cao hơn giá sản phẩm thực tế và yêu cầu bạn chuyển khoản trả lại phần tiền thừa. Tại sao ngân hàng lúc đầu ghi nhận số tiền séc trong tài khoản của bạn nhưng sau đó lại thu hồi?",
+            "correctAnswerId": 1,
+            "difficulty": "medium",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Ngân hàng tạm thời ghi có số tiền ghi trên séc để tạo thuận lợi giao dịch, nhưng khi séc bị phát hiện là giả mạo sau vài ngày đối chiếu, ngân hàng sẽ đảo ngược giao dịch và trừ tiền tài khoản của bạn."
+                },
+                {
+                    "id": 2,
+                    "text": "Người gửi séc đã chủ động thực hiện lệnh hủy giao dịch trực tuyến ngay khi bạn thực hiện việc rút tiền mặt từ cây ATM."
+                },
+                {
+                    "id": 3,
+                    "text": "Ngân hàng tự động chuyển số tiền thừa đó vào quỹ bảo trợ xã hội quốc gia theo quy định của Luật phòng chống rửa tiền."
+                },
+                {
+                    "id": 4,
+                    "text": "Kẻ lừa đảo đã cài mã độc vào tờ séc vật lý để tự động ra lệnh chuyển khoản ngược lại tài khoản của họ sau 48 giờ."
+                }
+            ]
+        },
+        {
+            "id": "q25",
+            "text": "Kẻ lừa đảo nhắm mục tiêu vào các sinh viên, học sinh đang tìm kiếm việc làm thêm bằng cách sử dụng các thông tin cá nhân thu thập được từ vụ rò rỉ dữ liệu của hệ thống Canvas. Chúng thực hiện phỏng vấn xin việc cực kỳ nhanh chóng qua tin nhắn ứng dụng chat. Điều này phản ánh lỗ hổng hệ thống nào?",
+            "correctAnswerId": 1,
+            "difficulty": "medium",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Kẻ gian tận dụng dữ liệu rò rỉ từ các vụ xâm nhập hệ thống giáo dục/doanh nghiệp để tạo lòng tin và cá nhân hóa kịch bản lừa đảo thuyết phục."
+                },
+                {
+                    "id": 2,
+                    "text": "Hệ thống học tập trực tuyến Canvas tự động chia sẻ hồ sơ học sinh cho các đơn vị môi giới việc làm quốc tế."
+                },
+                {
+                    "id": 3,
+                    "text": "Sinh viên bắt buộc phải trả phí duy trì tài khoản Canvas hàng tháng bằng các loại tiền mã hóa phi tập trung."
+                },
+                {
+                    "id": 4,
+                    "text": "Các thuật toán trí tuệ nhân tạo tích hợp sẵn trong Canvas tự động tạo ra các bài phỏng vấn tuyển dụng giả mạo."
+                }
+            ]
+        },
+        {
+            "id": "q26",
+            "text": "Kẻ tấn công sử dụng công nghệ tráo đổi khuôn mặt và giọng nói thời gian thực (Deepfake) để giả danh một Giám đốc điều hành tham gia vào cuộc họp Zoom đột xuất với nhân viên kế toán, yêu cầu phê duyệt khẩn cấp một giao dịch chuyển khoản ra nước ngoài. Nhân viên kế toán nên làm gì?",
+            "correctAnswerId": 1,
+            "difficulty": "medium",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Từ chối giao dịch và thực hiện quy trình phê duyệt kép (Dual-Authorization) ngoại tuyến, tự liên hệ lại sếp qua số điện thoại nội bộ chính thức để xác minh."
+                },
+                {
+                    "id": 2,
+                    "text": "Thực hiện giao dịch chuyển khoản ngay vì hình ảnh và giọng nói của CEO trong cuộc họp trực tuyến hoàn toàn trùng khớp và rất gấp gáp."
+                },
+                {
+                    "id": 3,
+                    "text": "Yêu cầu Giám đốc điều hành đọc to số căn cước công dân hiển thị trên màn hình để đối chiếu thông tin nhân sự."
+                },
+                {
+                    "id": 4,
+                    "text": "Nhắn tin riêng hỏi mật khẩu đăng nhập tài khoản ngân hàng của Giám đốc điều hành để tự thực hiện giao dịch thay sếp."
+                }
+            ]
+        },
+        {
+            "id": "q27",
+            "text": "Khi bạn sử dụng camera điện thoại thông minh để quét mã QR dán trên biển quảng cáo công cộng, thao tác kỹ thuật nào dưới đây là bắt buộc phải thực hiện trước khi trang web tự động tải lên?",
+            "correctAnswerId": 1,
+            "difficulty": "medium",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Quan sát kỹ phần xem trước liên kết (URL preview) hiển thị trên màn hình xem tên miền chính có khớp với website chính thức của doanh nghiệp không."
+                },
+                {
+                    "id": 2,
+                    "text": "Tắt hoàn toàn tính năng định vị GPS và kết nối bluetooth trên điện thoại di động để mã QR không thể đọc được thông tin vị trí."
+                },
+                {
+                    "id": 3,
+                    "text": "Chụp lại ảnh mã QR đó và gửi vào công cụ tìm kiếm hình ảnh của Google để xác thực mã vạch có đăng ký bản quyền hay không."
+                },
+                {
+                    "id": 4,
+                    "text": "Tăng độ sáng màn hình điện thoại lên mức tối đa để camera có thể phân tích được mật độ điểm ảnh của mã QR."
+                }
+            ]
+        },
+        {
+            "id": "q28",
+            "text": "Các đối tượng lừa đảo thường tìm cách tiếp cận các công dân lớn tuổi để yêu cầu xác nhận số tài khoản Medicare của họ với lý do \"cập nhật hồ sơ sức khỏe điện tử\". Việc lộ lọt số Medicare này có thể dẫn đến hậu quả nghiêm trọng nào dưới đây?",
+            "correctAnswerId": 1,
+            "difficulty": "medium",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Băng nhóm lừa đảo thực hiện hành vi khai khống các hóa đơn y tế để trục lợi tiền trợ cấp của chính phủ hoặc thực hiện lừa đảo đăng ký hospice giả mạo."
+                },
+                {
+                    "id": 2,
+                    "text": "Thiết bị điện thoại của nạn nhân sẽ bị cài đặt các phần mềm gián điệp tự động khóa phân vùng ổ cứng."
+                },
+                {
+                    "id": 3,
+                    "text": "Nạn nhân sẽ bị cơ quan quản lý xuất nhập cảnh từ chối cấp hộ chiếu di chuyển ra nước ngoài vĩnh viễn."
+                },
+                {
+                    "id": 4,
+                    "text": "Số bảo hiểm y tế sẽ tự động liên kết với các khoản nợ thẻ tín dụng của các cá nhân khác trên toàn quốc."
+                }
+            ]
+        },
+        {
+            "id": "q29",
+            "text": "Bạn nhận được một cuộc điện thoại khẩn cấp thông báo rằng hóa đơn dịch vụ điện nước của gia đình chưa được thanh toán và lưới điện sẽ bị ngắt sau 30 phút. Người gọi yêu cầu bạn chuyển khoản ngay lập tức qua Western Union hoặc MoneyGram. Tại sao đây là dấu hiệu lừa đảo?",
+            "correctAnswerId": 1,
+            "difficulty": "medium",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Các dịch vụ chuyển tiền nhanh như Western Union hay MoneyGram không thể thu hồi hoặc đảo ngược giao dịch khi tiền đã được rút ra ở đầu bên kia."
+                },
+                {
+                    "id": 2,
+                    "text": "Hệ thống lưới điện quốc gia chỉ chấp nhận các khoản thanh toán bằng đồng tiền mã hóa Bitcoin chạy trên mạng phi tập trung."
+                },
+                {
+                    "id": 3,
+                    "text": "Nhân viên điện lực bắt buộc phải thu tiền trực tiếp tại nhà bằng máy quét thẻ POS cầm tay có đăng ký chính chủ."
+                },
+                {
+                    "id": 4,
+                    "text": "Mọi hóa đơn dịch vụ công cộng chỉ được thanh toán vào ngày đầu tiên của mỗi quý dương lịch theo quy định."
+                }
+            ]
+        },
+        {
+            "id": "q30",
+            "text": "Một người dùng lo ngại rằng chỉ cần trả lời cuộc gọi từ số điện thoại lạ hiển thị trên màn hình là tin tặc có thể cài đặt mã độc và chiếm quyền kiểm soát hệ thống Android hoặc iOS. Nhận định nào sau đây phản ánh chính xác kiến trúc bảo mật của hệ điều hành di động hiện đại?",
+            "correctAnswerId": 1,
+            "difficulty": "medium",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Hệ điều hành di động cô lập hoàn toàn kết nối thoại (voice partition), nên cuộc gọi thông thường không thể tự thực thi mã độc nếu người dùng không bấm link hoặc cài app."
+                },
+                {
+                    "id": 2,
+                    "text": "Kết nối thoại của điện thoại thông minh liên kết trực tiếp với bộ nhớ lưu trữ mật khẩu nên rất dễ bị tin tặc giải mã từ xa."
+                },
+                {
+                    "id": 3,
+                    "text": "Hệ điều hành bắt buộc phải tải toàn bộ mã nguồn của cuộc gọi về máy trước khi hiển thị màn hình trả lời nên rủi ro lây nhiễm là 100%."
+                },
+                {
+                    "id": 4,
+                    "text": "Việc trả lời cuộc gọi sẽ kích hoạt quyền quản trị tối cao (Root/Jailbreak) của thiết bị thông qua tín hiệu sóng vô tuyến."
+                }
+            ]
+        },
+        {
+            "id": "q31",
+            "text": "Để chủ động phòng chống các cuộc gọi giả mạo thương hiệu và các chiến dịch tin nhắn rác quy mô lớn, người dùng được khuyên nên cài đặt các ứng dụng như RoboKiller, Truecaller, Nomorobo hay Hiya. Các ứng dụng này hoạt động dựa trên nguyên lý kỹ thuật cốt lõi nào?",
+            "correctAnswerId": 1,
+            "difficulty": "medium",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Phân tích siêu dữ liệu (metadata) của giao thức VoIP truyền đến để nhận diện và chặn các dải số giả mạo hoặc đầu số spam hàng loạt."
+                },
+                {
+                    "id": 2,
+                    "text": "Tự động ghi âm cuộc đối thoại và gửi lên máy chủ AI để phân tích tần số giọng nói của người gọi thời gian thực."
+                },
+                {
+                    "id": 3,
+                    "text": "Sử dụng camera hồng ngoại của điện thoại để quét vân tay của người đang thực hiện cuộc gọi ở đầu dây bên kia."
+                },
+                {
+                    "id": 4,
+                    "text": "Truy cập trực tiếp vào phân vùng bảo mật chứa thẻ ngân hàng của người gọi để kiểm tra số dư khả dụng."
+                }
+            ]
+        },
+        {
+            "id": "q32",
+            "text": "Tại sao việc chỉ dùng mắt thường để quan sát họa tiết hoặc màu sắc của một nhãn dán QR ở nơi công cộng là chưa đủ để đảm bảo an toàn tuyệt đối trước nguy cơ bị tấn công Quishing?",
+            "correctAnswerId": 1,
+            "difficulty": "medium",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Kẻ tấn công có thể in nhãn dán đè với chất lượng đồ họa cực cao, giả mạo hoàn hảo thiết kế gốc của biển hiệu để đánh lừa thị giác."
+                },
+                {
+                    "id": 2,
+                    "text": "Mã QR giả mạo bắt buộc phải được in trên chất liệu giấy chống phản quang đặc biệt chỉ phản xạ ánh sáng hồng ngoại."
+                },
+                {
+                    "id": 3,
+                    "text": "Tất cả các mã QR giả mạo đều tự động thay đổi họa tiết hình học bên trong mỗi khi có người tiến lại gần."
+                },
+                {
+                    "id": 4,
+                    "text": "Ứng dụng camera của điện thoại chỉ có thể đọc được các mã QR được in bằng mực hữu cơ thân thiện với môi trường."
+                }
+            ]
+        },
+        {
+            "id": "q33",
+            "text": "Bạn rao bán một chiếc điện thoại cũ trên mạng xã hội với giá 500 USD. Một người mua liên hệ gửi một bức ảnh chụp tờ séc ngân hàng ghi số tiền 1.500 USD và giải thích rằng thư ký của họ đã ghi nhầm số tiền. Họ yêu cầu bạn nạp séc và chuyển khoản trả lại 1.000 USD tiền thừa. Kịch bản lừa đảo này nhắm vào kẽ hở nào?",
+            "correctAnswerId": 1,
+            "difficulty": "medium",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Lợi dụng độ trễ thời gian đối soát séc của ngân hàng (thường mất vài ngày) để lừa bạn gửi đi tiền thật trước khi tờ séc bị phát hiện là giả."
+                },
+                {
+                    "id": 2,
+                    "text": "Lợi dụng việc ngân hàng tự động khóa tài khoản của người nhận séc khi số tiền ghi trên séc vượt quá hạn mức thanh toán."
+                },
+                {
+                    "id": 3,
+                    "text": "Khai thác lỗ hổng bảo mật của ứng dụng ngân hàng di động tự động chuyển tiền mặt thành điểm thưởng tích lũy."
+                },
+                {
+                    "id": 4,
+                    "text": "Kẻ lừa đảo có thể sử dụng số tài khoản trên tờ séc để hack trực tiếp vào camera trước của điện thoại bạn."
+                }
+            ]
+        },
+        {
+            "id": "q34",
+            "text": "Khi nhận được một tin nhắn SMS cảnh báo tài khoản EZ-Pass của bạn nợ tiền và có nguy cơ bị phạt, dấu hiệu nào cho thấy đường link trong tin nhắn là giả mạo ngay cả khi nó chứa các từ như 'ezpass' hay 'toll'?",
+            "correctAnswerId": 1,
+            "difficulty": "medium",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Đường link sử dụng tên miền phụ hoặc tên miền biến thể có lỗi chính tả nhẹ, không kết thúc bằng đuôi miền chính thức của chính phủ như '.gov'."
+                },
+                {
+                    "id": 2,
+                    "text": "Đường link bắt đầu bằng giao thức bảo mật 'https://' thay vì giao thức truyền tải văn bản thuần túy 'http://'."
+                },
+                {
+                    "id": 3,
+                    "text": "Tin nhắn chứa các ký tự chữ in hoa ở đầu mỗi từ trong địa chỉ đường dẫn liên kết URL."
+                },
+                {
+                    "id": 4,
+                    "text": "Đường link yêu cầu bạn phải kết nối Wi-Fi tốc độ cao trước khi tiến hành truy cập vào hệ thống thanh toán."
+                }
+            ]
+        },
+        {
+            "id": "q35",
+            "text": "Một người tự xưng là cán bộ của Tổng cục Thuế liên hệ thông báo rằng bạn đang nợ một khoản thuế thu nhập cá nhân rất lớn từ năm ngoái. Họ yêu cầu bạn rút toàn bộ tiền tiết kiệm ngân hàng đổi thành vàng miếng bốn số chín rồi giao cho một người chuyển phát do họ chỉ định để mang đi niêm phong bảo an. Quy trình xử lý bảo mật chính xác nhất lúc này là gì?",
+            "correctAnswerId": 1,
+            "difficulty": "hard",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Cúp máy ngay lập tức, tuyệt đối không mua vàng hay bàn giao tài sản cho bất kỳ ai, và báo cáo sự việc ngay cho cơ quan công an gần nhất."
+                },
+                {
+                    "id": 2,
+                    "text": "Yêu cầu người gọi gửi văn bản đóng dấu đỏ của Tổng cục Thuế qua tin nhắn hình ảnh trước khi tiến hành rút tiền mua vàng giao dịch."
+                },
+                {
+                    "id": 3,
+                    "text": "Mua vàng miếng đúng số lượng yêu cầu nhưng tự mình mang đến trụ sở cơ quan Thuế để bàn giao trực tiếp tại cổng bảo vệ."
+                },
+                {
+                    "id": 4,
+                    "text": "Rút tiền mặt chuyển khoản vào tài khoản tạm giữ của Tòa án Tối cao thay vì đổi thành vàng miếng để giảm thiểu rủi ro vật lý."
+                }
+            ]
+        },
+        {
+            "id": "q36",
+            "text": "Anh Quân vô tình quét một mã QR lừa đảo dán đè tại một cột thu phí đỗ xe công cộng và đã lỡ nhập toàn bộ thông tin thẻ tín dụng cùng mật khẩu tài khoản ngân hàng trên giao diện web spoofed. Ngay khi nhận ra mình đã bị lừa đảo, hành động khẩn cấp đầu tiên trong quy trình xử lý kỹ thuật (Post-Scan Technical Triaging) anh Quân phải thực hiện là gì?",
+            "correctAnswerId": 1,
+            "difficulty": "hard",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Ngắt kết nối mạng dữ liệu di động (4G/5G) và Wi-Fi của điện thoại ngay lập tức để ngắt luồng truyền tải và exfiltration dữ liệu ngầm của mã độc."
+                },
+                {
+                    "id": 2,
+                    "text": "Tắt nguồn điện thoại hoàn toàn và để yên thiết bị trong vòng 24 giờ để mã độc tự hủy do không có nguồn nuôi."
+                },
+                {
+                    "id": 3,
+                    "text": "Tiến hành khôi phục cài đặt gốc (Factory Reset) của điện thoại ngay lập tức bằng cách bấm tổ hợp phím cứng bên sườn máy."
+                },
+                {
+                    "id": 4,
+                    "text": "Đăng nhập ngay vào tài khoản ngân hàng bằng chính chiếc điện thoại đó để kiểm tra xem tiền đã bị rút đi hay chưa."
+                }
+            ]
+        },
+        {
+            "id": "q37",
+            "text": "Làm thế nào mà các đối tượng lừa đảo tuyển dụng việc làm từ xa (Recruitment Scams) có thể tiếp cận chính xác các job seeker là sinh viên công nghệ, biết rõ họ đang dùng hệ thống học tập Canvas và gửi các thông điệp chào mời công việc vô cùng thuyết phục?",
+            "correctAnswerId": 1,
+            "difficulty": "hard",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Chúng khai thác dữ liệu nhân khẩu học và email rò rỉ từ các vụ hack dữ liệu doanh nghiệp lớn (như vụ hack Canvas) rồi dùng công nghệ tự động lọc đối tượng tiềm năng."
+                },
+                {
+                    "id": 2,
+                    "text": "Chúng sử dụng các bot quét cổng mạng Wi-Fi công cộng tại các quán cà phê gần trường đại học để đọc lén lưu lượng truy cập thời gian thực."
+                },
+                {
+                    "id": 3,
+                    "text": "Hệ thống Canvas tự động tích hợp API tuyển dụng của LinkedIn để chia sẻ thông tin học tập của sinh viên ra công chúng."
+                },
+                {
+                    "id": 4,
+                    "text": "Chúng sử dụng phần mềm gián điệp tự động chụp ảnh màn hình điện thoại của sinh viên mỗi khi họ truy cập vào trang web của nhà trường."
+                }
+            ]
+        },
+        {
+            "id": "q38",
+            "text": "Tại sao việc yêu cầu người đối thoại vẫy ngón tay liên tục trước mặt hoặc đưa bàn tay che ngang mũi/mắt lại có thể phát hiện lỗi kỹ thuật của công nghệ Deepfake tráo đổi khuôn mặt thời gian thực (Real-time face-swap) trong cuộc họp video?",
+            "correctAnswerId": 1,
+            "difficulty": "hard",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Do thuật toán AI thời gian thực gặp khó khăn lớn trong việc xử lý ranh giới vật lý giữa tay và khuôn mặt (hand-to-face boundary) và ánh xạ độ sâu, gây ra hiện tượng méo ảnh hoặc mất lớp mặt nạ."
+                },
+                {
+                    "id": 2,
+                    "text": "Do chuyển động của các ngón tay sẽ làm quá tải băng thông truyền tải của ứng dụng Zoom hoặc Teams, khiến kết nối video bị ngắt lập tức."
+                },
+                {
+                    "id": 3,
+                    "text": "Do việc vẫy tay sẽ kích hoạt tính năng tự động phát hiện chuyển động bất thường của phần mềm diệt virus trên máy tính."
+                },
+                {
+                    "id": 4,
+                    "text": "Do thuật toán AI của kẻ xấu chỉ được huấn luyện trên hình ảnh tĩnh không chứa bất kỳ chuyển động cơ học nào của khớp xương tay."
+                }
+            ]
+        },
+        {
+            "id": "q39",
+            "text": "Một người trước đây từng bị lừa đảo đầu tư tiền mã hóa nhận được liên hệ từ một tài khoản tự xưng là 'Đặc vụ phòng chống tội phạm công nghệ cao của Liên Hợp Quốc'. Người này gửi ảnh chụp lệnh phong tỏa ví điện tử chứa số tiền đã mất và yêu cầu nạn nhân chuyển khoản trước 1.500 USD bằng tiền mã hóa USDT để làm 'phí giải tỏa pháp lý'. Quy trình phân tích mối đe dọa nào chỉ ra đây chắc chắn là lừa đảo?",
+            "correctAnswerId": 1,
+            "difficulty": "hard",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Kẻ lừa đảo sử dụng thông tin từ 'danh sách nạn nhân' (suckers list) để tiếp tục thực hiện lừa đảo thu hồi tài sản (Recovery Fraud), tận dụng tâm lý khát khao lấy lại tiền để lừa đóng phí trước qua kênh không thể hoàn trả."
+                },
+                {
+                    "id": 2,
+                    "text": "Các đặc vụ Liên Hợp Quốc chỉ thực hiện thu phí giải tỏa bằng séc vật lý gửi qua đường bưu điện quốc tế bảo đảm."
+                },
+                {
+                    "id": 3,
+                    "text": "Quy trình phong tỏa ví tiền mã hóa của Liên Hợp Quốc bắt buộc phải được thực hiện tự động bằng hợp đồng thông minh không cần con người can thiệp."
+                },
+                {
+                    "id": 4,
+                    "text": "Nạn nhân chỉ cần gửi mã khóa bí mật (private key) của ví cá nhân là hệ thống tư pháp có thể tự động khôi phục tiền mà không cần đóng phí."
+                }
+            ]
+        },
+        {
+            "id": "q40",
+            "text": "Báo cáo thống kê an ninh mạng năm 2025 ghi nhận tổng thiệt hại từ các vụ lừa đảo mạo danh (imposter scams) đạt con số khổng lồ 3.5 tỷ USD, tăng 20% so với năm trước. Yếu tố cốt lõi nào trong hành vi của nạn nhân thúc đẩy sự gia tăng nhanh chóng này?",
+            "correctAnswerId": 1,
+            "difficulty": "hard",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Sự tinh vi của công nghệ VoIP giả mạo số điện thoại kết hợp với pretexts mạo danh uy tín cao (như cơ quan thuế, tòa án) tạo áp lực tâm lý khiến nạn nhân bỏ qua quy trình xác minh."
+                },
+                {
+                    "id": 2,
+                    "text": "Người dùng di động hoàn toàn không sử dụng bất kỳ mật khẩu bảo mật nào để bảo vệ ứng dụng ngân hàng trực tuyến của họ."
+                },
+                {
+                    "id": 3,
+                    "text": "Sự thiếu hụt hoàn toàn các chương trình cảnh báo lừa đảo trên các phương tiện thông tin đại chúng và hệ thống trường học."
+                },
+                {
+                    "id": 4,
+                    "text": "Hệ thống ngân hàng thương mại quốc tế tự động thực hiện các giao dịch chuyển khoản mà không cần sự đồng ý của chủ tài khoản."
+                }
+            ]
+        },
+        {
+            "id": "q41",
+            "text": "Với tổng tổn thất do lừa đảo đầu tư tại Hoa Kỳ đạt mức kỷ lục 7.9 tỷ USD vào năm 2025, kịch bản lừa đảo nào đóng vai trò là động lực tài chính lớn nhất cho con số tổn thất khổng lồ này?",
+            "correctAnswerId": 1,
+            "difficulty": "hard",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Các chương trình đầu tư tiền mã hóa lợi nhuận cực cao kết hợp với quy trình nuôi dưỡng lòng tin kéo dài qua mối quan hệ tình cảm ảo (pig butchering), dẫn đến các khoản đầu tư tích lũy khổng lồ."
+                },
+                {
+                    "id": 2,
+                    "text": "Các vụ tấn công mã độc tống tiền (ransomware) mã hóa phân vùng ổ cứng máy tính cá nhân của người dân lớn tuổi."
+                },
+                {
+                    "id": 3,
+                    "text": "Các tin nhắn SMS lừa đảo thông báo trúng thưởng xe máy hoặc các chuyến du lịch nghỉ dưỡng cao cấp miễn phí."
+                },
+                {
+                    "id": 4,
+                    "text": "Sự cố sập sàn giao dịch chứng khoán quốc tế do lỗi kỹ thuật hệ thống máy chủ đám mây toàn cầu."
+                }
+            ]
+        },
+        {
+            "id": "q42",
+            "text": "Số liệu thống kê từ Ủy ban Thương mại Liên bang (FTC) năm 2025 chỉ ra thiệt hại tài chính từ lừa đảo tình cảm (romance fraud) đạt 1.48 triệu USD, với mức tổn thất trung bình cực kỳ cao trên mỗi nạn nhân. Đặc trưng tâm lý nào của kịch bản này khiến nạn nhân chịu tổn thất nặng nề hơn các loại lừa đảo khác?",
+            "correctAnswerId": 1,
+            "difficulty": "hard",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Tâm lý đầu tư cảm xúc sâu sắc và sự tin tưởng tuyệt đối được xây dựng qua nhiều tháng trò chuyện liên tục, khiến nạn nhân tự nguyện bảo vệ kẻ lừa đảo trước các cảnh báo của ngân hàng."
+                },
+                {
+                    "id": 2,
+                    "text": "Kẻ lừa đảo sử dụng các cuộc gọi đe dọa bạo lực vật lý trực tiếp đối với gia đình và người thân của nạn nhân."
+                },
+                {
+                    "id": 3,
+                    "text": "Nạn nhân bị ép buộc phải cung cấp quyền truy cập từ xa vào máy tính cá nhân của họ thông qua các ứng dụng như UltraViewer."
+                },
+                {
+                    "id": 4,
+                    "text": "Các giao dịch chuyển tiền được thực hiện hoàn toàn tự động bằng việc quét sinh trắc học mống mắt thời gian thực."
+                }
+            ]
+        },
+        {
+            "id": "q43",
+            "text": "Lừa đảo qua mạng xã hội ghi nhận mức thiệt hại kỷ lục 2.1 tỷ USD vào năm 2025. Yếu tố kỹ thuật nào trên các nền tảng mạng xã hội hiện nay bị kẻ tấn công khai thác triệt để để tiếp cận hàng triệu nạn nhân với chi phí cực thấp?",
+            "correctAnswerId": 1,
+            "difficulty": "hard",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Hệ thống phân phối quảng cáo tự động thiếu quy trình kiểm duyệt nội dung chặt chẽ, cho phép kẻ lừa đảo chạy các chiến dịch quảng cáo giả mạo nhắm mục tiêu sâu."
+                },
+                {
+                    "id": 2,
+                    "text": "Lỗ hổng bảo mật cho phép bất kỳ người dùng nào cũng có thể tự động tải toàn bộ cơ sở dữ liệu tin nhắn riêng tư của người khác."
+                },
+                {
+                    "id": 3,
+                    "text": "Tính năng tự động dịch ngôn ngữ của mạng xã hội tự biến đổi các thông điệp cảnh báo bảo mật thành các lời mời đầu tư hấp dẫn."
+                },
+                {
+                    "id": 4,
+                    "text": "Các mạng xã hội bắt buộc người dùng phải liên kết tài khoản ngân hàng trực tiếp để có thể đăng bài viết công khai."
+                }
+            ]
+        },
+        {
+            "id": "q44",
+            "text": "Tại Úc, số liệu năm 2024 ghi nhận thiệt hại do lừa đảo lên tới 2 tỷ đô la Úc (AUD), với hơn 52.000 cuộc tấn công phishing được ghi nhận riêng trong năm 2025. Điều này chứng minh thực tế kiến trúc an ninh mạng toàn cầu nào?",
+            "correctAnswerId": 1,
+            "difficulty": "hard",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Các mạng lưới tội phạm lừa đảo hoạt động xuyên biên giới với quy mô công nghiệp, không bị giới hạn bởi rào cản địa lý hay pháp lý quốc gia đơn lẻ."
+                },
+                {
+                    "id": 2,
+                    "text": "Hệ thống tường lửa quốc gia của Úc đã bị vô hiệu hóa hoàn toàn bởi các cuộc tấn công từ chối dịch vụ (DDoS)."
+                },
+                {
+                    "id": 3,
+                    "text": "Người dân Úc hoàn toàn không sử dụng các phương thức xác thực đa yếu tố để bảo mật email cá nhân."
+                },
+                {
+                    "id": 4,
+                    "text": "Tất cả các vụ lừa đảo tại Úc đều do cùng một siêu máy tính AI đặt tại Nam Cực tự động vận hành thời gian thực."
+                }
+            ]
+        },
+        {
+            "id": "q45",
+            "text": "Tại sao kiến trúc hệ điều hành di động hiện đại cô lập phân vùng kết nối thoại (voice connection partitioning) lại là lá chắn quan trọng bảo vệ người dùng khi họ nhận cuộc gọi từ số điện thoại lạ nghi ngờ giả mạo?",
+            "correctAnswerId": 1,
+            "difficulty": "hard",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Nó ngăn chặn luồng âm thanh truyền tải thực thi bất kỳ đoạn mã lệnh nào vào phân vùng hệ thống lưu trữ dữ liệu cá nhân hoặc ứng dụng tài chính."
+                },
+                {
+                    "id": 2,
+                    "text": "Nó tự động mã hóa giọng nói của người nghe thành các dải âm thanh robot để kẻ gian không thể ghi âm sinh trắc học giọng nói."
+                },
+                {
+                    "id": 3,
+                    "text": "Nó ngắt hoàn toàn kết nối 4G/5G của điện thoại ngay khi phát hiện tần số sóng thoại từ các máy chủ VoIP lừa đảo."
+                },
+                {
+                    "id": 4,
+                    "text": "Nó bắt buộc kẻ lừa đảo phải thực hiện việc quét vân tay vật lý trên thiết bị của họ để duy trì kết nối cuộc gọi."
+                }
+            ]
+        },
+        {
+            "id": "q46",
+            "text": "Khi kẻ tấn công sử dụng công nghệ Deepfake mạo danh CEO tham gia một cuộc họp Zoom và yêu cầu nhân viên kế toán đọc to mã số xác thực đa yếu tố (MFA bypass code) hiển thị trên điện thoại. Lỗ hổng quy trình kiểm soát nội bộ nào đang bị khai thác ở đây?",
+            "correctAnswerId": 1,
+            "difficulty": "hard",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Khai thác lỗ hổng 'vượt qua kiểm soát dựa trên uy tín quyền lực' (authority bias) khiến nhân sự sẵn sàng vi phạm quy trình bảo mật nghiêm ngặt để làm hài lòng cấp trên giả mạo."
+                },
+                {
+                    "id": 2,
+                    "text": "Khai thác việc thiếu các phần mềm diệt virus chuyên dụng được cài đặt trực tiếp trên hệ thống máy chủ email của công ty."
+                },
+                {
+                    "id": 3,
+                    "text": "Lợi dụng việc nhân viên kế toán sử dụng các thiết bị di động cá nhân không có tính năng khóa màn hình bằng mã PIN."
+                },
+                {
+                    "id": 4,
+                    "text": "Lợi dụng quy định bắt buộc phải chia sẻ mã xác thực MFA công khai trên các kênh chat Teams/Slack nội bộ."
+                }
+            ]
+        },
+        {
+            "id": "q47",
+            "text": "Trong một cuộc tấn công Corporate Whaling quy mô lớn sử dụng Deepfake thời gian thực để giả dạng cuộc họp ban hội đồng quản trị nhằm chuyển khoản trái phép 25 triệu USD. Quy định kiểm soát tài chính quyết định nào giúp ngăn chặn triệt để rủi ro này?",
+            "correctAnswerId": 1,
+            "difficulty": "hard",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Áp dụng cơ chế kiểm soát phê duyệt độc lập đa chữ ký số (Multi-Sig Dual-Authorization) và quy trình xác thực kênh phụ độc lập đối với mọi giao dịch vượt ngưỡng."
+                },
+                {
+                    "id": 2,
+                    "text": "Cấm hoàn toàn việc tổ chức các cuộc họp trực tuyến có sự tham gia của thành viên ban giám đốc cư trú tại nước ngoài."
+                },
+                {
+                    "id": 3,
+                    "text": "Yêu cầu ngân hàng chỉ thực hiện lệnh chuyển khoản khi có chữ ký tay vật lý bằng mực xanh của Giám đốc tài chính."
+                },
+                {
+                    "id": 4,
+                    "text": "Cài đặt bộ lọc nhiễu âm thanh tần số thấp trên tất cả các thiết bị micro thu âm dùng trong họp trực tuyến."
+                }
+            ]
+        },
+        {
+            "id": "q48",
+            "text": "Quy trình 'Tách biệt kênh truyền thông ngoại băng' (Out-of-Band Manual Decoupling) đòi hỏi người dùng phải thực hiện hành động kỹ thuật cốt lõi nào khi nhận diện một mối đe dọa lừa đảo mạo danh khẩn cấp qua điện thoại hoặc email?",
+            "correctAnswerId": 1,
+            "difficulty": "hard",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Đóng kênh giao tiếp hiện tại ngay lập tức, tự tìm kiếm phương thức liên lạc đã được xác minh trước đó ở một nguồn độc lập để tự chủ động gọi lại kiểm tra."
+                },
+                {
+                    "id": 2,
+                    "text": "Nhắn tin phản hồi yêu cầu đối phương gửi mã xác thực hai lớp (2FA) được sinh ra từ ứng dụng Google Authenticator của họ."
+                },
+                {
+                    "id": 3,
+                    "text": "Sử dụng một thiết bị ghi âm chuyên dụng để lưu lại toàn bộ cuộc hội thoại rồi gửi lên hệ thống phân tích mã độc đám mây."
+                },
+                {
+                    "id": 4,
+                    "text": "Yêu cầu đối phương chuyển sang cuộc gọi video chất lượng 4K để đối chiếu họa tiết trang phục và màu mắt của người gọi."
+                }
+            ]
+        },
+        {
+            "id": "q49",
+            "text": "Các giải pháp lọc cuộc gọi rác cấp nhà mạng viễn thông hoạt động dựa trên việc phân tích siêu dữ liệu (metadata) của các gói tin VoIP truyền đến. Dấu hiệu kỹ thuật bất thường nào trong siêu dữ liệu báo hiệu một cuộc gọi mạo danh (Caller ID spoofing)?",
+            "correctAnswerId": 1,
+            "difficulty": "hard",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Sự bất khớp giữa địa chỉ máy chủ khởi tạo cuộc gọi thực tế (giao thức SIP) và số điện thoại hiển thị trên trường dữ liệu Caller ID gửi đến thiết bị di động."
+                },
+                {
+                    "id": 2,
+                    "text": "Tốc độ truyền tải âm thanh của cuộc gọi thoại dao động liên tục ở mức dưới 100 kilobits mỗi giây."
+                },
+                {
+                    "id": 3,
+                    "text": "Tín hiệu sóng thoại được mã hóa bằng thuật toán đối xứng thay vì sử dụng thuật toán bất đối xứng RSA truyền thống."
+                },
+                {
+                    "id": 4,
+                    "text": "Thiết bị di động của người nhận cuộc gọi đang sử dụng dải băng tần sóng vô tuyến 5G thay vì kết nối Wi-Fi."
+                }
+            ]
+        },
+        {
+            "id": "q50",
+            "text": "Kẻ lừa đảo mạo danh FBI yêu cầu ông Thành chuyển 100.000 USD vào một 'tài khoản an toàn tạm giữ của chính phủ' (secure government safety account) để tránh bị phong tỏa tài sản do liên quan đến điều tra tội phạm. Quy tắc pháp lý nào vạch trần âm mưu lừa đảo này?",
+            "correctAnswerId": 1,
+            "difficulty": "hard",
+            "answers": [
+                {
+                    "id": 1,
+                    "text": "Không có bất kỳ tòa án hay cơ quan tư pháp nào thiết lập 'tài khoản tạm giữ an toàn' yêu cầu công dân tự nguyện chuyển tiền trực tuyến để bảo vệ tài sản đang điều tra."
+                },
+                {
+                    "id": 2,
+                    "text": "Các tài khoản tạm giữ của chính phủ chỉ được mở tại các ngân hàng quốc doanh có chi nhánh đặt tại Thụy Sĩ hoặc Luxembourg."
+                },
+                {
+                    "id": 3,
+                    "text": "Việc chuyển tiền vào tài khoản chính phủ bắt buộc phải sử dụng séc vật lý có chữ ký của Thủ trưởng cơ quan điều tra Liên bang."
+                },
+                {
+                    "id": 4,
+                    "text": "Mọi tài khoản của chính phủ đều bắt buộc phải được đặt tên bằng các ký tự viết hoa không chứa bất kỳ chữ số nào."
+                }
+            ]
+        }
+    ]
+}

@@ -9,9 +9,9 @@ next-env.d.ts.bak
 dev-*.log
 real-or-fake/
 police_kahoot.zip
-behavioral_threats_quiz.json
 banking_sim_fraud_quiz.json
 sinh_vien_thoi_dai_so_quiz.json
+event_quiz.json
 
 # Local agent / orchestration state
 .claude/
