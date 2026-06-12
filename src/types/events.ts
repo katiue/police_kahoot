@@ -48,6 +48,20 @@ export interface PublicQuestion {
   }
 }
 
+/** Host-only preview of the upcoming question. Reveals the correct answer
+ *  since it is shown solely on the host control panel, never to players. */
+export interface HostNextPreview {
+  /** Index the question will occupy when asked (0-based). */
+  index: number
+  total: number
+  text: string
+  difficulty: QuizDifficulty
+  answers: QuizAnswer[]
+  correctAnswerId: number
+  /** True when the next question belongs to the Kahoot speed-round. */
+  isKahoot: boolean
+}
+
 export interface PlayerView {
   id: string
   nickname: string
@@ -106,6 +120,16 @@ export interface ClientToServerEvents {
   ) => void
   'host:start': (payload: { pin: string; loginKey?: string }) => void
   'host:next': (payload: { pin: string; loginKey?: string }) => void
+  /** Peek at the upcoming question without advancing the game. */
+  'host:peek-next': (
+    payload: { pin: string; loginKey?: string },
+    ack: (res: { ok: boolean; preview?: HostNextPreview | null; error?: string }) => void
+  ) => void
+  /** Swap the upcoming question for a different unused one; returns the new preview. */
+  'host:swap-next': (
+    payload: { pin: string; loginKey?: string },
+    ack: (res: { ok: boolean; preview?: HostNextPreview | null; error?: string }) => void
+  ) => void
   'host:kahoot': (
     payload: { pin: string; loginKey?: string },
     ack?: (res: { ok: boolean; error?: string }) => void

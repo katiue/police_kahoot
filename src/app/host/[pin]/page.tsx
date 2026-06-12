@@ -1,5 +1,5 @@
 'use client'
-import { use, useEffect, useState } from 'react'
+import { use, useCallback, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -20,6 +20,7 @@ import { cn, formatPin } from '@/lib/utils'
 import type {
   GameStatus,
   HostSnapshot,
+  HostNextPreview,
   PlayerView,
   PublicQuestion,
   QuestionResult,
@@ -27,11 +28,14 @@ import type {
 } from '@/types/events'
 import {
   Download,
+  Eye,
+  EyeOff,
   FileJson,
   Play,
   RefreshCw,
   Settings,
   ShieldOff,
+  Shuffle,
   SkipForward,
   Square,
   Trophy,
@@ -116,6 +120,125 @@ function KahootStartBanner({
 
         <p className="mt-5 text-[10px] text-white/30">Click để bỏ qua</p>
       </div>
+    </motion.div>
+  )
+}
+
+// ── Host-only: preview & reroll the upcoming question ───────────
+function NextQuestionPreview({ pin, loginKey }: { pin: string; loginKey: string }) {
+  const [open, setOpen] = useState(false)
+  const [preview, setPreview] = useState<HostNextPreview | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [swapping, setSwapping] = useState(false)
+
+  const fetchPreview = useCallback(() => {
+    setLoading(true)
+    getSocket().emit('host:peek-next', { pin, loginKey }, (res) => {
+      setLoading(false)
+      if (res?.ok) setPreview(res.preview ?? null)
+      else toast.error(res?.error ?? 'Không tải được câu hỏi tiếp theo')
+    })
+  }, [pin, loginKey])
+
+  function reveal() {
+    setOpen(true)
+    fetchPreview()
+  }
+
+  function swap() {
+    setSwapping(true)
+    getSocket().emit('host:swap-next', { pin, loginKey }, (res) => {
+      setSwapping(false)
+      if (res?.ok) {
+        setPreview(res.preview ?? null)
+        toast.success('Đã đổi câu hỏi tiếp theo')
+      } else {
+        toast.error(res?.error ?? 'Không đổi được câu hỏi')
+      }
+    })
+  }
+
+  if (!open) {
+    return (
+      <div className="flex justify-center">
+        <button
+          type="button"
+          onClick={reveal}
+          className="inline-flex items-center gap-2 rounded-lg border border-[rgba(0,212,255,0.25)] bg-[rgba(0,212,255,0.06)] px-4 py-2 text-xs font-semibold uppercase tracking-widest text-[var(--accent)] transition-colors hover:bg-[rgba(0,212,255,0.12)]"
+        >
+          <Eye className="size-4" /> Xem trước câu tiếp theo
+        </button>
+      </div>
+    )
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, ease: [0.32, 0.72, 0, 1] }}
+      className="mx-auto w-full max-w-2xl rounded-2xl border border-[rgba(0,212,255,0.2)] bg-[rgba(2,8,23,0.6)] px-5 py-4"
+    >
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <span className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--accent)]">
+          <Eye className="size-3.5" />
+          Câu hỏi tiếp theo
+          {preview && (
+            <span className="text-white/40">
+              · {preview.isKahoot ? 'Kahoot ' : 'Câu '}
+              {preview.index + 1}/{preview.total}
+            </span>
+          )}
+        </span>
+        <button
+          type="button"
+          onClick={() => setOpen(false)}
+          className="inline-flex items-center gap-1 text-[10px] uppercase tracking-widest text-white/40 transition-colors hover:text-white/70"
+        >
+          <EyeOff className="size-3.5" /> Ẩn
+        </button>
+      </div>
+
+      {loading ? (
+        <p className="py-6 text-center text-sm text-white/40">Đang tải...</p>
+      ) : !preview ? (
+        <p className="py-6 text-center text-sm text-white/40">Không còn câu hỏi tiếp theo.</p>
+      ) : (
+        <>
+          <p className="mb-3 text-center text-lg font-bold text-white">{preview.text}</p>
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            {preview.answers.map((a) => {
+              const correct = a.id === preview.correctAnswerId
+              return (
+                <div
+                  key={a.id}
+                  className={cn(
+                    'flex items-center gap-2 rounded-lg border px-3 py-2 text-sm',
+                    correct
+                      ? 'border-emerald-500/50 bg-emerald-500/10 font-semibold text-emerald-300'
+                      : 'border-white/10 bg-white/4 text-white/70'
+                  )}
+                >
+                  {correct && <span className="size-1.5 shrink-0 rounded-full bg-emerald-400" />}
+                  <span className="truncate">{a.text}</span>
+                </div>
+              )
+            })}
+          </div>
+          <div className="mt-4 flex justify-center">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={swap}
+              disabled={swapping}
+              className="gap-2"
+            >
+              <Shuffle className="size-4" />
+              {swapping ? 'Đang đổi...' : 'Đổi câu khác'}
+            </Button>
+          </div>
+        </>
+      )}
     </motion.div>
   )
 }
@@ -649,6 +772,9 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
 
                   {/* Normal mode: player grid. Kahoot: sidebar handles ranking */}
                   {!kahootMode && <PlayerStatus players={players} />}
+
+                  {/* Preview & reroll the upcoming question (host-only) */}
+                  {!isLast && <NextQuestionPreview pin={pin} loginKey={loginKey} />}
                 </motion.div>
               )}
 
@@ -827,6 +953,9 @@ export default function HostRoomPage({ params }: { params: Promise<{ pin: string
                       </motion.div>
                     </div>
                   )}
+
+                  {/* Preview & reroll the upcoming question (host-only) */}
+                  {!isLast && <NextQuestionPreview pin={pin} loginKey={loginKey} />}
 
                   {/* Normal mode next button — bottom */}
                   {!kahootMode && (

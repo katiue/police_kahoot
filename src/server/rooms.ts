@@ -11,6 +11,7 @@ import type {
   ProjectorSnapshot,
   QuestionResult,
   LeaderboardEntry,
+  HostNextPreview,
 } from '@/types/events'
 import { checkNickname } from '@/lib/nickname'
 import { buildDifficultyRampDeck } from '@/lib/difficulty-ramp'
@@ -535,6 +536,85 @@ export class RoomManager {
     } else {
       this.askQuestion(room, next)
     }
+  }
+
+  /**
+   * The deck the next question is drawn from plus the index of the current
+   * question within it. Differs between normal and Kahoot mode.
+   */
+  private upcomingDeck(room: Room): { deck: QuizQuestion[]; currentIdx: number } {
+    return room.kahootMode
+      ? { deck: room.kahootPool, currentIdx: room.kahootQuestionIndex }
+      : { deck: room.quiz.questions, currentIdx: room.questionIndex }
+  }
+
+  private buildNextPreview(
+    room: Room,
+    q: QuizQuestion,
+    index: number,
+    total: number
+  ): HostNextPreview {
+    return {
+      index,
+      total,
+      text: q.text,
+      difficulty: q.difficulty,
+      answers: q.answers.map((a) => ({ id: a.id, text: a.text })),
+      correctAnswerId: q.correctAnswerId,
+      isKahoot: room.kahootMode,
+    }
+  }
+
+  /** Host-only peek at the upcoming question. Null when none remain. */
+  peekNextQuestion(pin: string): HostNextPreview | null {
+    const room = this.rooms.get(pin)
+    if (!room) return null
+    const { deck, currentIdx } = this.upcomingDeck(room)
+    const nextIdx = currentIdx + 1
+    if (nextIdx >= deck.length) return null
+    return this.buildNextPreview(room, deck[nextIdx], nextIdx, deck.length)
+  }
+
+  /**
+   * Replace the upcoming question with a different one and return the new
+   * preview. Swaps the next slot with a random later slot in the same deck so
+   * every question stays playable and none is duplicated. In Kahoot mode, when
+   * the pool has no other upcoming slot, pulls a fresh unused question from the
+   * source bank instead.
+   */
+  swapNextQuestion(pin: string): { ok: boolean; preview?: HostNextPreview | null; error?: string } {
+    const room = this.rooms.get(pin)
+    if (!room) return { ok: false, error: 'Không tìm thấy phòng' }
+    if (room.status !== 'question' && room.status !== 'result') {
+      return { ok: false, error: 'Chỉ đổi được khi đang chơi' }
+    }
+    const { deck, currentIdx } = this.upcomingDeck(room)
+    const nextIdx = currentIdx + 1
+    if (nextIdx >= deck.length) return { ok: false, error: 'Không còn câu hỏi tiếp theo' }
+
+    const laterSlots: number[] = []
+    for (let j = nextIdx + 1; j < deck.length; j += 1) laterSlots.push(j)
+
+    if (laterSlots.length > 0) {
+      const j = laterSlots[Math.floor(Math.random() * laterSlots.length)]
+      ;[deck[nextIdx], deck[j]] = [deck[j], deck[nextIdx]]
+      return { ok: true, preview: this.buildNextPreview(room, deck[nextIdx], nextIdx, deck.length) }
+    }
+
+    // Kahoot pool exhausted — try a fresh, never-used question from the source bank.
+    if (room.kahootMode) {
+      const usedIds = new Set(deck.map((q) => q.id))
+      const fresh = shuffled(room.sourceQuiz.questions.filter((q) => !usedIds.has(q.id)))[0]
+      if (fresh) {
+        deck[nextIdx] = {
+          ...fresh,
+          answers: room.randomizeAnswers ? shuffled(fresh.answers) : fresh.answers,
+        }
+        return { ok: true, preview: this.buildNextPreview(room, deck[nextIdx], nextIdx, deck.length) }
+      }
+    }
+
+    return { ok: false, error: 'Không còn câu hỏi khác để đổi' }
   }
 
   startKahoot(pin: string): { ok: boolean; error?: string } {

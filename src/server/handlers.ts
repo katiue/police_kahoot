@@ -79,6 +79,14 @@ export function registerSocketHandlers(io: IO): RoomManager {
       if (!isAuthorized(loginKey)) return denyHost('next')
       manager.nextQuestion(pin)
     })
+    socket.on('host:peek-next', ({ pin, loginKey }, ack) => {
+      if (!isAuthorized(loginKey)) return ack({ ok: false, error: 'Mã đăng nhập không đúng' })
+      ack({ ok: true, preview: manager.peekNextQuestion(pin) })
+    })
+    socket.on('host:swap-next', ({ pin, loginKey }, ack) => {
+      if (!isAuthorized(loginKey)) return ack({ ok: false, error: 'Mã đăng nhập không đúng' })
+      ack(manager.swapNextQuestion(pin))
+    })
     socket.on('host:kahoot', ({ pin, loginKey }, ack) => {
       if (!isAuthorized(loginKey)) return ack?.({ ok: false, error: 'Mã đăng nhập không đúng' })
       ack?.(manager.startKahoot(pin))
